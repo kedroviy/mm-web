@@ -8,12 +8,15 @@ export class AuthService {
   private cookies = inject(CookieService);
   private http = inject(HttpClient);
 
-  private readonly SESSION_COOKIE = 'SESSION';
+  private readonly ACCESS_TOKEN_COOKIE = 'access_token';
+  private readonly REFRESH_TOKEN_COOKIE = 'refresh_token';
 
   private authState$?: Observable<boolean>;
 
   isAuthenticated(): Observable<boolean> {
-    const hasCookie = !!this.cookies.get(this.SESSION_COOKIE);
+    // Tokens are set by the backend as HTTP-only cookies.
+    // On the server we can read them from request.headers.cookie.
+    const hasCookie = !!this.cookies.get(this.ACCESS_TOKEN_COOKIE) || !!this.cookies.get(this.REFRESH_TOKEN_COOKIE);
 
     if (!hasCookie) {
       return of(false);
