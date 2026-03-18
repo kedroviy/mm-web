@@ -42,7 +42,12 @@ export class AdminLogin {
     this.auth.authControllerAdminLogin(payload).subscribe({
       next: (response) => {
         console.log('Success:', response);
-        this.router.navigate(['/dashboard/home']);
+        // Hard redirect to trigger SSR rendering on the server (client-side navigation won't).
+        if (typeof window !== 'undefined') {
+          window.location.assign('/dashboard/home');
+        } else {
+          this.router.navigate(['/dashboard/home']);
+        }
       },
       error: (err) => {
         this.buttonText.set('Login');
