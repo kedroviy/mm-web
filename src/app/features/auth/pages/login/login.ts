@@ -6,7 +6,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { KitInputComponent } from '@shared/kit/input/input';
 import { COMMON_CONSTANTS } from '@core/index';
 import { PageWrapper } from '@shared/kit/page-wrapper/page-wrapper';
-import { AdminLoginDto, LoginDto } from '@core/api/model';
+import { AdminLoginDto } from '@core/api/model';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ import { AdminLoginDto, LoginDto } from '@core/api/model';
   standalone: true,
   imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper],
 })
-export class Login {
+export class AdminLogin {
   private auth = inject(AuthService);
   private router = inject(Router);
   buttonText = signal('Login');
@@ -28,14 +28,13 @@ export class Login {
 
   onSubmit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched(); // Чтобы показать ошибки, если нажали Submit сразу
+      this.form.markAllAsTouched();
       return;
     }
 
-    // Подготавливаем данные строго по контракту из Swagger (LoginDto)
     const payload: AdminLoginDto = {
-      email: this.form.value.login ?? '',
-      password: this.form.value.password ?? '',
+      email: this.form.value.login ?? COMMON_CONSTANTS.EMPTY_STRING,
+      password: this.form.value.password ?? COMMON_CONSTANTS.EMPTY_STRING,
     };
 
     this.buttonText.set('Logging in...');
@@ -43,7 +42,7 @@ export class Login {
     this.auth.authControllerAdminLogin(payload).subscribe({
       next: (response) => {
         console.log('Success:', response);
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard/home']);
       },
       error: (err) => {
         this.buttonText.set('Login');
