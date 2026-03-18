@@ -1,1 +1,30 @@
-<p>login works!</p>
+<app-page-wrapper size="md">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col justify-center items-center">
+    <div class="w-full">
+      <app-input
+        [inputFormControl]="form.controls.login"
+        label="Email"
+        placeholder="Enter your email"
+        type="email"
+        [required]="required"
+      >
+      </app-input>
+    </div>
+    <div class="w-full">
+      <app-input
+        [inputFormControl]="form.controls.password"
+        label="Password"
+        placeholder="Enter your password"
+        type="password"
+        [required]="required"
+      >
+      </app-input>
+    </div>
+
+    <app-button
+      variant="primary"
+      [text]="buttonText()"
+      type="submit"
+    ></app-button>
+  </form>
+</app-page-wrapper>

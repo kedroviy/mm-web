@@ -1,0 +1,13 @@
+<button mat-raised-button [color]="color()" [class]="sizeClass()">
+  @if (icon && iconPosition !== 'end') {
+    <mat-icon>{{ icon }}</mat-icon>
+  }
+
+  @if (text) {
+    <span>{{ text }}</span>
+  }
+
+  @if (icon && iconPosition === 'end') {
+    <mat-icon>{{ icon }}</mat-icon>
+  }
+</button>

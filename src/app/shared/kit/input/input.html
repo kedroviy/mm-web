@@ -1,0 +1,19 @@
+<mat-form-field [appearance]="appearance" hideEmptyError class="full">
+  @if (label) {
+    <mat-label>{{ label }}</mat-label>
+  }
+
+  <input
+    matInput
+    [formControl]="inputFormControl"
+    [placeholder]="placeholder ?? ''"
+    [type]="type"
+    [disabled]="disabled"
+    [required]="required"
+    [value]="value"
+  />
+
+  @if (inputFormControl.invalid) {
+    <mat-error>Ошибка ввода</mat-error>
+  }
+</mat-form-field>
