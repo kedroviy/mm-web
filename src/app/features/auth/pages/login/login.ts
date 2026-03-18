@@ -1,11 +1,12 @@
 import { Component, inject, Input, signal } from '@angular/core';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService } from '@core/api/generated/auth/auth.service';
 import { Router } from '@angular/router';
 import { UiButtonComponent } from '@shared/kit/button/button';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { KitInputComponent } from '@shared/kit/input/input';
 import { COMMON_CONSTANTS } from '@core/index';
 import { PageWrapper } from '@shared/kit/page-wrapper/page-wrapper';
+import { AdminLoginDto, LoginDto } from '@core/api/model';
 
 @Component({
   selector: 'app-login',
@@ -26,16 +27,28 @@ export class Login {
   });
 
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); // Чтобы показать ошибки, если нажали Submit сразу
+      return;
+    }
 
-    const payload = {
-      login: this.form.value.login ?? COMMON_CONSTANTS.EMPTY_STRING,
-      password: this.form.value.password ?? COMMON_CONSTANTS.EMPTY_STRING,
+    // Подготавливаем данные строго по контракту из Swagger (LoginDto)
+    const payload: AdminLoginDto = {
+      email: this.form.value.login ?? '',
+      password: this.form.value.password ?? '',
     };
 
-    this.auth.login(payload).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: (err) => console.error('Login failed', err),
+    this.buttonText.set('Logging in...');
+
+    this.auth.authControllerAdminLogin(payload).subscribe({
+      next: (response) => {
+        console.log('Success:', response);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.buttonText.set('Login');
+        console.error('Login failed', err);
+      },
     });
   }
 }

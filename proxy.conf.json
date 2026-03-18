@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://api.moviematch.space",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
