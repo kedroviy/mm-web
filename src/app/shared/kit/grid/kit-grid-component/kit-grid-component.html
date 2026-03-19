@@ -1,0 +1,14 @@
+<div class="grid-container"
+     [style.--cols]="config().columns"
+     [style.--row-height]="config().rowHeight"
+     [style.--gap]="config().gutter || '0px'">
+
+  @for (tile of config().tiles; track tile) {
+    <div class="grid-tile"
+         [style.grid-column]="'span ' + tile.cols"
+         [style.grid-row]="'span ' + tile.rows"
+         [style.background]="tile.color">
+      {{ tile.text }}
+    </div>
+  }
+</div>

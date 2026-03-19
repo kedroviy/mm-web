@@ -10,12 +10,11 @@ import { environment } from '@env/environment';
   standalone: true,
 })
 export class App implements OnInit {
-  protected readonly title = signal('Movie Match Admin Dashboard');
+  // protected readonly title = signal('Movie Match Admin Dashboard');
 
   ngOnInit() {
     fetch(`${environment.apiBaseUrl}/api/v1/health`)
       .then((res) => res.json())
-      .then((data) => console.log('Данные от NestJS:', data))
       .catch(err => console.error('Ошибка:', err));
   }
 }

@@ -1,0 +1,19 @@
+.grid-container {
+  display: grid;
+  /* Создаем колонки одинаковой ширины */
+  grid-template-columns: repeat(var(--cols), 1fr);
+  /* Задаем высоту ряда из конфига (80px) */
+  grid-auto-rows: var(--row-height);
+  /* Добавляем тот самый гэп */
+  gap: var(--gap);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.grid-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px; /* Опционально для красоты */
+  overflow: hidden;
+}
