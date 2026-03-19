@@ -1,4 +1,4 @@
-import { Component, inject, Input, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '@core/api/generated/auth/auth.service';
 import { Router } from '@angular/router';
 import { UiButtonComponent } from '@shared/kit/button/button';
@@ -8,23 +8,19 @@ import { COMMON_CONSTANTS } from '@core/index';
 import { PageWrapper } from '@shared/kit/page-wrapper/page-wrapper';
 import { AdminLoginDto } from '@core/api/model';
 import { ProgressSpinner } from '@shared/kit/progress-spinner/progress-spinner';
+import { NotificationsService } from '@core/services/notifications/notifications';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
-  imports: [
-    UiButtonComponent,
-    ReactiveFormsModule,
-    KitInputComponent,
-    PageWrapper,
-    ProgressSpinner,
-  ],
+  imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper],
 })
 export class AdminLogin {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private notify = inject(NotificationsService);
   buttonText = signal('Войти');
   isLoading = signal(false);
   required: boolean = true;
@@ -48,18 +44,18 @@ export class AdminLogin {
     };
 
     this.auth.authControllerAdminLogin(payload).subscribe({
-      next: (response) => {
-        console.log('Success:', response);
+      next: () => {
+        this.notify.showSuccess(`Вход успешно осуществлён!`);
         if (typeof window !== 'undefined') {
           window.location.assign('/dashboard/home');
         } else {
           this.router.navigate(['/dashboard/home']);
         }
       },
-      error: (err) => {
-        this.buttonText.set('Login');
+      error: () => {
+        this.notify.showError(`Ошибка входа!`);
+        this.buttonText.set('Войти');
         this.isLoading.set(false);
-        console.error('Login failed', err);
       },
     });
   }
