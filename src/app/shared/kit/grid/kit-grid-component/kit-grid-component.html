@@ -1,14 +1,16 @@
 <div class="grid-container"
-     [style.--cols]="config().columns"
+     [style.--sidebar-width]="config().isExpanded ? '2fr' : '1fr'"
      [style.--row-height]="config().rowHeight"
-     [style.--gap]="config().gutter || '0px'">
+     [style.--gap]="config().gutter">
 
-  @for (tile of config().tiles; track tile) {
+  @for (tile of config().tiles; track tile.text) {
     <div class="grid-tile"
+         animate.enter="enter-animation"
          [style.grid-column]="'span ' + tile.cols"
          [style.grid-row]="'span ' + tile.rows"
          [style.background]="tile.color">
       {{ tile.text }}
+      <ng-container></ng-container>
     </div>
   }
 </div>

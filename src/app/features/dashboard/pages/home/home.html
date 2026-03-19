@@ -1,1 +1,10 @@
-<app-kit-grid-component [config]="config"></app-kit-grid-component>
+<button (click)="layout.toggleMenu()">Toggle</button>
+
+@if (isAdmin) {
+  <app-kit-grid-component [config]="layout.adminConfig()">
+
+  </app-kit-grid-component>
+} @else {
+  <app-kit-grid-component [config]="layout.userConfig()"></app-kit-grid-component>
+}
+`

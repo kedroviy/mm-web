@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
-import { GridConfig } from '@shared/kit/grid/kit-grid-component/kit-grid-component.type';
+import { Component, inject } from '@angular/core';
 import { KitGridComponent } from '@shared/kit/grid/kit-grid-component/kit-grid-component';
-import { MY_DASHBOARD_CONFIG } from './lib/constants/constants';
+import { GridLayoutService } from '@core/services/layout/grid-layout.service.ts';
 
 @Component({
   selector: 'app-home',
@@ -11,5 +10,6 @@ import { MY_DASHBOARD_CONFIG } from './lib/constants/constants';
   standalone: true,
 })
 export class Home {
-  readonly config = MY_DASHBOARD_CONFIG;
+  protected layout = inject(GridLayoutService);
+  isAdmin = true;
 }

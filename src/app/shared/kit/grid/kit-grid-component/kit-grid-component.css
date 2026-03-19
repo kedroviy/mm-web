@@ -1,19 +1,27 @@
 .grid-container {
   display: grid;
-  /* Создаем колонки одинаковой ширины */
-  grid-template-columns: repeat(var(--cols), 1fr);
-  /* Задаем высоту ряда из конфига (80px) */
+  grid-template-columns: var(--sidebar-width, 1fr) repeat(11, 1fr);
   grid-auto-rows: var(--row-height);
-  /* Добавляем тот самый гэп */
   gap: var(--gap);
   width: 100%;
-  box-sizing: border-box;
+
+  transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .grid-tile {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px; /* Опционально для красоты */
+  animation: slide-fade 1s;
   overflow: hidden;
+  white-space: nowrap;
+}
+
+@keyframes slide-fade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

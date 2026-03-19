@@ -12,4 +12,5 @@ export interface GridConfig {
   totalRows: number;
   gutter?: string;
   tiles: GridTile[];
+  isExpanded?: boolean;
 }
