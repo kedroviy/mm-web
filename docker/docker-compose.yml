@@ -1,0 +1,14 @@
+services:
+  moviematch-proxy:
+    build: .
+    container_name: moviematch-nginx-container
+    # Удалили depends_on, так как mkcert уже создал файлы
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./admin.moviematch.space.pem:/etc/nginx/ssl/localhost.crt:ro
+      - ./admin.moviematch.space-key.pem:/etc/nginx/ssl/localhost.key:ro

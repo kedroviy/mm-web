@@ -7,18 +7,26 @@ import { KitInputComponent } from '@shared/kit/input/input';
 import { COMMON_CONSTANTS } from '@core/index';
 import { PageWrapper } from '@shared/kit/page-wrapper/page-wrapper';
 import { AdminLoginDto } from '@core/api/model';
+import { ProgressSpinner } from '@shared/kit/progress-spinner/progress-spinner';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
-  imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper],
+  imports: [
+    UiButtonComponent,
+    ReactiveFormsModule,
+    KitInputComponent,
+    PageWrapper,
+    ProgressSpinner,
+  ],
 })
 export class AdminLogin {
   private auth = inject(AuthService);
   private router = inject(Router);
-  buttonText = signal('Login');
+  buttonText = signal('Войти');
+  isLoading = signal(false);
   required: boolean = true;
 
   form = new FormGroup({
@@ -32,17 +40,16 @@ export class AdminLogin {
       return;
     }
 
+    this.isLoading.set(true);
+
     const payload: AdminLoginDto = {
       email: this.form.value.login ?? COMMON_CONSTANTS.EMPTY_STRING,
       password: this.form.value.password ?? COMMON_CONSTANTS.EMPTY_STRING,
     };
 
-    this.buttonText.set('Logging in...');
-
     this.auth.authControllerAdminLogin(payload).subscribe({
       next: (response) => {
         console.log('Success:', response);
-        // Hard redirect to trigger SSR rendering on the server (client-side navigation won't).
         if (typeof window !== 'undefined') {
           window.location.assign('/dashboard/home');
         } else {
@@ -51,6 +58,7 @@ export class AdminLogin {
       },
       error: (err) => {
         this.buttonText.set('Login');
+        this.isLoading.set(false);
         console.error('Login failed', err);
       },
     });
