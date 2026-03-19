@@ -1,5 +1,6 @@
 <app-page-wrapper size="md">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col justify-center items-center">
+    <h1 class="mb-10">Вход</h1>
     <div class="w-full">
       <app-input
         [inputFormControl]="form.controls.login"

@@ -1,4 +1,8 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -6,6 +10,8 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { authInterceptor } from '@core/interceptors/auth-interceptor';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { initializeAuth } from '@core/utils/fabrics/initialize-auth';
+import { AuthService as CustomAuthService } from '@core/services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +26,12 @@ export const appConfig: ApplicationConfig = {
         horizontalPosition: 'right',
         verticalPosition: 'top',
       },
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      deps: [CustomAuthService],
+      multi: true,
     },
   ],
 };

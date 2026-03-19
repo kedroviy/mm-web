@@ -6,7 +6,9 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import { APP_BASE_HREF } from '@angular/common';
 
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
