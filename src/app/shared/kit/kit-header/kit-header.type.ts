@@ -1,8 +1,6 @@
-export interface HeaderUser {
-  name: string;
-  avatarUrl?: string;
-  role: 'admin' | 'user' | 'guest';
-}
+import { UserProfileResponseDto } from '@core/api/model';
+
+export interface HeaderUser extends UserProfileResponseDto {}
 
 export interface HeaderConfig {
   showNotifications?: boolean;

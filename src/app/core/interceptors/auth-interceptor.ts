@@ -1,7 +1,8 @@
+import { isPlatformServer } from '@angular/common';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError, switchMap, BehaviorSubject, filter, take, finalize } from 'rxjs';
+import { catchError, throwError, switchMap, BehaviorSubject, filter, take } from 'rxjs';
 import { environment } from '@env/environment';
 import { AuthService } from '../services/auth/auth.service';
 
@@ -11,6 +12,7 @@ const refreshTokenSubject = new BehaviorSubject<boolean | null>(null);
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
+  const platformId = inject(PLATFORM_ID);
 
   let url = req.url;
   if (url.startsWith('/api/')) {
@@ -27,6 +29,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         !req.url.includes('/login') &&
         !req.url.includes('/refresh')
       ) {
+        if (isPlatformServer(platformId)) {
+          return throwError(() => err);
+        }
+
         if (isRefreshing) {
           return refreshTokenSubject.pipe(
             filter((result) => result !== null),
@@ -49,9 +55,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             refreshTokenSubject.next(false);
 
             authService.logout();
-            if (typeof window !== 'undefined') {
-              router.navigate(['/auth/login']);
-            }
+            router.navigate(['/auth/login']);
             return throwError(() => refreshErr);
           }),
         );
