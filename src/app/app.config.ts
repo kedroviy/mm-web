@@ -11,7 +11,7 @@ import { authInterceptor } from '@core/interceptors/auth-interceptor';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { initializeAuth } from '@core/utils/fabrics/initialize-auth';
-import { AuthService as CustomAuthService } from '@core/services/auth.service';
+import { AuthFacade } from '@core/services/auth/auth.facade';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAuth,
-      deps: [CustomAuthService],
+      deps: [AuthFacade],
       multi: true,
     },
   ],

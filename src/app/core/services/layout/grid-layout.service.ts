@@ -30,7 +30,6 @@ export class GridLayoutService {
           component: KitHeader,
           inputs: {
             title: 'Панель администратора',
-            user: { name: 'Admin User' },
           },
         },
         { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11, color: '#e0f7fa' },

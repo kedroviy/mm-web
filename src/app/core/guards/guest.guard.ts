@@ -1,17 +1,16 @@
-import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-import { map } from 'rxjs';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthFacade } from '@core/services/auth/auth.facade'; // проверь путь
 
 export const guestGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
+  const authFacade = inject(AuthFacade);
   const router = inject(Router);
-  return auth.checkAuth().pipe(
-    map((isLoggedIn) => {
-      if (isLoggedIn) {
-        return router.parseUrl('/dashboard/home');
-      }
-      return true;
-    }),
-  );
+
+  // Так как инициализация была в APP_INITIALIZER,
+  // сигнал authStatus уже содержит актуальное значение.
+  if (authFacade.authStatus() === true) {
+    return router.parseUrl('/dashboard/home');
+  }
+
+  return true;
 };

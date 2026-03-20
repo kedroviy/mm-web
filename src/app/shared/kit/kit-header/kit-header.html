@@ -9,17 +9,13 @@
     <div class="header-right">
       <ng-content select="[actions]"></ng-content>
 
-      @if (user(); as user) {
+      @if (profile(); as profile) {
         <app-button
           [isCircle]="true"
-          [customColor]="!user.avatarUrl ? userColor() : undefined"
+          [customColor]="userColor()"
           (click)="profileClick.emit()"
         >
-          @if (user.avatarUrl) {
-            <img [src]="user.avatarUrl" [alt]="user.name" class="avatar-img">
-          } @else {
-            <span class="initials">{{ userInitials() }}</span>
-          }
+          <span class="initials">{{ userInitials() }}</span>
         </app-button>
       }
     </div>

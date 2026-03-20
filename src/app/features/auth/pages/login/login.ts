@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '@core/api/generated/auth/auth.service';
-import { AuthService as CustomAuthService } from '@core/services/auth.service';
+import { AuthFacade } from '@core/services/auth/auth.facade';
 import { Router } from '@angular/router';
 import { UiButtonComponent } from '@shared/kit/button/button';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,12 +15,11 @@ import { tap } from 'rxjs';
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrl: './login.css',
-  standalone: true,
   imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper],
 })
 export class AdminLogin {
   private auth = inject(AuthService);
-  private customAuthService = inject(CustomAuthService);
+  private authFacade = inject(AuthFacade);
   private router = inject(Router);
   private notify = inject(NotificationsService);
   buttonText = signal('Войти');
@@ -47,20 +46,16 @@ export class AdminLogin {
 
     this.auth
       .authControllerAdminLogin(payload)
-      .pipe(
-        tap(() => this.customAuthService.authStatus.set(true)),
-        tap(() => this.customAuthService.clearCache()),
-      )
+      .pipe(tap(() => this.authFacade.authStatus.set(true)))
       .subscribe({
         next: () => {
           this.notify.showSuccess(`Вход успешно осуществлён!`);
-
           this.router.navigate(['/dashboard/home']);
         },
-        error: (err) => {
+        error: () => {
           this.notify.showError(`Ошибка входа!`);
           this.isLoading.set(false);
-          this.customAuthService.authStatus.set(false); // На всякий случай сбрасываем
+          this.authFacade.authStatus.set(false);
         },
       });
   }

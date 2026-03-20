@@ -1,13 +1,12 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthFacade } from '@core/services/auth/auth.facade';
 
 export const authGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
+  const authFacade = inject(AuthFacade);
   const router = inject(Router);
 
-  // Проверяем сигнал. Больше никаких Observable в гвардах!
-  if (auth.isLoggedIn()) {
+  if (authFacade.authStatus() === true) {
     return true;
   }
 

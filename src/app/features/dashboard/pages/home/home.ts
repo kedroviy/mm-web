@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { KitGridComponent } from '@shared/kit/grid/kit-grid-component/kit-grid-component';
-import { GridLayoutService } from '@core/services/layout/grid-layout.service.ts';
+import { GridLayoutService } from '@core/services/layout/grid-layout.service';
 
 @Component({
   selector: 'app-home',
