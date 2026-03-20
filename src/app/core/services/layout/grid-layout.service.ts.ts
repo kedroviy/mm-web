@@ -33,7 +33,7 @@ export class GridLayoutService {
             user: { name: 'Admin User' },
           },
         },
-        { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11, color: '#e0f7fa' },
+        { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11 },
         { text: 'Admin Statistics', cols: 11, rows: 5, color: '#fff9c4' },
         { text: 'System Logs', cols: 11, rows: 6, color: '#ffecb3' },
         { text: 'Footer', cols: 12, rows: 1, color: '#333' },

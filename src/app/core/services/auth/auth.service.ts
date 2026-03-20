@@ -7,11 +7,13 @@ import {
   TransferState,
   makeStateKey,
 } from '@angular/core';
-import { CookieService } from './cookie.service';
+import { CookieService } from '../cookie/cookie.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
 import { catchError, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
 import { COMMON_CONSTANTS } from '@core/constants';
+import { UserProfileResponseDto } from '@core/api/model';
+import { UsersService as GeneratedUserService } from '@core/api/generated/users/users.service';
 
 const AUTH_KEY = makeStateKey<boolean>('auth_state');
 
@@ -20,22 +22,29 @@ export class AuthService {
   private cookies = inject(CookieService);
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-  private readonly ACCESS_TOKEN_COOKIE = 'access_token';
-  private readonly REFRESH_TOKEN_COOKIE = 'refresh_token';
+  private usersApi = inject(GeneratedUserService);
   private request = inject(REQUEST, { optional: true });
   private transferState = inject(TransferState);
+
   private authState$?: Observable<boolean>;
+
   readonly authStatus = signal<boolean | null>(null);
+  readonly profile = signal<UserProfileResponseDto | undefined>(undefined);
   hasAuthenticated = signal<boolean | null>(null);
 
+  private readonly ACCESS_TOKEN_COOKIE = 'access_token';
+  private readonly REFRESH_TOKEN_COOKIE = 'refresh_token';
+
   initAuth(): Observable<boolean> {
-    return this.http.get('/api/v1/users/profile').pipe(
-      map(() => {
+    return this.usersApi.usersControllerGetProfile().pipe(
+      tap((user) => {
+        this.profile.set(user);
         this.authStatus.set(true);
-        return true;
       }),
+      map(() => true),
       catchError(() => {
         this.authStatus.set(false);
+        this.profile.set(undefined);
         return of(false);
       }),
     );

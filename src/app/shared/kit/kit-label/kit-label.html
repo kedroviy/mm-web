@@ -1,0 +1,12 @@
+<div class="kit-label" [class]="'variant-' + variant()">
+  @if (svgPath()) {
+    <span class="custom-svg-icon"
+          [style.mask-image]="'url(' + svgPath() + ')'"
+          [style.-webkit-mask-image]="'url(' + svgPath() + ')'">
+        </span>
+  } @else if (icon()) {
+    <mat-icon class="label-icon">{{ icon() }}</mat-icon>
+  }
+
+  <span class="label-text">{{ text() }}</span>
+</div>

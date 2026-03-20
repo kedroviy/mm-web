@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '@core/api/generated/auth/auth.service';
-import { AuthService as CustomAuthService } from '@core/services/auth.service';
+import { AuthService as CustomAuthService } from '@core/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { UiButtonComponent } from '@shared/kit/button/button';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';

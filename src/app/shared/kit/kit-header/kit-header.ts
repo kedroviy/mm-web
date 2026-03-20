@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { HeaderConfig, HeaderUser } from '@shared/kit/kit-header/kit-header.type';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { UiButtonComponent } from '@shared/kit/button/button';
 import { COMMON_CONSTANTS } from '@core/constants';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-kit-header',
@@ -14,12 +15,16 @@ import { COMMON_CONSTANTS } from '@core/constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KitHeader {
+  private authService = inject(AuthService);
+
   title = input<string>();
   user = input<HeaderUser | null>(null);
   config = input<HeaderConfig>({});
 
+  profile = this.authService.profile;
+
   userInitials = computed(() => {
-    const name = this.user()?.name;
+    const name = this.profile()?.name;
     if (!name) return COMMON_CONSTANTS.EMPTY_STRING;
     return name
       .split(' ')
@@ -30,7 +35,7 @@ export class KitHeader {
   });
 
   userColor = computed(() => {
-    const name = this.user()?.name || 'Guest';
+    const name = this.profile()?.name || 'Guest';
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
