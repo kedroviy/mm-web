@@ -20,10 +20,16 @@ export class UiButtonComponent {
   @Input() iconPosition: ButtonIconPosition = 'start';
   @Input() loading = false;
   @Input() text: string = COMMON_CONSTANTS.EMPTY_STRING;
+  @Input() customColor?: string;
+  @Input() isCircle = false;
 
   private variantToColorMap: Record<ButtonVariant, string> = BUTTON_TYPE;
 
   color = () => this.variantToColorMap[this.variant];
+
+  get backgroundColor() {
+    return this.customColor || this.variantToColorMap[this.variant];
+  }
 
   sizeClass = () => {
     return {

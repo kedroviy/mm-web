@@ -1,0 +1,48 @@
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.kit-header {
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  width: 100%;
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  .app-title {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .initials {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    user-select: none;
+    color: white;
+  }
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}

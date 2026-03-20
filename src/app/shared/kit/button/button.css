@@ -1,0 +1,10 @@
+.kit-circle-btn {
+  min-width: 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

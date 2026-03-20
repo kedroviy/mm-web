@@ -3,14 +3,19 @@
      [style.--row-height]="config().rowHeight"
      [style.--gap]="config().gutter">
 
-  @for (tile of config().tiles; track tile.text) {
+  @for (tile of config().tiles; track $index) {
     <div class="grid-tile"
-         animate.enter="enter-animation"
          [style.grid-column]="'span ' + tile.cols"
          [style.grid-row]="'span ' + tile.rows"
          [style.background]="tile.color">
-      {{ tile.text }}
-      <ng-container></ng-container>
+
+      @if (tile.component) {
+        <!-- Используем явную передачу через inputs (Angular 16.2+) -->
+        <ng-container *ngComponentOutlet="tile.component; inputs: tile.inputs" />
+      } @else {
+        {{ tile.text }}
+      }
+
     </div>
   }
 </div>

@@ -1,5 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { GridConfig } from '@shared/kit/grid/kit-grid-component/kit-grid-component.type';
+import { KitHeader } from '@shared/kit/kit-header';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,16 @@ export class GridLayoutService {
       ...this.BASE_CONFIG,
       isExpanded: isExpanded,
       tiles: [
-        { text: 'Admin Header', cols: 12, rows: 1, color: '#333' },
+        {
+          text: 'Admin Header',
+          cols: 12,
+          rows: 1,
+          component: KitHeader,
+          inputs: {
+            title: 'Панель администратора',
+            user: { name: 'Admin User' },
+          },
+        },
         { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11, color: '#e0f7fa' },
         { text: 'Admin Statistics', cols: 11, rows: 5, color: '#fff9c4' },
         { text: 'System Logs', cols: 11, rows: 6, color: '#ffecb3' },

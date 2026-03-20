@@ -1,15 +1,21 @@
-<button mat-raised-button [color]="color()" [class]="sizeClass()" [disabled]="loading">
+<button
+  mat-raised-button
+  [style.background-color]="backgroundColor"
+  [class]="sizeClass()"
+  [disabled]="loading"
+  [class.kit-circle-btn]="isCircle"
+>
   @if (loading) {
     <app-progress-spinner size="md"></app-progress-spinner>
   } @else {
+    <ng-content></ng-content>
+
     @if (icon && iconPosition !== 'end') {
       <mat-icon>{{ icon }}</mat-icon>
     }
-
     @if (text) {
       <span>{{ text }}</span>
     }
-
     @if (icon && iconPosition === 'end') {
       <mat-icon>{{ icon }}</mat-icon>
     }

@@ -5,7 +5,8 @@ export interface GridTile {
   cols: number;
   rows: number;
   color?: string;
-  component?: Type<unknown> | TemplateRef<unknown>;
+  component?: Type<any>;
+  inputs?: Record<string, any>;
 }
 
 export interface GridConfig {
