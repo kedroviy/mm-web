@@ -23,7 +23,7 @@ export class GridLayoutService {
       isExpanded: isExpanded,
       tiles: [
         { text: 'Admin Header', cols: 12, rows: 1, color: '#333' },
-        { text: 'Side Menu', cols: 1, rows: 11, color: '#e0f7fa' },
+        { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11, color: '#e0f7fa' },
         { text: 'Admin Statistics', cols: 11, rows: 5, color: '#fff9c4' },
         { text: 'System Logs', cols: 11, rows: 6, color: '#ffecb3' },
         { text: 'Footer', cols: 12, rows: 1, color: '#333' },

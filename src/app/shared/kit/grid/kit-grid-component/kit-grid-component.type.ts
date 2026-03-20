@@ -1,9 +1,11 @@
+import { TemplateRef, Type } from '@angular/core';
+
 export interface GridTile {
   text?: string;
   cols: number;
   rows: number;
   color?: string;
-  component?: any;
+  component?: Type<unknown> | TemplateRef<unknown>;
 }
 
 export interface GridConfig {
