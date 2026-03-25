@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { KitCard } from '@shared/kit/kit-card/kit-card';
 import { Router } from '@angular/router';
 import { MODULES } from 'src/app/features/dashboard/lib/constants/constants';
@@ -13,6 +13,7 @@ import { MODULES } from 'src/app/features/dashboard/lib/constants/constants';
 export class DashboardHubSection {
   private router = inject(Router);
   modules = MODULES;
+  title = input<string>('Заголовок по умолчанию');
 
   navigate(path: string) {
     void this.router.navigate([path]);

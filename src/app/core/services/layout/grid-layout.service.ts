@@ -2,6 +2,7 @@ import { computed, Injectable, signal } from '@angular/core';
 import { GridConfig } from '@shared/kit/grid/kit-grid-component/kit-grid-component.type';
 import { KitHeader } from '@shared/kit/kit-header';
 import { DashboardHubSection } from '../../../features/dashboard/ui/dashboard-hub-section/dashboard-hub-section';
+import { DashboardLogsHub } from '../../../features/dashboard/ui/dashboard-logs-hub/dashboard-logs-hub';
 
 @Injectable({
   providedIn: 'root',
@@ -39,8 +40,19 @@ export class GridLayoutService {
           cols: 11,
           rows: 5,
           component: DashboardHubSection,
+          inputs: {
+            title: 'Модули',
+          },
         },
-        { text: 'System Logs', cols: 11, rows: 6, color: '#ffecb3' },
+        {
+          text: 'System Logs',
+          cols: 11,
+          rows: 6,
+          component: DashboardLogsHub,
+          inputs: {
+            title: 'Аналитика',
+          },
+        },
         { text: 'Footer', cols: 12, rows: 1, color: '#333' },
       ],
     };

@@ -1,0 +1,12 @@
+<section class="hub-grid">
+  @for (item of modules; track item.title) {
+    <app-kit-card
+      class="hub-grid__card"
+      [title]="item.title"
+      [description]="item.description"
+      actionText="Открыть"
+      [appearance]="'outlined'"
+      (actionClick)="navigate(item.link)"
+    />
+  }
+</section>

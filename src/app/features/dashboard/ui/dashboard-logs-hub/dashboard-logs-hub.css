@@ -1,0 +1,9 @@
+.hub-grid {
+  display: flex;
+  gap: 1rem;
+
+}
+
+.hub-grid__card {
+  width: 300px
+}

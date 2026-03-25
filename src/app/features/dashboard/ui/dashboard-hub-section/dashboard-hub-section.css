@@ -1,7 +1,12 @@
 .hub-grid {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 2rem;
+}
 
+.hub-grid__container {
+  display: flex;
+  gap: 1rem;
 }
 
 .hub-grid__card {
