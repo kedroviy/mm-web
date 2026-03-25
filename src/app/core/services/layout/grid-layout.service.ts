@@ -1,6 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { GridConfig } from '@shared/kit/grid/kit-grid-component/kit-grid-component.type';
 import { KitHeader } from '@shared/kit/kit-header';
+import { DashboardHubSection } from '../../../features/dashboard/ui/dashboard-hub-section/dashboard-hub-section';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,12 @@ export class GridLayoutService {
           },
         },
         { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11 },
-        { text: 'Admin Statistics', cols: 11, rows: 5, color: '#fff9c4' },
+        {
+          text: 'Admin Statistics',
+          cols: 11,
+          rows: 5,
+          component: DashboardHubSection,
+        },
         { text: 'System Logs', cols: 11, rows: 6, color: '#ffecb3' },
         { text: 'Footer', cols: 12, rows: 1, color: '#333' },
       ],

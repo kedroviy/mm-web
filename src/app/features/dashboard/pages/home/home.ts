@@ -9,6 +9,8 @@ import { GridLayoutService } from '@core/services/layout/grid-layout.service';
   styleUrl: './home.css',
   standalone: true,
 })
+
+
 export class Home {
   protected layout = inject(GridLayoutService);
   isAdmin = true;

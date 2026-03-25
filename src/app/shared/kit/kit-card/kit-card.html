@@ -1,0 +1,18 @@
+<mat-card [appearance]="appearance">
+  <mat-card-header>
+    @if (title) {
+      <mat-card-title>{{ title }}</mat-card-title>
+    }
+    @if (description) {
+      <mat-card-subtitle>{{ description }}</mat-card-subtitle>
+    }
+  </mat-card-header>
+
+  @if (actionText) {
+    <mat-card-actions [align]="align">
+      <button mat-button (click)="actionClick.emit()">
+        {{ actionText }}
+      </button>
+    </mat-card-actions>
+  }
+</mat-card>
