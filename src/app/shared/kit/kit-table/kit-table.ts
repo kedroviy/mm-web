@@ -44,17 +44,17 @@ import { COMMON_CONSTANTS } from '@core/constants';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KitTable {
+export class KitTable<T> {
   private tableService = inject(TableService);
 
-  dataSource = input<any[]>([]);
+  dataSource = input<T[]>([]);
   displayedColumns = input<string[]>([]);
   showViewAction = input<boolean>(false);
   showDeleteAction = input<boolean>(false);
   baseRoute = input<string>(COMMON_CONSTANTS.EMPTY_STRING);
 
-  delete = output<any>();
-  view = output<any>();
+  delete = output<T>();
+  view = output<T>();
 
   customColumns = contentChildren(MatColumnDef);
 
@@ -62,7 +62,7 @@ export class KitTable {
     return this.customColumns().some((col) => col.name === column);
   }
 
-  onRowClick(row: any) {
+  onRowClick(row: T) {
     this.tableService.selectItem(row);
   }
 }

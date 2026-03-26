@@ -1,4 +1,3 @@
-// core/services/cookie.service.ts
 import { Injectable, inject, PLATFORM_ID, REQUEST } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 

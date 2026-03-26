@@ -16,7 +16,7 @@ import {
 export class ProgressSpinner {
   @Input() size: ProgressSpinnerSize = 'sm';
   @Input() mode: 'determinate' | 'indeterminate' = 'indeterminate';
-  @Input() value: number = 0;
+  @Input() value = 0;
 
   get diameter(): ProgresSpinnerDiameter {
     return SPINNER_SIZE_MAP[this.size] || 12;

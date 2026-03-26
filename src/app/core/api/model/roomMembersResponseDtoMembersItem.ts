@@ -42,7 +42,7 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
  */
 import type { RoomMembersResponseDtoMembersItemRole } from './roomMembersResponseDtoMembersItemRole';
 
-export type RoomMembersResponseDtoMembersItem = {
+export interface RoomMembersResponseDtoMembersItem {
   userId?: string;
   role?: RoomMembersResponseDtoMembersItemRole;
   name?: string;
