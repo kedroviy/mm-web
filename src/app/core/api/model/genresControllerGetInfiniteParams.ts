@@ -41,14 +41,17 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
  * OpenAPI spec version: 1.0
  */
 
+export type GenresControllerGetInfiniteParams = {
 /**
- * User role
+ * Номер страницы
  */
-export type RedisUserResponseDtoRole = typeof RedisUserResponseDtoRole[keyof typeof RedisUserResponseDtoRole];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const RedisUserResponseDtoRole = {
-  USER: 'USER',
-  ADMIN: 'ADMIN',
-} as const;
+page?: number;
+/**
+ * Элементов на страницу
+ */
+limit?: number;
+/**
+ * Поиск по названию
+ */
+name?: string;
+};

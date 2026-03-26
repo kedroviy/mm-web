@@ -42,17 +42,19 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
  */
 
 export * from './adminLoginDto';
-export * from './authResponseDto';
+export * from './createGenreDto';
 export * from './createRedisUserDto';
 export * from './createRoomDto';
 export * from './errorResponseDto';
 export * from './errorResponseDtoMessage';
+export * from './genresControllerGetInfiniteParams';
+export * from './genresControllerGetWithPagesParams';
+export * from './idParamDto';
 export * from './joinRoomDto';
 export * from './loginDto';
 export * from './loginResponseDto';
 export * from './redisUserResponseDto';
 export * from './redisUserResponseDtoRole';
-export * from './refreshTokenDto';
 export * from './roomMembersResponseDto';
 export * from './roomMembersResponseDtoMembersItem';
 export * from './roomMembersResponseDtoMembersItemRole';
@@ -67,6 +69,7 @@ export * from './roomsControllerGetChatHistory200MessagesItem';
 export * from './roomsControllerLeaveRoomBody';
 export * from './roomsControllerMuteUserBody';
 export * from './roomsControllerMuteUserBodyDurationMinutes';
+export * from './updateGenreDto';
 export * from './userProfileResponseDto';
 export * from './userProfileResponseDtoRole';
 export * from './userResponseDto';

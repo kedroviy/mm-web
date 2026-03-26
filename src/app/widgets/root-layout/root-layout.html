@@ -1,0 +1,39 @@
+<div class="layout-container flex flex-col min-h-screen bg-white">
+  <app-kit-header class="header-container" />
+
+  <div class="px-8 pt-6 flex flex-col flex-1">
+
+    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      @if (navService.canGoBack()) {
+        <button (click)="navService.goBack()" class="mr-2 p-1 hover:bg-gray-100 rounded-full">
+          <mat-icon class="text-xl">arrow_back</mat-icon>
+        </button>
+      }
+
+      <div class="flex items-center gap-1">
+        @for (crumb of navService.breadcrumbs(); track crumb.url; let last = $last) {
+          @if (!last) {
+            <a [routerLink]="crumb.url" class="hover:text-blue-600 transition-colors cursor-pointer">
+              {{ crumb.label }}
+            </a>
+            <mat-icon class="text-gray-300 scale-75">chevron_right</mat-icon>
+          } @else {
+            <span class="text-gray-900 font-medium">{{ crumb.label }}</span>
+          }
+        }
+      </div>
+    </nav>
+
+    <h2 class="text-3xl font-medium tracking-tight text-gray-900 mb-6">
+      {{ navService.pageTitle() }}
+    </h2>
+
+    <main class="flex-1">
+      <router-outlet />
+    </main>
+
+    <footer class="py-6 border-t text-gray-400 text-sm">
+      Footer content
+    </footer>
+  </div>
+</div>

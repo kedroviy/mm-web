@@ -41,7 +41,9 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
  * OpenAPI spec version: 1.0
  */
 
-export interface RefreshTokenDto {
-  /** Refresh token (optional if provided in cookie) */
-  refreshToken?: string;
+export interface UpdateGenreDto {
+  name?: string;
+  slug?: string;
+  description?: string;
+  keywords?: string[];
 }

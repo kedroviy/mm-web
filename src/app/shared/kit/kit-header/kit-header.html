@@ -1,7 +1,12 @@
 <mat-toolbar class="kit-header">
   <div class="header-container">
     <div class="header-left">
-      <span class="app-title">{{ title() }}</span>
+      <div class="flex items-center gap-3">
+        @if (logoUrl()) {
+          <img [src]="logoUrl()" alt="Logo" class="h-8 w-8 object-contain" />
+        }
+        <span class="font-bold text-lg tracking-tight">{{ appName() }}</span>
+      </div>
 
       <ng-content select="[left]"></ng-content>
     </div>

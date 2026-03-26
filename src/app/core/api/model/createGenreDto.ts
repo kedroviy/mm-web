@@ -41,14 +41,9 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
  * OpenAPI spec version: 1.0
  */
 
-/**
- * User role
- */
-export type RedisUserResponseDtoRole = typeof RedisUserResponseDtoRole[keyof typeof RedisUserResponseDtoRole];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const RedisUserResponseDtoRole = {
-  USER: 'USER',
-  ADMIN: 'ADMIN',
-} as const;
+export interface CreateGenreDto {
+  name: string;
+  slug: string;
+  description?: string;
+  keywords?: string[];
+}

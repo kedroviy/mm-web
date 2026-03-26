@@ -1,5 +1,5 @@
 export const MODULES = [
-  { title: 'Справочники', description: 'Управление НСИ и кодами', link: '/dictionaries' },
+  { title: 'Справочники', description: 'Управление НСИ и кодами', link: 'dashboard/nsi-list' },
   { title: 'Пользователи', description: 'Роли и права доступа', link: '/users' },
   { title: 'База данных', description: 'Статус и бэкапы', link: '/db-admin' },
 ];

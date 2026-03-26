@@ -4,61 +4,54 @@
  * MM Admin API
  * API documentation for MM Admin backend. All endpoints use JWT authentication via HTTP-only cookies or Bearer token in Authorization header.
 
-## WebSocket Chat API
+ ## WebSocket Chat API
 
-Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
+ Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
 
-### Quick Reference:
-- **Connection:**
-  - Development: `ws://localhost:4000/rooms`
-  - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
-  - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
-- **Important:**
-  - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
-  - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
-  - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS
-- **Authentication:** JWT token in cookie or Authorization header
-- **Events:**
-  - `sendMessage` - Send a chat message
-  - `chatHistory` - Receive chat history (auto-sent on room join)
-  - `newMessage` - Receive new messages from other users
-  - `error` - Error notifications
+ ### Quick Reference:
+ - **Connection:**
+ - Development: `ws://localhost:4000/rooms`
+ - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
+ - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
+ - **Important:**
+ - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
+ - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
+ - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS
+ - **Authentication:** JWT token in cookie or Authorization header
+ - **Events:**
+ - `sendMessage` - Send a chat message
+ - `chatHistory` - Receive chat history (auto-sent on room join)
+ - `newMessage` - Receive new messages from other users
+ - `error` - Error notifications
 
-### Chat Message Format:
-```json
-{
-  "roomId": "uuid",
-  "message": "Your message text (1-1000 characters)"
-}
-```
+ ### Chat Message Format:
+ ```json
+ {
+ "roomId": "uuid",
+ "message": "Your message text (1-1000 characters)"
+ }
+ ```
 
-### Requirements:
-- User must be authenticated
-- User must be a member of the room
-- Messages are limited to 1000 characters
-- Chat history is automatically sent when joining a room (up to 100 messages)
+ ### Requirements:
+ - User must be authenticated
+ - User must be a member of the room
+ - Messages are limited to 1000 characters
+ - Chat history is automatically sent when joining a room (up to 100 messages)
 
  * OpenAPI spec version: 1.0
  */
-import {
-  HttpClient
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import type {
   HttpContext,
   HttpEvent,
   HttpHeaders,
   HttpParams,
-  HttpResponse as AngularHttpResponse
+  HttpResponse as AngularHttpResponse,
 } from '@angular/common/http';
 
-import {
-  Injectable,
-  inject
-} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
-import {
-  Observable
-} from 'rxjs';
+import { Observable } from 'rxjs';
 
 import type {
   CreateRoomDto,
@@ -69,17 +62,15 @@ import type {
   RoomsControllerCreateRoom201,
   RoomsControllerGetChatHistory200,
   RoomsControllerLeaveRoomBody,
-  RoomsControllerMuteUserBody
+  RoomsControllerMuteUserBody,
 } from '../../model';
-
-
 
 interface HttpClientOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
   context?: HttpContext;
   params?:
-        | HttpParams
-        | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
+    | HttpParams
+    | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
   reportProgress?: boolean;
   withCredentials?: boolean;
   credentials?: RequestCredentials;
@@ -90,197 +81,381 @@ interface HttpClientOptions {
   redirect?: RequestRedirect;
   referrer?: string;
   integrity?: string;
-  transferCache?: {includeHeaders?: string[]} | boolean;
+  transferCache?: { includeHeaders?: string[] } | boolean;
   timeout?: number;
 }
-
-
 
 @Injectable({ providedIn: 'root' })
 export class RoomsService {
   private readonly http = inject(HttpClient);
-/**
- * Creates a new room with a unique 6-digit public code and broadcasts the event via WebSocket. Requires authentication.
- * @summary Create a new room
- */
- roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(createRoomDto?: CreateRoomDto, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(createRoomDto?: CreateRoomDto, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(createRoomDto?: CreateRoomDto, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Creates a new room with a unique 6-digit public code and broadcasts the event via WebSocket. Requires authentication.
+   * @summary Create a new room
+   */
   roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(
-    createRoomDto?: CreateRoomDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.post<TData>(
-      `/api/v1/rooms`,
-      createRoomDto,options
-    );
+    createRoomDto?: CreateRoomDto,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(
+    createRoomDto?: CreateRoomDto,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(
+    createRoomDto?: CreateRoomDto,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerCreateRoom<TData = RoomsControllerCreateRoom201>(
+    createRoomDto?: CreateRoomDto,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.post<TData>(`/api/v1/rooms`, createRoomDto, options);
   }
-/**
- * Retrieves all rooms where the current user is a member. Requires authentication.
- * @summary Get current user rooms
- */
- roomsControllerGetMyRooms<TData = RoomResponseDto[]>( options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerGetMyRooms<TData = RoomResponseDto[]>( options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerGetMyRooms<TData = RoomResponseDto[]>( options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Retrieves all rooms where the current user is a member. Requires authentication.
+   * @summary Get current user rooms
+   */
   roomsControllerGetMyRooms<TData = RoomResponseDto[]>(
-     options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.get<TData>(
-      `/api/v1/rooms/my-rooms`,options
-    );
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerGetMyRooms<TData = RoomResponseDto[]>(
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerGetMyRooms<TData = RoomResponseDto[]>(
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerGetMyRooms<TData = RoomResponseDto[]>(
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.get<TData>(`/api/v1/rooms/my-rooms`, options);
   }
-/**
- * Retrieves room data by room ID. Requires authentication.
- * @summary Get room by ID
- */
- roomsControllerGetRoom<TData = RoomResponseDto>(id: string | undefined | null, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerGetRoom<TData = RoomResponseDto>(id: string | undefined | null, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerGetRoom<TData = RoomResponseDto>(id: string | undefined | null, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Retrieves room data by room ID. Requires authentication.
+   * @summary Get room by ID
+   */
   roomsControllerGetRoom<TData = RoomResponseDto>(
-    id: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.get<TData>(
-      `/api/v1/rooms/${id}`,options
-    );
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerGetRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerGetRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerGetRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.get<TData>(`/api/v1/rooms/${id}`, options);
   }
-/**
- * Adds a user to a room using 6-digit public code and broadcasts the update via WebSocket. Requires authentication.
- * @summary Join a room by public code
- */
- roomsControllerJoinRoom<TData = RoomResponseDto>(joinRoomDto: JoinRoomDto, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerJoinRoom<TData = RoomResponseDto>(joinRoomDto: JoinRoomDto, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerJoinRoom<TData = RoomResponseDto>(joinRoomDto: JoinRoomDto, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Adds a user to a room using 6-digit public code and broadcasts the update via WebSocket. Requires authentication.
+   * @summary Join a room by public code
+   */
   roomsControllerJoinRoom<TData = RoomResponseDto>(
-    joinRoomDto: JoinRoomDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.post<TData>(
-      `/api/v1/rooms/join`,
-      joinRoomDto,options
-    );
+    joinRoomDto: JoinRoomDto,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerJoinRoom<TData = RoomResponseDto>(
+    joinRoomDto: JoinRoomDto,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerJoinRoom<TData = RoomResponseDto>(
+    joinRoomDto: JoinRoomDto,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerJoinRoom<TData = RoomResponseDto>(
+    joinRoomDto: JoinRoomDto,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.post<TData>(`/api/v1/rooms/join`, joinRoomDto, options);
   }
-/**
- * Removes a user from a room and broadcasts the update via WebSocket. Requires authentication.
- * @summary Leave a room
- */
- roomsControllerLeaveRoom<TData = RoomResponseDto>(id: string | undefined | null,
-    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerLeaveRoom<TData = RoomResponseDto>(id: string | undefined | null,
-    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerLeaveRoom<TData = RoomResponseDto>(id: string | undefined | null,
-    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Removes a user from a room and broadcasts the update via WebSocket. Requires authentication.
+   * @summary Leave a room
+   */
   roomsControllerLeaveRoom<TData = RoomResponseDto>(
     id: string | undefined | null,
-    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerLeaveRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerLeaveRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerLeaveRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    roomsControllerLeaveRoomBody: RoomsControllerLeaveRoomBody,
+    options?: HttpClientOptions & {
+      observe?: any;
+    },
+  ): Observable<any> {
     return this.http.post<TData>(
       `/api/v1/rooms/${id}/leave`,
-      roomsControllerLeaveRoomBody,options
+      roomsControllerLeaveRoomBody,
+      options,
     );
   }
-/**
- * Records a user's movie choice and broadcasts the update via WebSocket. Requires authentication.
- * @summary Choose a movie
- */
- roomsControllerChooseMovie<TData = RoomResponseDto>(id: string | undefined | null,
-    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerChooseMovie<TData = RoomResponseDto>(id: string | undefined | null,
-    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerChooseMovie<TData = RoomResponseDto>(id: string | undefined | null,
-    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Records a user's movie choice and broadcasts the update via WebSocket. Requires authentication.
+   * @summary Choose a movie
+   */
   roomsControllerChooseMovie<TData = RoomResponseDto>(
     id: string | undefined | null,
-    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerChooseMovie<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerChooseMovie<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerChooseMovie<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    roomsControllerChooseMovieBody: RoomsControllerChooseMovieBody,
+    options?: HttpClientOptions & {
+      observe?: any;
+    },
+  ): Observable<any> {
     return this.http.post<TData>(
       `/api/v1/rooms/${id}/choice`,
-      roomsControllerChooseMovieBody,options
+      roomsControllerChooseMovieBody,
+      options,
     );
   }
-/**
- * Retrieves list of room members with their roles and names. Only room members can view this list. Requires authentication.
- * @summary Get room members
- */
- roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(id: string | undefined | null, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(id: string | undefined | null, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(id: string | undefined | null, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Retrieves list of room members with their roles and names. Only room members can view this list. Requires authentication.
+   * @summary Get room members
+   */
   roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(
-    id: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.get<TData>(
-      `/api/v1/rooms/${id}/members`,options
-    );
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerGetRoomMembers<TData = RoomMembersResponseDto>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.get<TData>(`/api/v1/rooms/${id}/members`, options);
   }
-/**
- * Removes a user from the room. Only the room creator can remove users. Requires authentication.
- * @summary Remove user from room
- */
- roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Removes a user from the room. Only the room creator can remove users. Requires authentication.
+   * @summary Remove user from room
+   */
   roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(
     id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.delete<TData>(
-      `/api/v1/rooms/${id}/members/${userId}`,options
-    );
+    userId: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerRemoveUserFromRoom<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.delete<TData>(`/api/v1/rooms/${id}/members/${userId}`, options);
   }
-/**
- * Retrieves chat history for a room. Note: Chat history is automatically sent via WebSocket when joining a room. This HTTP endpoint is provided for reference. Requires authentication and room membership.
- * @summary Get chat history (WebSocket recommended)
- */
- roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(id: string | undefined | null, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(id: string | undefined | null, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(id: string | undefined | null, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Retrieves chat history for a room. Note: Chat history is automatically sent via WebSocket when joining a room. This HTTP endpoint is provided for reference. Requires authentication and room membership.
+   * @summary Get chat history (WebSocket recommended)
+   */
   roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(
-    id: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.get<TData>(
-      `/api/v1/rooms/${id}/chat/history`,options
-    );
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerGetChatHistory<TData = RoomsControllerGetChatHistory200>(
+    id: string | undefined | null,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.get<TData>(`/api/v1/rooms/${id}/chat/history`, options);
   }
-/**
- * Mutes a user in the room chat for specified duration (1, 5, or 10 minutes). Only the room creator can mute users. Requires authentication.
- * @summary Mute a user in room chat
- */
- roomsControllerMuteUser<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null,
-    roomsControllerMuteUserBody: RoomsControllerMuteUserBody, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerMuteUser<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null,
-    roomsControllerMuteUserBody: RoomsControllerMuteUserBody, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerMuteUser<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null,
-    roomsControllerMuteUserBody: RoomsControllerMuteUserBody, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Mutes a user in the room chat for specified duration (1, 5, or 10 minutes). Only the room creator can mute users. Requires authentication.
+   * @summary Mute a user in room chat
+   */
   roomsControllerMuteUser<TData = RoomResponseDto>(
     id: string | undefined | null,
     userId: string | undefined | null,
-    roomsControllerMuteUserBody: RoomsControllerMuteUserBody, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    roomsControllerMuteUserBody: RoomsControllerMuteUserBody,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerMuteUser<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    roomsControllerMuteUserBody: RoomsControllerMuteUserBody,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerMuteUser<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    roomsControllerMuteUserBody: RoomsControllerMuteUserBody,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerMuteUser<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    roomsControllerMuteUserBody: RoomsControllerMuteUserBody,
+    options?: HttpClientOptions & {
+      observe?: any;
+    },
+  ): Observable<any> {
     return this.http.post<TData>(
       `/api/v1/rooms/${id}/members/${userId}/mute`,
-      roomsControllerMuteUserBody,options
+      roomsControllerMuteUserBody,
+      options,
     );
   }
-/**
- * Removes mute from a user in the room chat. Only the room creator can unmute users. Requires authentication.
- * @summary Unmute a user in room chat
- */
- roomsControllerUnmuteUser<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- roomsControllerUnmuteUser<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- roomsControllerUnmuteUser<TData = RoomResponseDto>(id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+
+  /**
+   * Removes mute from a user in the room chat. Only the room creator can unmute users. Requires authentication.
+   * @summary Unmute a user in room chat
+   */
   roomsControllerUnmuteUser<TData = RoomResponseDto>(
     id: string | undefined | null,
-    userId: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.delete<TData>(
-      `/api/v1/rooms/${id}/members/${userId}/mute`,options
-    );
+    userId: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  roomsControllerUnmuteUser<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  roomsControllerUnmuteUser<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  roomsControllerUnmuteUser<TData = RoomResponseDto>(
+    id: string | undefined | null,
+    userId: string | undefined | null,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.delete<TData>(`/api/v1/rooms/${id}/members/${userId}/mute`, options);
   }
-};
+}
 
-export type RoomsControllerCreateRoomClientResult = NonNullable<RoomsControllerCreateRoom201>
-export type RoomsControllerGetMyRoomsClientResult = NonNullable<RoomResponseDto[]>
-export type RoomsControllerGetRoomClientResult = NonNullable<RoomResponseDto>
-export type RoomsControllerJoinRoomClientResult = NonNullable<RoomResponseDto>
-export type RoomsControllerLeaveRoomClientResult = NonNullable<RoomResponseDto>
-export type RoomsControllerChooseMovieClientResult = NonNullable<RoomResponseDto>
-export type RoomsControllerGetRoomMembersClientResult = NonNullable<RoomMembersResponseDto>
-export type RoomsControllerRemoveUserFromRoomClientResult = NonNullable<RoomResponseDto>
-export type RoomsControllerGetChatHistoryClientResult = NonNullable<RoomsControllerGetChatHistory200>
-export type RoomsControllerMuteUserClientResult = NonNullable<RoomResponseDto>
-export type RoomsControllerUnmuteUserClientResult = NonNullable<RoomResponseDto>
+export type RoomsControllerCreateRoomClientResult = NonNullable<RoomsControllerCreateRoom201>;
+export type RoomsControllerGetMyRoomsClientResult = NonNullable<RoomResponseDto[]>;
+export type RoomsControllerGetRoomClientResult = NonNullable<RoomResponseDto>;
+export type RoomsControllerJoinRoomClientResult = NonNullable<RoomResponseDto>;
+export type RoomsControllerLeaveRoomClientResult = NonNullable<RoomResponseDto>;
+export type RoomsControllerChooseMovieClientResult = NonNullable<RoomResponseDto>;
+export type RoomsControllerGetRoomMembersClientResult = NonNullable<RoomMembersResponseDto>;
+export type RoomsControllerRemoveUserFromRoomClientResult = NonNullable<RoomResponseDto>;
+export type RoomsControllerGetChatHistoryClientResult =
+  NonNullable<RoomsControllerGetChatHistory200>;
+export type RoomsControllerMuteUserClientResult = NonNullable<RoomResponseDto>;
+export type RoomsControllerUnmuteUserClientResult = NonNullable<RoomResponseDto>;

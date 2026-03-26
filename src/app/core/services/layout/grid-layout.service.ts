@@ -25,16 +25,16 @@ export class GridLayoutService {
       ...this.BASE_CONFIG,
       isExpanded: isExpanded,
       tiles: [
-        {
-          text: 'Admin Header',
-          cols: 12,
-          rows: 1,
-          component: KitHeader,
-          inputs: {
-            title: 'Панель администратора',
-          },
-        },
-        { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11 },
+        // {
+        //   text: 'Admin Header',
+        //   cols: 12,
+        //   rows: 1,
+        //   component: KitHeader,
+        //   inputs: {
+        //     title: 'Панель администратора',
+        //   },
+        // },
+        // { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11 },
         {
           text: 'Admin Statistics',
           cols: 11,
@@ -53,7 +53,6 @@ export class GridLayoutService {
             title: 'Аналитика',
           },
         },
-        { text: 'Footer', cols: 12, rows: 1, color: '#333' },
       ],
     };
   });

@@ -1,11 +1,11 @@
-import { defineConfig } from '@serggrey1992/swagger-fetch';
+import { defineConfig } from 'orval';
 
-module.exports = {
+export default defineConfig({
   baseOutput: 'src/core/api/swagger-generate',
   sources: [
     {
       name: 'my-api',
-      input: 'https://api.moviematch.space/api/docs-json',
+      input: './swagger.json',
     },
   ],
-};
+});

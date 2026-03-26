@@ -17,9 +17,10 @@ import { AuthService } from '@core/services/auth/auth.service';
 export class KitHeader {
   private authService = inject(AuthService);
 
-  title = input<string>();
   user = input<HeaderUser | null>(null);
   config = input<HeaderConfig>({});
+  logoUrl = input<string>('assets/logo.svg');
+  appName = input<string>('MovieMatch');
 
   profile = this.authService.profile;
 

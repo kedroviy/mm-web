@@ -62,10 +62,8 @@ import {
 
 import type {
   AdminLoginDto,
-  AuthResponseDto,
   LoginDto,
-  LoginResponseDto,
-  RefreshTokenDto
+  LoginResponseDto
 } from '../../model';
 
 
@@ -109,18 +107,13 @@ export class AuthService {
       loginDto,options
     );
   }
-/**
- * Generates a new access token using a valid refresh token. Refresh token is read from HTTP-only cookie (refresh_token). If cookie is not available, token can be provided in request body (for testing only).
- * @summary Refresh access token
- */
- authControllerRefreshToken<TData = AuthResponseDto>(refreshTokenDto?: RefreshTokenDto, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- authControllerRefreshToken<TData = AuthResponseDto>(refreshTokenDto?: RefreshTokenDto, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- authControllerRefreshToken<TData = AuthResponseDto>(refreshTokenDto?: RefreshTokenDto, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
-  authControllerRefreshToken<TData = AuthResponseDto>(
-    refreshTokenDto?: RefreshTokenDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+ authControllerRefreshToken<TData = void>( options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
+ authControllerRefreshToken<TData = void>( options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
+ authControllerRefreshToken<TData = void>( options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+  authControllerRefreshToken<TData = void>(
+     options?: HttpClientOptions & { observe?: any }): Observable<any> {
     return this.http.post<TData>(
-      `/api/v1/auth/refresh`,
-      refreshTokenDto,options
+      `/api/v1/auth/refresh`,undefined,options
     );
   }
 /**
@@ -153,6 +146,6 @@ export class AuthService {
 };
 
 export type AuthControllerLoginClientResult = NonNullable<LoginResponseDto>
-export type AuthControllerRefreshTokenClientResult = NonNullable<AuthResponseDto>
+export type AuthControllerRefreshTokenClientResult = NonNullable<void>
 export type AuthControllerLogoutClientResult = NonNullable<void>
 export type AuthControllerAdminLoginClientResult = NonNullable<LoginResponseDto>
