@@ -1,0 +1,28 @@
+/* Фиксируем колонку действий справа */
+.mat-column-actions {
+  position: sticky;
+  right: 0;
+  background-color: inherit; /* Чтобы фон под кнопками не был прозрачным при скролле */
+  z-index: 2;
+  text-align: right; /* Прижимаем контент внутри ячейки вправо */
+  padding-right: 24px !important;
+  width: 100px; /* Задайте фиксированную ширину, чтобы она не "прыгала" */
+}
+
+/* Добавляем небольшую тень слева, когда таблица скроллится (опционально) */
+.mat-column-actions::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 5px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+/* Убедитесь, что заголовок тоже прижат */
+th.mat-column-actions {
+  text-align: right;
+  font-weight: bold;
+}

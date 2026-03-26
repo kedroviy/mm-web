@@ -20,7 +20,7 @@ export class KitHeader {
   user = input<HeaderUser | null>(null);
   config = input<HeaderConfig>({});
   logoUrl = input<string>('assets/logo.svg');
-  appName = input<string>('MovieMatch');
+  appName = input<string>('MovieMatch admin panel');
 
   profile = this.authService.profile;
 

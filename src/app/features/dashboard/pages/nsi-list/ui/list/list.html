@@ -1,2 +1,7 @@
-<app-kit-table [dataSource]="items()"
-               [displayedColumns]="columns">></app-kit-table>
+<app-kit-table
+  [dataSource]="items()"
+  [displayedColumns]="['position', 'name', 'weight', 'actions']"
+  [showViewAction]="true"
+  [baseRoute]="'/dashboard/nsi-list'"
+>
+</app-kit-table>

@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd, ActivatedRouteSnapshot } from '@
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, startWith } from 'rxjs';
 import { Location } from '@angular/common';
+import { COMMON_CONSTANTS } from '@core/constants';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
@@ -19,14 +20,13 @@ export class NavigationService {
   );
 
   readonly breadcrumbs = computed(() => {
-    this.navEnd(); // Триггер обновления
+    this.navEnd();
 
     const crumbs: { label: string; url: string }[] = [];
     let currentRoute: ActivatedRouteSnapshot | null = this.activatedRoute.snapshot.root;
-    let accumulatedUrl = ''; // Здесь мы копим путь для ссылок
+    let accumulatedUrl = COMMON_CONSTANTS.EMPTY_STRING;
 
     while (currentRoute) {
-      // Собираем сегменты пути этого конкретного уровня
       const pathSegments = currentRoute.url.map((segment) => segment.path).join('/');
 
       if (pathSegments) {
@@ -35,11 +35,9 @@ export class NavigationService {
 
       const title = currentRoute.data['title'];
 
-      // Добавляем в список, только если у роута есть заголовок
       if (title) {
         crumbs.push({
           label: title,
-          // Если путь пустой (корень), ведем на /dashboard или /
           url: accumulatedUrl || '/dashboard',
         });
       }
@@ -50,13 +48,11 @@ export class NavigationService {
     return crumbs;
   });
 
-  // Заголовок текущей страницы (самый глубокий title)
   readonly pageTitle = computed(() => {
     const crumbs = this.breadcrumbs();
     return crumbs.length > 0 ? crumbs[crumbs.length - 1].label : 'Дефолт';
   });
 
-  // Флаг кнопки "Назад"
   readonly canGoBack = computed(() => {
     this.navEnd();
     let route = this.activatedRoute.snapshot;

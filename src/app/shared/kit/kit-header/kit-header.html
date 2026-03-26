@@ -5,7 +5,7 @@
         @if (logoUrl()) {
           <img [src]="logoUrl()" alt="Logo" class="h-8 w-8 object-contain" />
         }
-        <span class="font-bold text-lg tracking-tight">{{ appName() }}</span>
+        <span class="font-medium text-lg tracking-tight">{{ appName() }}</span>
       </div>
 
       <ng-content select="[left]"></ng-content>
