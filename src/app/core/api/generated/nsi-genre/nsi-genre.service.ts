@@ -85,7 +85,7 @@ interface HttpClientOptions {
 }
 
 @Injectable({ providedIn: 'root' })
-export class Service {
+export class GenresService {
   private readonly http = inject(HttpClient);
 
   /**

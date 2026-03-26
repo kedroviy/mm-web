@@ -1,5 +1,8 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, map, of } from 'rxjs';
+import { GenresService } from '@core/api/generated/nsi-genre/nsi-genre.service';
 
 @Component({
   selector: 'app-list',
@@ -10,9 +13,17 @@ import { KitTable } from '@shared/kit/kit-table/kit-table';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class List {
-  readonly items = signal([
-    { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-    { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  ]);
-  readonly columns = ['position', 'name', 'weight', 'symbol'];
+  private genresService = inject(GenresService);
+  readonly items = toSignal(
+    this.genresService.genresControllerGetWithPages({ page: 1, limit: 100 }).pipe(
+      map((response: any) => response.items || response.data || []),
+
+      catchError((error) => {
+        console.error('Ошибка загрузки жанров:', error);
+        return of([]);
+      }),
+    ),
+    { initialValue: [] },
+  );
+  readonly columns = ['имя', 'name', 'weight', 'symbol'];
 }
