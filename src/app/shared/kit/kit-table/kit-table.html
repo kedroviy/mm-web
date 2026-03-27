@@ -17,12 +17,11 @@
 
         <td mat-cell *matCellDef="let element">
           @if (column === 'actions') {
-            <!-- Убираем click с div, кнопки прижмем вправо через flex и ml-auto -->
             <div class="flex justify-end gap-2">
 
               @if (showViewAction()) {
-                <!-- Добавляем stopPropagation здесь -->
-                <a [routerLink]="[baseRoute(), element.id]"
+                <!-- Универсальная ссылка: если есть route — идем по нему, если нет — по id -->
+                <a [routerLink]="[baseRoute(), element.route || element.id]"
                    (click)="$event.stopPropagation()"
                    class="p-2 hover:bg-blue-50 text-blue-600 rounded-full transition-colors"
                    aria-label="Просмотреть">
@@ -31,7 +30,6 @@
               }
 
               @if (showDeleteAction()) {
-                <!-- У кнопок и ссылок по умолчанию есть поддержка клавиатуры -->
                 <button (click)="delete.emit(element); $event.stopPropagation()"
                         class="p-2 hover:bg-red-50 text-red-600 rounded-full transition-colors"
                         type="button"
@@ -44,6 +42,7 @@
             {{ element[column] }}
           }
         </td>
+
 
       </ng-container>
 

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { List } from './list';
+import { NsiItem } from './nsi-item';
 
-describe('List', () => {
-  let component: List;
-  let fixture: ComponentFixture<List>;
+describe('NsiItem', () => {
+  let component: NsiItem;
+  let fixture: ComponentFixture<NsiItem>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [List],
+      imports: [NsiItem],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(List);
+    fixture = TestBed.createComponent(NsiItem);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
