@@ -4,76 +4,63 @@
  * MM Admin API
  * API documentation for MM Admin backend. All endpoints use JWT authentication via HTTP-only cookies or Bearer token in Authorization header.
 
-## WebSocket Chat API
+ ## WebSocket Chat API
 
-Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
+ Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
 
-### Quick Reference:
-- **Connection:**
-  - Development: `ws://localhost:4000/rooms`
-  - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
-  - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
-- **Important:**
-  - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
-  - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
-  - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS
-- **Authentication:** JWT token in cookie or Authorization header
-- **Events:**
-  - `sendMessage` - Send a chat message
-  - `chatHistory` - Receive chat history (auto-sent on room join)
-  - `newMessage` - Receive new messages from other users
-  - `error` - Error notifications
+ ### Quick Reference:
+ - **Connection:**
+ - Development: `ws://localhost:4000/rooms`
+ - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
+ - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
+ - **Important:**
+ - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
+ - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
+ - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS
+ - **Authentication:** JWT token in cookie or Authorization header
+ - **Events:**
+ - `sendMessage` - Send a chat message
+ - `chatHistory` - Receive chat history (auto-sent on room join)
+ - `newMessage` - Receive new messages from other users
+ - `error` - Error notifications
 
-### Chat Message Format:
-```json
-{
-  "roomId": "uuid",
-  "message": "Your message text (1-1000 characters)"
-}
-```
+ ### Chat Message Format:
+ ```json
+ {
+ "roomId": "uuid",
+ "message": "Your message text (1-1000 characters)"
+ }
+ ```
 
-### Requirements:
-- User must be authenticated
-- User must be a member of the room
-- Messages are limited to 1000 characters
-- Chat history is automatically sent when joining a room (up to 100 messages)
+ ### Requirements:
+ - User must be authenticated
+ - User must be a member of the room
+ - Messages are limited to 1000 characters
+ - Chat history is automatically sent when joining a room (up to 100 messages)
 
  * OpenAPI spec version: 1.0
  */
-import {
-  HttpClient
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import type {
   HttpContext,
   HttpEvent,
   HttpHeaders,
   HttpParams,
-  HttpResponse as AngularHttpResponse
+  HttpResponse as AngularHttpResponse,
 } from '@angular/common/http';
 
-import {
-  Injectable,
-  inject
-} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
-import {
-  Observable
-} from 'rxjs';
+import { Observable } from 'rxjs';
 
-import type {
-  AdminLoginDto,
-  LoginDto,
-  LoginResponseDto
-} from '../../model';
-
-
+import type { AdminLoginDto, LoginDto, LoginResponseDto } from '../../model';
 
 interface HttpClientOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
   context?: HttpContext;
   params?:
-        | HttpParams
-        | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
+    | HttpParams
+    | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
   reportProgress?: boolean;
   withCredentials?: boolean;
   credentials?: RequestCredentials;
@@ -84,68 +71,114 @@ interface HttpClientOptions {
   redirect?: RequestRedirect;
   referrer?: string;
   integrity?: string;
-  transferCache?: {includeHeaders?: string[]} | boolean;
+  transferCache?: { includeHeaders?: string[] } | boolean;
   timeout?: number;
 }
-
-
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-/**
- * Logs in a user by name. Creates a new user with unique ID if needed. No uniqueness check - multiple users can have the same name. Sets JWT tokens in cookies.
- * @summary Login by name
- */
- authControllerLogin<TData = LoginResponseDto>(loginDto: LoginDto, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- authControllerLogin<TData = LoginResponseDto>(loginDto: LoginDto, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- authControllerLogin<TData = LoginResponseDto>(loginDto: LoginDto, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
-  authControllerLogin<TData = LoginResponseDto>(
-    loginDto: LoginDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.post<TData>(
-      `/api/v1/auth/login`,
-      loginDto,options
-    );
-  }
- authControllerRefreshToken<TData = void>( options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- authControllerRefreshToken<TData = void>( options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- authControllerRefreshToken<TData = void>( options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
-  authControllerRefreshToken<TData = void>(
-     options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.post<TData>(
-      `/api/v1/auth/refresh`,undefined,options
-    );
-  }
-/**
- * Revokes the current refresh token and clears authentication cookies.
- * @summary Logout user
- */
- authControllerLogout<TData = void>( options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- authControllerLogout<TData = void>( options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- authControllerLogout<TData = void>( options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
-  authControllerLogout<TData = void>(
-     options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.post<TData>(
-      `/api/v1/auth/logout`,undefined,options
-    );
-  }
-/**
- * Authenticates admin and sets JWT tokens in secure cookies.
- * @summary Admin login by email
- */
- authControllerAdminLogin<TData = LoginResponseDto>(adminLoginDto: AdminLoginDto, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
- authControllerAdminLogin<TData = LoginResponseDto>(adminLoginDto: AdminLoginDto, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
- authControllerAdminLogin<TData = LoginResponseDto>(adminLoginDto: AdminLoginDto, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
-  authControllerAdminLogin<TData = LoginResponseDto>(
-    adminLoginDto: AdminLoginDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.post<TData>(
-      `/api/v1/auth/admin/login`,
-      adminLoginDto,options
-    );
-  }
-};
 
-export type AuthControllerLoginClientResult = NonNullable<LoginResponseDto>
-export type AuthControllerRefreshTokenClientResult = NonNullable<void>
-export type AuthControllerLogoutClientResult = NonNullable<void>
-export type AuthControllerAdminLoginClientResult = NonNullable<LoginResponseDto>
+  /**
+   * Logs in a user by name. Creates a new user with unique ID if needed. No uniqueness check - multiple users can have the same name. Sets JWT tokens in cookies.
+   * @summary Login by name
+   */
+  authControllerLogin<TData = LoginResponseDto>(
+    loginDto: LoginDto,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  authControllerLogin<TData = LoginResponseDto>(
+    loginDto: LoginDto,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  authControllerLogin<TData = LoginResponseDto>(
+    loginDto: LoginDto,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  authControllerLogin<TData = LoginResponseDto>(
+    loginDto: LoginDto,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.post<TData>(`/api/v1/auth/login`, loginDto, options);
+  }
+
+  authControllerRefreshToken<TData = void>(
+    options?: HttpClientOptions & { observe?: 'body' },
+  ): Observable<TData>;
+  authControllerRefreshToken<TData = void>(
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  authControllerRefreshToken<TData = void>(
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  authControllerRefreshToken<TData = void>(
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.post<TData>(`/api/v1/auth/refresh`, undefined, options);
+  }
+
+  /**
+   * Revokes the current refresh token and clears authentication cookies.
+   * @summary Logout user
+   */
+  authControllerLogout<TData = void>(
+    options?: HttpClientOptions & { observe?: 'body' },
+  ): Observable<TData>;
+  authControllerLogout<TData = void>(
+    options?: HttpClientOptions & { observe: 'events' },
+  ): Observable<HttpEvent<TData>>;
+  authControllerLogout<TData = void>(
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  authControllerLogout<TData = void>(
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.post<TData>(`/api/v1/auth/logout`, undefined, options);
+  }
+
+  /**
+   * Authenticates admin and sets JWT tokens in secure cookies.
+   * @summary Admin login by email
+   */
+  authControllerAdminLogin<TData = LoginResponseDto>(
+    adminLoginDto: AdminLoginDto,
+    options?: HttpClientOptions & {
+      observe?: 'body';
+    },
+  ): Observable<TData>;
+  authControllerAdminLogin<TData = LoginResponseDto>(
+    adminLoginDto: AdminLoginDto,
+    options?: HttpClientOptions & {
+      observe: 'events';
+    },
+  ): Observable<HttpEvent<TData>>;
+  authControllerAdminLogin<TData = LoginResponseDto>(
+    adminLoginDto: AdminLoginDto,
+    options?: HttpClientOptions & {
+      observe: 'response';
+    },
+  ): Observable<AngularHttpResponse<TData>>;
+  authControllerAdminLogin<TData = LoginResponseDto>(
+    adminLoginDto: AdminLoginDto,
+    options?: HttpClientOptions & { observe?: any },
+  ): Observable<any> {
+    return this.http.post<TData>(`/api/v1/auth/admin/login`, adminLoginDto, options);
+  }
+}
+
+export type AuthControllerLoginClientResult = NonNullable<LoginResponseDto>;
+export type AuthControllerRefreshTokenClientResult = NonNullable<void>;
+export type AuthControllerLogoutClientResult = NonNullable<void>;
+export type AuthControllerAdminLoginClientResult = NonNullable<LoginResponseDto>;

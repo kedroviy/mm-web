@@ -4,61 +4,70 @@
  * MM Admin API
  * API documentation for MM Admin backend. All endpoints use JWT authentication via HTTP-only cookies or Bearer token in Authorization header.
 
- ## WebSocket Chat API
+## WebSocket Chat API
 
- Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
+Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
 
- ### Quick Reference:
- - **Connection:**
- - Development: `ws://localhost:4000/rooms`
- - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
- - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
- - **Important:**
- - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
- - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
- - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS
- - **Authentication:** JWT token in cookie or Authorization header
- - **Events:**
- - `sendMessage` - Send a chat message
- - `chatHistory` - Receive chat history (auto-sent on room join)
- - `newMessage` - Receive new messages from other users
- - `error` - Error notifications
+### Quick Reference:
+- **Connection:**
+  - Development: `ws://localhost:4000/rooms`
+  - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
+  - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
+- **Important:**
+  - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
+  - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
+  - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS
+- **Authentication:** JWT token in cookie or Authorization header
+- **Events:**
+  - `sendMessage` - Send a chat message
+  - `chatHistory` - Receive chat history (auto-sent on room join)
+  - `newMessage` - Receive new messages from other users
+  - `error` - Error notifications
 
- ### Chat Message Format:
- ```json
- {
- "roomId": "uuid",
- "message": "Your message text (1-1000 characters)"
- }
- ```
+### Chat Message Format:
+```json
+{
+  "roomId": "uuid",
+  "message": "Your message text (1-1000 characters)"
+}
+```
 
- ### Requirements:
- - User must be authenticated
- - User must be a member of the room
- - Messages are limited to 1000 characters
- - Chat history is automatically sent when joining a room (up to 100 messages)
+### Requirements:
+- User must be authenticated
+- User must be a member of the room
+- Messages are limited to 1000 characters
+- Chat history is automatically sent when joining a room (up to 100 messages)
 
  * OpenAPI spec version: 1.0
  */
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient
+} from '@angular/common/http';
 import type {
   HttpContext,
   HttpEvent,
   HttpHeaders,
   HttpParams,
-  HttpResponse as AngularHttpResponse,
+  HttpResponse as AngularHttpResponse
 } from '@angular/common/http';
 
-import { Injectable, inject } from '@angular/core';
+import {
+  Injectable,
+  inject
+} from '@angular/core';
 
-import { Observable } from 'rxjs';
+import {
+  Observable
+} from 'rxjs';
+
+
 
 interface HttpClientOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
   context?: HttpContext;
   params?:
-    | HttpParams
-    | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
+        | HttpParams
+        | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
   reportProgress?: boolean;
   withCredentials?: boolean;
   credentials?: RequestCredentials;
@@ -69,58 +78,40 @@ interface HttpClientOptions {
   redirect?: RequestRedirect;
   referrer?: string;
   integrity?: string;
-  transferCache?: { includeHeaders?: string[] } | boolean;
+  transferCache?: {includeHeaders?: string[]} | boolean;
   timeout?: number;
 }
+
+
 
 @Injectable({ providedIn: 'root' })
 export class HealthService {
   private readonly http = inject(HttpClient);
-
-  /**
-   * @summary Health check endpoint
-   */
+/**
+ * @summary Health check endpoint
+ */
+ appControllerGetHello<TData = void>( options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
+ appControllerGetHello<TData = void>( options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
+ appControllerGetHello<TData = void>( options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
   appControllerGetHello<TData = void>(
-    options?: HttpClientOptions & { observe?: 'body' },
-  ): Observable<TData>;
-  appControllerGetHello<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'events';
-    },
-  ): Observable<HttpEvent<TData>>;
-  appControllerGetHello<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'response';
-    },
-  ): Observable<AngularHttpResponse<TData>>;
-  appControllerGetHello<TData = void>(
-    options?: HttpClientOptions & { observe?: any },
-  ): Observable<any> {
-    return this.http.get<TData>(`/api/v1`, options);
+     options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.get<TData>(
+      `/api/v1`,options
+    );
   }
-
-  /**
-   * @summary Health check for monitoring
-   */
+/**
+ * @summary Health check for monitoring
+ */
+ appControllerHealthCheck<TData = void>( options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
+ appControllerHealthCheck<TData = void>( options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
+ appControllerHealthCheck<TData = void>( options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
   appControllerHealthCheck<TData = void>(
-    options?: HttpClientOptions & { observe?: 'body' },
-  ): Observable<TData>;
-  appControllerHealthCheck<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'events';
-    },
-  ): Observable<HttpEvent<TData>>;
-  appControllerHealthCheck<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'response';
-    },
-  ): Observable<AngularHttpResponse<TData>>;
-  appControllerHealthCheck<TData = void>(
-    options?: HttpClientOptions & { observe?: any },
-  ): Observable<any> {
-    return this.http.get<TData>(`/api/v1/health`, options);
+     options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.get<TData>(
+      `/api/v1/health`,options
+    );
   }
-}
+};
 
-export type AppControllerGetHelloClientResult = NonNullable<void>;
-export type AppControllerHealthCheckClientResult = NonNullable<void>;
+export type AppControllerGetHelloClientResult = NonNullable<void>
+export type AppControllerHealthCheckClientResult = NonNullable<void>

@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-import { NsiItem } from '@features/dashboard/pages/nsi-list/nsi-item/nsi-item';
-import { Genres } from '@features/dashboard/pages/nsi-list/genres/genres';
-import { GenresView } from '@features/dashboard/pages/nsi-list/genres/genres-view/genres-view';
 
 export const DASHBOARD_ROUTES: Routes = [
   {

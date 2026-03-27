@@ -9,11 +9,11 @@
 Chat functionality is available via WebSocket connections. See [WebSocket Chat Documentation](./websocket-chat.md) for details.
 
 ### Quick Reference:
-- **Connection:**
+- **Connection:** 
   - Development: `ws://localhost:4000/rooms`
   - Production with proxy: Use relative URL `/rooms` or `/socket.io/` (Socket.IO will auto-detect protocol)
   - Production direct: `wss://your-backend-server/rooms` (⚠️ MUST use `wss://` for HTTPS sites)
-- **Important:**
+- **Important:** 
   - For HTTPS frontends (like `https://dashboard.moviematch.space`), you MUST use `wss://` protocol, not `ws://`
   - If using proxy (Next.js rewrites), use relative URL: `/rooms` or let Socket.IO auto-detect
   - Socket.IO client will automatically use `wss://` if page is loaded over HTTPS

@@ -47,6 +47,7 @@ export * from './createRedisUserDto';
 export * from './createRoomDto';
 export * from './errorResponseDto';
 export * from './errorResponseDtoMessage';
+export * from './genrePaginationResponseDto';
 export * from './genresControllerGetInfiniteParams';
 export * from './genresControllerGetWithPagesParams';
 export * from './idParamDto';

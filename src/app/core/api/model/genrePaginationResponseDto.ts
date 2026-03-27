@@ -40,10 +40,12 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
 
  * OpenAPI spec version: 1.0
  */
-import type { RoomMembersResponseDtoMembersItemRole } from './roomMembersResponseDtoMembersItemRole';
+import type { CreateGenreDto } from './createGenreDto';
 
-export type RoomMembersResponseDtoMembersItem = {
-  userId?: string;
-  role?: RoomMembersResponseDtoMembersItemRole;
-  name?: string;
-};
+export interface GenrePaginationResponseDto {
+  data: CreateGenreDto[];
+  totalItems: number;
+  totalPages: number;
+  page: number;
+  limit: number;
+}
