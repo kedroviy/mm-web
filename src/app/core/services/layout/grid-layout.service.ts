@@ -1,8 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { GridConfig } from '@shared/kit/grid/kit-grid-component/kit-grid-component.type';
-import { KitHeader } from '@shared/kit/kit-header';
-import { DashboardHubSection } from '../../../features/dashboard/ui/dashboard-hub-section/dashboard-hub-section';
-import { DashboardLogsHub } from '../../../features/dashboard/ui/dashboard-logs-hub/dashboard-logs-hub';
+import { DashboardHubSection } from '@features/dashboard/ui/dashboard-hub-section/dashboard-hub-section';
+import { DashboardLogsHub } from '@features/dashboard/ui/dashboard-logs-hub/dashboard-logs-hub';
 
 @Injectable({
   providedIn: 'root',

@@ -10,7 +10,7 @@ export class HideEmptyErrorMatcher implements ErrorStateMatcher {
 }
 
 @Directive({
-  selector: '[hideEmptyError]',
+  selector: '[appHideEmptyError]',
   standalone: true,
   providers: [{ provide: ErrorStateMatcher, useClass: HideEmptyErrorMatcher }],
 })

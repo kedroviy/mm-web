@@ -7,13 +7,13 @@ import {
   TransferState,
   makeStateKey,
 } from '@angular/core';
-import { CookieService } from '../cookie/cookie.service';
+import { CookieService } from '@core/services/cookie/cookie.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
 import { catchError, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
-import { COMMON_CONSTANTS } from '@core/constants';
 import { UserProfileResponseDto } from '@core/api/model';
 import { UsersService as GeneratedUserService } from '@core/api/generated/users/users.service';
+import { AuthService as GeneratedAuthService } from '@core/api/generated/auth/auth.service';
 
 const AUTH_KEY = makeStateKey<boolean>('auth_state');
 
@@ -25,6 +25,7 @@ export class AuthService {
   private usersApi = inject(GeneratedUserService);
   private request = inject(REQUEST, { optional: true });
   private transferState = inject(TransferState);
+  private readonly api = inject(GeneratedAuthService);
 
   private authState$?: Observable<boolean>;
 
@@ -35,17 +36,14 @@ export class AuthService {
   private readonly ACCESS_TOKEN_COOKIE = 'access_token';
   private readonly REFRESH_TOKEN_COOKIE = 'refresh_token';
 
-  initAuth(): Observable<boolean> {
-    return this.usersApi.usersControllerGetProfile().pipe(
-      tap((user) => {
-        this.profile.set(user);
-        this.authStatus.set(true);
-      }),
-      map(() => true),
-      catchError(() => {
-        this.authStatus.set(false);
-        this.profile.set(undefined);
-        return of(false);
+  initAuth(): Observable<void> {
+    return this.api.authControllerRefreshToken({ withCredentials: true }).pipe(
+      tap(() => this.hasAuthenticated.set(true)),
+      shareReplay(1),
+      catchError((err) => {
+        this.logout();
+        // Перебрасываем ошибку дальше (например, для интерцептора)
+        return throwError(() => err);
       }),
     );
   }
@@ -82,12 +80,13 @@ export class AuthService {
     return this.authStatus() === true;
   }
 
-  refreshToken(): Observable<any> {
-    return this.http.post('/api/v1/auth/refresh', {}, { withCredentials: true }).pipe(
+  refreshToken(): Observable<void> {
+    return this.api.authControllerRefreshToken({ withCredentials: true }).pipe(
       tap(() => this.hasAuthenticated.set(true)),
       shareReplay(1),
       catchError((err) => {
         this.logout();
+        // Перебрасываем ошибку дальше (например, для интерцептора)
         return throwError(() => err);
       }),
     );

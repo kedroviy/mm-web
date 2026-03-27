@@ -4,12 +4,12 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class TableService {
-  private selectedItemSource = new BehaviorSubject<any>(null);
+export class TableService<T> {
+  private selectedItemSource = new BehaviorSubject<T | null>(null);
 
   selectedItem$ = this.selectedItemSource.asObservable();
 
-  selectItem(item: any) {
+  selectItem(item: T) {
     this.selectedItemSource.next(item);
   }
 }

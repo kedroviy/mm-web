@@ -6,6 +6,14 @@ const angular = require('angular-eslint');
 
 module.exports = defineConfig([
   {
+    ignores: [
+      'src/app/core/api/generated/**/*',
+      'src/app/core/api/model/**/*',
+      'dist/',
+      '.angular/',
+    ],
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
@@ -21,6 +29,18 @@ module.exports = defineConfig([
           type: 'attribute',
           prefix: 'app',
           style: 'camelCase',
+        },
+      ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../*'],
+              message:
+                'Использование относительных путей выше текущего уровня запрещено. Используйте Path Aliases (например, @shared/...).',
+            },
+          ],
         },
       ],
       '@angular-eslint/component-selector': [

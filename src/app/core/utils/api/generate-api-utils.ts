@@ -1,6 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 
-export const customParamsSerializer = (params: any): HttpParams => {
+export const customParamsSerializer = (
+  params: Record<string, unknown> | null | undefined,
+): HttpParams => {
   let httpParams = new HttpParams();
 
   if (params) {

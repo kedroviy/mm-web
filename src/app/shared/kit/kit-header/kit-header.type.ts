@@ -1,6 +1,6 @@
 import { UserProfileResponseDto } from '@core/api/model';
 
-export interface HeaderUser extends UserProfileResponseDto {}
+export type HeaderUser = UserProfileResponseDto;
 
 export interface HeaderConfig {
   showNotifications?: boolean;

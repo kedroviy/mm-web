@@ -1,5 +1,5 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
-import { CookieService } from './cookie.service';
+import { CookieService } from 'src/app/core/services/cookie/cookie.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
 import { catchError, map, Observable, of, shareReplay } from 'rxjs';
@@ -18,7 +18,9 @@ export class AuthService {
   isAuthenticated(): Observable<boolean> {
     // Tokens are set by the backend as HTTP-only cookies.
     // On the server we can read them from request.headers.cookie.
-    const hasCookie = !!this.cookies?.get(this.ACCESS_TOKEN_COOKIE) || !!this.cookies?.get(this.REFRESH_TOKEN_COOKIE);
+    const hasCookie =
+      !!this.cookies?.get(this.ACCESS_TOKEN_COOKIE) ||
+      !!this.cookies?.get(this.REFRESH_TOKEN_COOKIE);
 
     if (!hasCookie) {
       return of(false);
@@ -37,9 +39,10 @@ export class AuthService {
               ? `refresh_token=${refreshTokenCookie}`
               : '';
 
-      const options = isPlatformServer(this.platformId) && cookieHeader
-        ? { headers: new HttpHeaders({ Cookie: cookieHeader }) }
-        : undefined;
+      const options =
+        isPlatformServer(this.platformId) && cookieHeader
+          ? { headers: new HttpHeaders({ Cookie: cookieHeader }) }
+          : undefined;
 
       // Backend check endpoint: current user profile.
       // If user is not authenticated, backend should respond with 401/403.

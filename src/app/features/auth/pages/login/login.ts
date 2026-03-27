@@ -25,7 +25,7 @@ export class AdminLogin {
   private notify = inject(NotificationsService);
   buttonText = signal('Войти');
   isLoading = signal(false);
-  required: boolean = true;
+  required = true;
 
   form = new FormGroup({
     login: new FormControl(COMMON_CONSTANTS.EMPTY_STRING, [Validators.required, Validators.email]),
@@ -60,7 +60,8 @@ export class AdminLogin {
         error: (err) => {
           this.notify.showError(`Ошибка входа!`);
           this.isLoading.set(false);
-          this.customAuthService.authStatus.set(false); // На всякий случай сбрасываем
+          console.error(err);
+          this.customAuthService.authStatus.set(false);
         },
       });
   }

@@ -2,10 +2,11 @@ import { Component, Input } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { HideEmptyErrorDirective } from '@core/directives/hide-empty-error';
 
 @Component({
   selector: 'app-input',
-  imports: [MatInputModule, ReactiveFormsModule],
+  imports: [MatInputModule, ReactiveFormsModule, HideEmptyErrorDirective],
   templateUrl: '/input.html',
   styleUrl: '/input.css',
   standalone: true,

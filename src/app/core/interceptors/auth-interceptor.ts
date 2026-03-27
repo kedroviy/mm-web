@@ -4,7 +4,7 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError, switchMap, BehaviorSubject, filter, take } from 'rxjs';
 import { environment } from '@env/environment';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<boolean | null>(null);
