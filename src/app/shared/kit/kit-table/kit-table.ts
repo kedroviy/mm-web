@@ -13,10 +13,10 @@ import {
   MatHeaderCell,
   MatHeaderCellDef,
   MatHeaderRow,
-  MatHeaderRowDef,
+  MatHeaderRowDef, MatNoDataRow,
   MatRow,
   MatRowDef,
-  MatTable,
+  MatTable
 } from '@angular/material/table';
 import { TableService } from '@core/services/layout/table/table.service';
 import { RouterLink } from '@angular/router';
@@ -38,6 +38,7 @@ import { COMMON_CONSTANTS } from '@core/constants';
     MatHeaderCellDef,
     RouterLink,
     MatIcon,
+    MatNoDataRow,
   ],
   templateUrl: './kit-table.html',
   styleUrl: './kit-table.css',

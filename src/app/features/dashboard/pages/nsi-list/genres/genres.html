@@ -1,1 +1,7 @@
-<p>genres works!</p>
+<app-kit-table
+  [dataSource]="genres()"
+  [displayedColumns]="['id', 'имя', 'действие']"
+  [showViewAction]="true"
+  [baseRoute]="'/dashboard/nsi-list'"
+>
+</app-kit-table>

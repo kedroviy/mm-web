@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   output,
@@ -31,12 +30,6 @@ export class KitHeader {
   appName = input<string>('MovieMatch admin panel');
 
   profile = this.authService.profile;
-
-  constructor() {
-    effect(() => {
-      console.log('Текущий профиль в хедере:', this.profile());
-    });
-  }
 
   userInitials = computed(() => {
     const name = this.profile()?.name;
