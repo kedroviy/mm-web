@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { HeaderConfig, HeaderUser } from '@shared/kit/kit-header/kit-header.type';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +31,12 @@ export class KitHeader {
   appName = input<string>('MovieMatch admin panel');
 
   profile = this.authService.profile;
+
+  constructor() {
+    effect(() => {
+      console.log('Текущий профиль в хедере:', this.profile());
+    });
+  }
 
   userInitials = computed(() => {
     const name = this.profile()?.name;

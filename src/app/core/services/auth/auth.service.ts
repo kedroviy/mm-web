@@ -56,7 +56,6 @@ export class AuthService {
     }
 
     let headers = new HttpHeaders();
-
     if (isPlatformServer(this.platformId) && this.request) {
       const cookieHeader = this.request.headers.get('cookie');
       if (cookieHeader) {
@@ -64,19 +63,24 @@ export class AuthService {
       }
     }
 
-    return this.http.get('/api/v1/users/profile', { headers }).pipe(
+    return this.usersApi.usersControllerGetProfile({ headers }).pipe(
+      tap((userData) => {
+        this.profile.set(userData);
+        this.authStatus.set(true);
+        this.transferState.set(AUTH_KEY, true);
+      }),
       map(() => true),
-      catchError(() => of(false)),
-      tap((isAuth) => {
-        this.authStatus.set(isAuth);
-        this.transferState.set(AUTH_KEY, isAuth);
+      catchError(() => {
+        this.profile.set(undefined);
+        this.authStatus.set(false);
+        this.transferState.set(AUTH_KEY, false);
+        return of(false);
       }),
       shareReplay(1),
     );
   }
 
   isLoggedIn(): boolean {
-    console.log('auth status: ', this.authStatus() === true);
     return this.authStatus() === true;
   }
 
