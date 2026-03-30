@@ -1,27 +1,32 @@
-<table mat-table [dataSource]="dataSource()" class="mat-elevation-z8 w-full rounded-4">
+@if (loading()) {
+  <div class="mat-elevation-z8 w-full rounded-4 overflow-hidden">
+    <div class="skeleton-header">
+      @for (column of displayedKeys(); track column) {
+        <div class="skeleton-header-cell"></div>
+      }
+    </div>
+    @for (i of [1, 2, 3, 4, 5]; track i) {
+      <div class="skeleton-row">
+        @for (column of displayedKeys(); track column) {
+          <div class="skeleton-cell">
+            <div class="skeleton-bar"></div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+} @else {
+  <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8 w-full rounded-4">
 
-  @for (customCol of customColumns(); track customCol.name) {
-    <ng-container [matColumnDef]="customCol.name">
-      <th mat-header-cell *matHeaderCellDef class="table-header"> {{ customCol.headerCell.template }}</th>
-      <td mat-cell *matCellDef="let row"> {{ customCol.cell.template }}</td>
-    </ng-container>
-  }
-
-  @for (column of displayedColumns(); track column; let isLast = $last) {
-    @if (!isCustomColumn(column)) {
-
-      <ng-container [matColumnDef]="column">
-        <th mat-header-cell *matHeaderCellDef [class.text-right]="isLast">
-          {{ column }}
-        </th>
-
-        <td mat-cell *matCellDef="let element">
-
-          @if (isLast) {
+    @for (column of displayedKeys(); track column) {
+      @if (isActionsColumn(column)) {
+        <ng-container matColumnDef="actions">
+          <td mat-cell *matHeaderCellDef class="text-right">
+            {{ labelMap()[column] || 'Действия' }}
+          </td>
+          <td mat-cell *matCellDef="let element">
             <div class="flex justify-end gap-2">
-
               @if (showViewAction()) {
-                <!-- Универсальная ссылка: если есть route — идем по нему, если нет — по id -->
                 <a [routerLink]="[baseRoute(), element.route || element.id]"
                    (click)="$event.stopPropagation()"
                    class="p-2 hover:bg-blue-50 text-blue-600 rounded-full transition-colors"
@@ -29,7 +34,6 @@
                   <mat-icon>visibility</mat-icon>
                 </a>
               }
-
               @if (showDeleteAction()) {
                 <button (click)="delete.emit(element); $event.stopPropagation()"
                         class="p-2 hover:bg-red-50 text-red-600 rounded-full transition-colors"
@@ -39,25 +43,39 @@
                 </button>
               }
             </div>
-          } @else {
+          </td>
+        </ng-container>
+      } @else if (cellTemplateMap()[column]) {
+        <ng-container [matColumnDef]="column">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ labelMap()[column] || column }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="cellTemplateMap()[column]; context: { $implicit: element }" />
+          </td>
+        </ng-container>
+      } @else {
+        <ng-container [matColumnDef]="column">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ labelMap()[column] || column }}
+          </th>
+          <td mat-cell *matCellDef="let element">
             {{ element[column] }}
-          }
-        </td>
-
-
-      </ng-container>
+          </td>
+        </ng-container>
+      }
     }
-  }
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns();" (click)="onRowClick(row)"></tr>
-  <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell text-center" [attr.colspan]="displayedColumns().length">
-      <div class="flex flex-col items-center gap-2 text-gray-400 pt-20 pb-20">
-        <mat-icon class="scale-150 mb-2">find_in_page</mat-icon>
-        <span class="text-lg font-medium">Нет данных для отображения</span>
-        <p class="text-sm">Попробуйте изменить параметры поиска или добавить новую запись</p>
-      </div>
-    </td>
-  </tr>
-</table>
+    <tr mat-header-row *matHeaderRowDef="displayedKeys()"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedKeys();" (click)="onRowClick(row)"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell text-center" [attr.colspan]="displayedKeys().length">
+        <div class="flex flex-col items-center gap-2 text-gray-400 pt-20 pb-20">
+          <mat-icon class="scale-150 mb-2">find_in_page</mat-icon>
+          <span class="text-lg font-medium">Нет данных для отображения</span>
+          <p class="text-sm">Попробуйте изменить параметры поиска или добавить новую запись</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+}

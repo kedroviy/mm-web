@@ -1,1 +1,8 @@
-<p>genres-create works!</p>
+<div class="p-6 rounded-lg shadow-sm">
+  <app-kit-dynamic-form
+    [config]="formConfig"
+    [loading]="loading()"
+    (submitted)="onSubmit($event)"
+    (cancelled)="onGoBack()"
+  />
+</div>

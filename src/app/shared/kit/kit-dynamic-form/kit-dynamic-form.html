@@ -1,0 +1,43 @@
+@if (form) {
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+
+    <div class="grid grid-cols-12 gap-4">
+      @for (field of config(); track field.key) {
+        <div [class]="field.className ?? 'col-span-12'">
+          <ng-container
+            *ngComponentOutlet="getComponent(field.type);
+            inputs: {
+              controlName: field.key,
+              label: field.label,
+              placeholder: field.placeholder,
+              type: field.type,
+              errors: field.errors ?? {}
+            }"
+          />
+        </div>
+      }
+    </div>
+
+    @if (showFormError()) {
+      <div class="text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3 text-sm">
+        Исправьте ошибки в форме перед сохранением
+      </div>
+    }
+
+    <div class="flex justify-end gap-3 mt-6 pt-4">
+      <app-button
+        text="Отмена"
+        variant="secondary"
+        [disabled]="loading()"
+        (click)="cancelled.emit()"
+      />
+      <app-button
+        type="submit"
+        text="Сохранить"
+        variant="primary"
+        [disabled]="loading()"
+        [loading]="loading()"
+      />
+    </div>
+  </form>
+}

@@ -1,7 +1,7 @@
 <app-kit-table
-  [dataSource]="genres()"
-  [displayedColumns]="['id', 'имя', 'действие']"
+  [dataSource]="store.genres()"
+  [columns]="columns"
+  [loading]="store.loading()"
   [showViewAction]="true"
   [baseRoute]="'/dashboard/nsi-list'"
->
-</app-kit-table>
+/>

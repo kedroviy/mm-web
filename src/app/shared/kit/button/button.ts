@@ -22,6 +22,7 @@ export class UiButtonComponent {
   @Input() text: string = COMMON_CONSTANTS.EMPTY_STRING;
   @Input() customColor?: string;
   @Input() isCircle = false;
+  @Input() disabled = false;
 
   private variantToColorMap: Record<ButtonVariant, string> = BUTTON_TYPE;
 

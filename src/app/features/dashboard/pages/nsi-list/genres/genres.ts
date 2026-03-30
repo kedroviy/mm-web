@@ -1,26 +1,26 @@
-import { Component, inject } from '@angular/core';
-import { GenresService as GeneratedGenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of } from 'rxjs';
-import { type CreateGenreDto, GenrePaginationResponseDto } from '@core/api/model';
+import { Component, inject, OnInit } from '@angular/core';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
+import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
+import { GenresStore } from './genres.store';
 
 @Component({
   selector: 'app-genres',
+  standalone: true,
   imports: [KitTable],
   templateUrl: './genres.html',
   styleUrl: './genres.css',
-  standalone: true,
 })
-export class Genres {
-  private genresService = inject(GeneratedGenresService);
-  readonly genres = toSignal(
-    this.genresService
-      .genresControllerGetWithPages<GenrePaginationResponseDto>({ page: 1, limit: 10 })
-      .pipe(
-        map((result) => (result && result.data ? result.data : [])),
-        catchError(() => of([])),
-      ),
-    { initialValue: [] as CreateGenreDto[] },
-  );
+export class Genres implements OnInit {
+  readonly store = inject(GenresStore);
+
+  readonly columns: TableColumn[] = [
+    { key: 'id', label: '#' },
+    { key: 'name', label: 'Название жанра' },
+    { key: 'slug', label: 'URL-путь' },
+    { key: 'createdAt', label: 'Дата создания' },
+  ];
+
+  ngOnInit() {
+    this.store.load();
+  }
 }

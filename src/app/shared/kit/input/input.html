@@ -5,15 +5,11 @@
 
   <input
     matInput
-    [formControl]="inputFormControl"
-    [placeholder]="placeholder ?? ''"
-    [type]="type"
-    [disabled]="disabled"
-    [required]="required"
-    [value]="value"
+    [formControl]="control"
+    [placeholder]="placeholder ?? constants.EMPTY_STRING"
   />
 
-  @if (inputFormControl.invalid) {
-    <mat-error>Ошибка ввода</mat-error>
+  @if (control.invalid) {
+    <mat-error>{{ errorMessage }}</mat-error>
   }
 </mat-form-field>

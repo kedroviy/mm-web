@@ -39,3 +39,52 @@ td:last-child {
 .mat-mdc-table {
   --mat-table-row-item-outline-color: #e2e8f0;
 }
+
+/* Skeleton loading */
+.skeleton-header {
+  display: flex;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #fafafa;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.skeleton-header-cell {
+  flex: 1;
+  height: 14px;
+  border-radius: 4px;
+  background: #e2e8f0;
+}
+
+.skeleton-row {
+  display: flex;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.skeleton-cell {
+  flex: 1;
+}
+
+.skeleton-bar {
+  height: 12px;
+  width: 70%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-row:nth-child(even) .skeleton-bar {
+  width: 55%;
+}
+
+.skeleton-row:nth-child(3n) .skeleton-bar {
+  width: 80%;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
