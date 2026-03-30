@@ -35,3 +35,7 @@ td:last-child {
   text-align: right;
   min-width: 100px;
 }
+
+.mat-mdc-table {
+  --mat-table-row-item-outline-color: #e2e8f0;
+}

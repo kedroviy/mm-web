@@ -1,4 +1,4 @@
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, ActivatedRouteSnapshot } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, startWith } from 'rxjs';
@@ -11,13 +11,30 @@ export class NavigationService {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly location = inject(Location);
 
-  // Глобальный триггер навигации
   readonly navEnd = toSignal(
     this.router.events.pipe(
       filter((e) => e instanceof NavigationEnd),
       startWith(null),
     ),
   );
+
+  private readonly lastRoute = computed(() => {
+    this.navEnd(); // следим за навигацией
+    let route = this.activatedRoute.snapshot.root;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route;
+  });
+
+  // Теперь actionLink вычисляется автоматически
+  readonly actionLink = computed(() => {
+    return this.lastRoute().data['actionLink'] || null;
+  });
+
+  readonly actionLabel = computed(() => {
+    return this.lastRoute().data['actionLabel'] || 'Создать';
+  });
 
   readonly breadcrumbs = computed(() => {
     this.navEnd();

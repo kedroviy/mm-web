@@ -18,7 +18,6 @@ export class Genres {
     this.genresService
       .genresControllerGetWithPages<GenrePaginationResponseDto>({ page: 1, limit: 10 })
       .pipe(
-        // Явно указываем, что если данных нет, возвращаем []
         map((result) => (result && result.data ? result.data : [])),
         catchError(() => of([])),
       ),

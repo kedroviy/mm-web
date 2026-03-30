@@ -24,9 +24,22 @@
       </div>
     </nav>
 
-    <h2 class="text-3xl font-medium tracking-tight text-gray-900 mb-6">
-      {{ navService.pageTitle() }}
-    </h2>
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-3xl font-medium tracking-tight text-gray-900 m-0">
+        {{ navService.pageTitle() }}
+      </h2>
+
+      @if (navService.actionLink()) {
+        <a [routerLink]="navService.actionLink()" class="no-underline">
+          <app-button
+            [text]="navService.actionLabel() || 'Создать'"
+            variant="primary"
+            icon="add"
+            size="md"
+          />
+        </a>
+      }
+    </div>
 
     <main class="flex-1">
       <router-outlet />

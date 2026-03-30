@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '@env/environment';
 import { RootLayout } from './widgets/root-layout/root-layout';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RootLayout],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
   standalone: true,

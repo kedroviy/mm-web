@@ -38,4 +38,11 @@ export class UiButtonComponent {
       lg: 'btn-lg',
     }[this.size];
   };
+
+  get buttonClasses() {
+    return {
+      [this.sizeClass()]: true,
+      'app-button-circle': this.isCircle, // Используем глобальный класс
+    };
+  }
 }
