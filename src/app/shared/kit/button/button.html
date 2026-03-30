@@ -1,5 +1,4 @@
 @if (icon && !text) {
-  <!-- КРУГЛАЯ КНОПКА (только иконка) -->
   <button mat-mini-fab
           [style.background-color]="backgroundColor"
           [disabled]="loading"
@@ -11,7 +10,6 @@
     }
   </button>
 } @else {
-  <!-- ОБЫЧНАЯ КНОПКА (текст или текст + иконка) -->
   <button mat-raised-button
           [style.background-color]="backgroundColor"
           [disabled]="loading"

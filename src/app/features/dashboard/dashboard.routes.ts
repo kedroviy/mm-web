@@ -18,27 +18,24 @@ export const DASHBOARD_ROUTES: Routes = [
       },
       {
         path: PAGES.NSI.GENRES.path,
+        data: { title: PAGES.NSI.GENRES.data.title },
         children: [
           {
             path: COMMON_CONSTANTS.EMPTY_STRING,
             loadComponent: () => import('./pages/nsi-list/genres/genres').then((m) => m.Genres),
             data: PAGES.NSI.GENRES.data,
-            children: [
-              {
-                path: PAGES.NSI.GENRES.CHILDREN.CREATE.path,
-                loadComponent: () =>
-                  import('./pages/nsi-list/genres/genres-create/').then((m) => m.GenresCreate),
-                data: PAGES.NSI.GENRES.CHILDREN.CREATE.data, // Крошка "Создание"
-              },
-              {
-                path: PAGES.NSI.GENRES.CHILDREN.VIEW.path,
-                loadComponent: () =>
-                  import('./pages/nsi-list/genres/genres-view/genres-view').then(
-                    (m) => m.GenresView,
-                  ),
-                data: PAGES.NSI.GENRES.CHILDREN.VIEW.data,
-              },
-            ],
+          },
+          {
+            path: PAGES.NSI.GENRES.CHILDREN.CREATE.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/genres/genres-create/').then((m) => m.GenresCreate),
+            data: PAGES.NSI.GENRES.CHILDREN.CREATE.data,
+          },
+          {
+            path: PAGES.NSI.GENRES.CHILDREN.VIEW.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
+            data: PAGES.NSI.GENRES.CHILDREN.VIEW.data,
           },
         ],
       },
