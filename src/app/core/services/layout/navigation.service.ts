@@ -8,7 +8,7 @@ import { COMMON_CONSTANTS } from '@core/constants';
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
   private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
 
   readonly navEnd = toSignal(
@@ -18,66 +18,101 @@ export class NavigationService {
     ),
   );
 
-  private readonly lastRoute = computed(() => {
-    this.navEnd(); // следим за навигацией
-    let route = this.activatedRoute.snapshot.root;
-    while (route.firstChild) {
-      route = route.firstChild;
-    }
+  // Вспомогательный сигнал для получения snapshot самого глубокого роута
+  private readonly lastRouteSnapshot = computed(() => {
+    this.navEnd(); // Магия: заставляем пересчитываться при навигации
+    let route = this.route.snapshot.root;
+    while (route.firstChild) route = route.firstChild;
     return route;
   });
 
-  // Теперь actionLink вычисляется автоматически
-  readonly actionLink = computed(() => {
-    return this.lastRoute().data['actionLink'] || null;
+  private readonly deepestRoute = computed(() => {
+    this.navEnd();
+    let route = this.route.snapshot.root;
+    while (route.firstChild) route = route.firstChild;
+    return route;
   });
 
-  readonly actionLabel = computed(() => {
-    return this.lastRoute().data['actionLabel'] || 'Создать';
+  readonly activeAction = computed(() => {
+    this.navEnd();
+    let route: ActivatedRouteSnapshot | null = this.deepestRoute();
+
+    while (route) {
+      // Если нашли экшен на этом уровне - возвращаем его
+      if (route.data['action']) {
+        return route.data['action'];
+      }
+      // Если дошли до уровня, где путь не пустой (например, 'create'),
+      // и экшена нет - значит мы ушли слишком далеко, кнопка не нужна.
+      if (route.url.length > 0 && route !== this.deepestRoute()) {
+        break;
+      }
+      route = route.parent;
+    }
+    return null;
+  });
+
+  // 3. Данные для заголовка и canGoBack берем как обычно
+  readonly activeData = computed(() => this.deepestRoute().data);
+
+  readonly canGoBack = computed(() => !!this.activeData()['canGoBack']);
+
+  readonly currentBaseUrl = computed(() => {
+    let route = this.route.snapshot.root;
+    let url = COMMON_CONSTANTS.EMPTY_STRING;
+    while (route.firstChild) {
+      route = route.firstChild;
+      const path = route.url.map((s) => s.path).join('/');
+      if (path) url += `/${path}`;
+    }
+    return url;
   });
 
   readonly breadcrumbs = computed(() => {
     this.navEnd();
-
     const crumbs: { label: string; url: string }[] = [];
-    let currentRoute: ActivatedRouteSnapshot | null = this.activatedRoute.snapshot.root;
-    let accumulatedUrl = COMMON_CONSTANTS.EMPTY_STRING;
+    let currentRoute: ActivatedRouteSnapshot | null = this.router.routerState.snapshot.root;
+    let accumulatedUrl = '';
 
     while (currentRoute) {
-      const pathSegments = currentRoute.url.map((segment) => segment.path).join('/');
+      // 1. Берем сегменты текущего уровня
+      const pathSegments = currentRoute.url.map((s) => s.path).join('/');
 
+      // 2. Добавляем сегмент к пути ТОЛЬКО если он не пустой
       if (pathSegments) {
-        accumulatedUrl += `/${pathSegments}`;
+        accumulatedUrl = `${accumulatedUrl}/${pathSegments}`;
       }
 
       const title = currentRoute.data['title'];
-
       if (title) {
-        crumbs.push({
-          label: title,
-          url: accumulatedUrl || '/dashboard',
-        });
-      }
+        // 3. Гарантируем, что URL всегда начинается с /
+        const cleanUrl = accumulatedUrl.startsWith('/') ? accumulatedUrl : `/${accumulatedUrl}`;
 
+        // 4. Проверка на дубликаты заголовков
+        if (crumbs.length === 0 || crumbs[crumbs.length - 1].label !== title) {
+          crumbs.push({
+            label: title,
+            url: cleanUrl || '/dashboard',
+          });
+        }
+      }
       currentRoute = currentRoute.firstChild;
     }
-
     return crumbs;
   });
 
   readonly pageTitle = computed(() => {
-    const crumbs = this.breadcrumbs();
-    return crumbs.length > 0 ? crumbs[crumbs.length - 1].label : 'Дефолт';
-  });
-
-  readonly canGoBack = computed(() => {
-    this.navEnd();
-    let route = this.activatedRoute.snapshot;
-    while (route.firstChild) route = route.firstChild;
-    return !!route.data['canGoBack'];
+    return this.breadcrumbs().slice(-1)[0]?.label || 'Дефолт';
   });
 
   goBack() {
-    this.location.back();
+    const crumbs = this.breadcrumbs();
+    if (crumbs.length > 1) {
+      // Переходим на URL предыдущей крошки
+      const parentUrl = crumbs[crumbs.length - 2].url;
+      void this.router.navigate([parentUrl]);
+    } else {
+      void this.router.navigate(['/dashboard/home']);
+    }
   }
 }

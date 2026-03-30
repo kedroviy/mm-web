@@ -1,65 +1,47 @@
 import { Routes } from '@angular/router';
 import { COMMON_CONSTANTS } from '@core/constants';
+import { DASHBOARD_CONFIG as PAGES } from '@features/dashboard/lib/dashboard.config';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
-    path: 'home',
+    path: PAGES.HOME.path,
     loadComponent: () => import('./pages/home/home').then((m) => m.Home),
-    data: { title: 'Главная' },
+    data: PAGES.HOME.data,
   },
   {
-    path: 'nsi-list',
+    path: PAGES.NSI.path,
+    data: PAGES.NSI.data,
     children: [
       {
         path: COMMON_CONSTANTS.EMPTY_STRING,
         loadComponent: () => import('./pages/nsi-list/nsi-list').then((m) => m.NsiList),
-        data: { title: 'Справочники', canGoBack: true },
       },
       {
-        path: 'genres',
+        path: PAGES.NSI.GENRES.path,
         children: [
           {
             path: COMMON_CONSTANTS.EMPTY_STRING,
             loadComponent: () => import('./pages/nsi-list/genres/genres').then((m) => m.Genres),
-            data: {
-              title: 'Жанры',
-              canGoBack: true,
-              actionLink: 'create',
-              actionLabel: 'Добавить жанр',
-            },
+            data: PAGES.NSI.GENRES.data,
+            children: [
+              {
+                path: PAGES.NSI.GENRES.CHILDREN.CREATE.path,
+                loadComponent: () =>
+                  import('./pages/nsi-list/genres/genres-create/').then((m) => m.GenresCreate),
+                data: PAGES.NSI.GENRES.CHILDREN.CREATE.data, // Крошка "Создание"
+              },
+              {
+                path: PAGES.NSI.GENRES.CHILDREN.VIEW.path,
+                loadComponent: () =>
+                  import('./pages/nsi-list/genres/genres-view/genres-view').then(
+                    (m) => m.GenresView,
+                  ),
+                data: PAGES.NSI.GENRES.CHILDREN.VIEW.data,
+              },
+            ],
           },
-          // {
-          //   path: 'create',
-          //   loadComponent: () =>
-          //     import('./pages/genres/item/genres-item-create.page').then(m => m.GenresItemCreatePage),
-          //   data: { title: 'Создать жанр' },
-          // },
-          {
-            path: ':id',
-            loadComponent: () =>
-              import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
-            data: { title: 'Просмотр' },
-          },
-          // {
-          //   path: ':id/edit',
-          //   loadComponent: () =>
-          //     import('./pages/genres/item/genres-item-edit.page').then(m => m.GenresItemEditPage),
-          //   data: { title: 'Редактирование жанра' },
-          // },
         ],
       },
-      // {
-      //   path: 'create',
-      //   loadComponent: () =>
-      //     import('./pages/nsi-list/item/nsi-item-create.page').then((m) => m.NsiItemCreatePage),
-      //   data: { title: 'Создать' },
-      // },
-      // {
-      //   path: ':id/edit',
-      //   loadComponent: () =>
-      //     import('./pages/nsi-list/item/nsi-item-edit.page').then((m) => m.NsiItemEditPage),
-      //   data: { title: 'Редактирование' },
-      // },
     ],
   },
 ];

@@ -15,7 +15,4 @@ import { UiButtonComponent } from '@shared/kit/button/button';
 })
 export class RootLayout {
   protected readonly navService = inject(NavigationService);
-  constructor() {
-    console.log('nav: ', this.navService.actionLink())
-  }
 }
