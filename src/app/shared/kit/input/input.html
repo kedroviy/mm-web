@@ -5,9 +5,21 @@
 
   <input
     matInput
+    [type]="currentType"
     [formControl]="control"
     [placeholder]="placeholder ?? constants.EMPTY_STRING"
   />
+
+  @if (type === 'password') {
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="hidePassword.set(!hidePassword()); $event.stopPropagation()"
+    >
+      <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+  }
 
   @if (control.invalid) {
     <mat-error>{{ errorMessage }}</mat-error>

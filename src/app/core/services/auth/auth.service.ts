@@ -51,6 +51,7 @@ export class AuthService {
   checkAuth(): Observable<boolean> {
     if (this.transferState.hasKey(AUTH_KEY)) {
       const isAuth = this.transferState.get(AUTH_KEY, false);
+      this.transferState.remove(AUTH_KEY);
       this.authStatus.set(isAuth);
       return of(isAuth);
     }

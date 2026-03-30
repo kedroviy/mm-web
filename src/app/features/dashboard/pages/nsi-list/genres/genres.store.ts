@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { GenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
-import { CreateGenreDto } from '@core/api/model';
 import { catchError, map, of } from 'rxjs';
+import { Genre } from './genres.types';
 
 interface GenresState {
-  genres: CreateGenreDto[];
+  genres: Genre[];
   loading: boolean;
   loaded: boolean;
 }
@@ -28,7 +28,7 @@ export const GenresStore = signalStore(
       genresService
         .genresControllerGetWithPages({ page: 1, limit: 10 })
         .pipe(
-          map((res) => res.data ?? []),
+          map((res) => (res.data as Genre[]) ?? []),
           catchError(() => of([])),
         )
         .subscribe((genres) => {

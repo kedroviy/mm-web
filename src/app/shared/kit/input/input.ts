@@ -1,5 +1,7 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { ControlContainer, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HideEmptyErrorDirective } from '@core/directives/hide-empty-error';
@@ -7,7 +9,7 @@ import { COMMON_CONSTANTS } from '@core/constants';
 
 @Component({
   selector: 'app-input',
-  imports: [MatInputModule, ReactiveFormsModule, HideEmptyErrorDirective],
+  imports: [MatInputModule, MatIconModule, MatButtonModule, ReactiveFormsModule, HideEmptyErrorDirective],
   templateUrl: '/input.html',
   styleUrl: '/input.css',
   standalone: true,
@@ -30,6 +32,8 @@ export class KitInputComponent {
   @Input() disabled = false;
   @Input() required = false;
   @Input() value?: string;
+
+  hidePassword = signal(true);
 
   private static readonly DEFAULT_ERRORS: Record<string, string> = {
     required: 'Обязательное поле',
@@ -57,14 +61,17 @@ export class KitInputComponent {
     return new FormControl();
   }
 
+  get currentType(): string {
+    if (this.type !== 'password') return this.type;
+    return this.hidePassword() ? 'password' : 'text';
+  }
+
   get errorMessage(): string {
     const controlErrors = this.control.errors;
     if (!controlErrors) return '';
 
     const errorKey = Object.keys(controlErrors)[0];
-    return this.errors[errorKey]
-      ?? KitInputComponent.DEFAULT_ERRORS[errorKey]
-      ?? 'Ошибка ввода';
+    return this.errors[errorKey] ?? KitInputComponent.DEFAULT_ERRORS[errorKey] ?? 'Ошибка ввода';
   }
 
   protected readonly COMMON_CONSTANTS = COMMON_CONSTANTS;

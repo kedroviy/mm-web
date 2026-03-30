@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { AuthService } from '@core/api/generated/auth/auth.service';
 import { AuthService as CustomAuthService } from '@core/services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -23,6 +23,7 @@ export class AdminLogin {
   private customAuthService = inject(CustomAuthService);
   private router = inject(Router);
   private notify = inject(NotificationsService);
+
   buttonText = signal('Войти');
   isLoading = signal(false);
   required = true;

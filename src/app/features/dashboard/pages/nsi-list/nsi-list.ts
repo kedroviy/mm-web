@@ -8,6 +8,7 @@ import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
   templateUrl: './nsi-list.html',
   styleUrl: './nsi-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class NsiList {
   readonly columns: TableColumn[] = [
