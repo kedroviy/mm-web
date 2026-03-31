@@ -1,4 +1,4 @@
-import { Component, inject, Input, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '@core/api/generated/auth/auth.service';
 import { AuthService as CustomAuthService } from '@core/services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class AdminLogin {
         next: () => {
           this.notify.showSuccess(`Вход успешно осуществлён!`);
 
-          this.router.navigate(['/dashboard/home']);
+          void this.router.navigate(['/dashboard/home']);
         },
         error: (err) => {
           this.notify.showError(`Ошибка входа!`);

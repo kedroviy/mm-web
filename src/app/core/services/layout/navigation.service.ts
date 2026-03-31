@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, ActivatedRouteSnapshot } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, startWith } from 'rxjs';
@@ -18,9 +18,8 @@ export class NavigationService {
     ),
   );
 
-  // Вспомогательный сигнал для получения snapshot самого глубокого роута
   private readonly lastRouteSnapshot = computed(() => {
-    this.navEnd(); // Магия: заставляем пересчитываться при навигации
+    this.navEnd();
     let route = this.route.snapshot.root;
     while (route.firstChild) route = route.firstChild;
     return route;

@@ -1,10 +1,11 @@
-import { Directive, input, TemplateRef } from '@angular/core';
+import { Directive, inject, input, TemplateRef } from '@angular/core';
 
 @Directive({
-  selector: 'ng-template[kitCellDef]',
+  selector: 'app-ng-template[appKitCellDef]',
+  standalone: true,
 })
 export class KitCellDef {
-  readonly columnKey = input.required<string>({ alias: 'kitCellDef' });
+  readonly templateRef = inject(TemplateRef<unknown>);
 
-  constructor(readonly templateRef: TemplateRef<unknown>) {}
+  readonly columnKey = input.required<string>({ alias: 'appKitCellDef' });
 }

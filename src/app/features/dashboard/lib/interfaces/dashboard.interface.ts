@@ -12,5 +12,5 @@ export interface PageData {
 export interface AppRouteConfig {
   path: string;
   data: PageData;
-  [key: string]: any | AppRouteConfig;
+  [key: string]: unknown | AppRouteConfig;
 }
