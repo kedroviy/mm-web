@@ -16,10 +16,10 @@ export interface PaginationState {
   standalone: true,
 })
 export class KitPaginator {
-  readonly totalItems = input(0);
-  page = input(1);
-  limit = input(10);
-  pageSizeOptions = input([5, 10, 25, 50]);
+  readonly totalItems = input<number>(0);
+  page = input<number>(1);
+  limit = input<number>(10);
+  pageSizeOptions = input<number[]>([5, 10, 25, 50]);
 
   pageChange = output<PaginationState>();
 

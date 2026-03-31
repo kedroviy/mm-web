@@ -51,7 +51,7 @@ const ACTIONS_KEY = 'actions';
     NgTemplateOutlet,
     KitPaginator,
   ],
-  templateUrl: './kit-table.html',
+  templateUrl: "./kit-table.html",
   styleUrl: './kit-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -70,7 +70,7 @@ export class KitTable<T extends object> {
   totalItems = input(0);
   page = input(1);
   limit = input(10);
-  pageSizeOptions = input([5, 10, 25, 50]);
+  pageSizeOptions = input<number[]>([5, 10, 25, 50]);
 
   delete = output<T>();
   view = output<T>();

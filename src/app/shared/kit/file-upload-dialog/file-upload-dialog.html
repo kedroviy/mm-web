@@ -11,7 +11,7 @@
       (dragleave)="onDragLeave()"
       (drop)="onDrop($event)"
       (click)="fileInput.click()">
-      <mat-icon class="!text-4xl text-gray-400">cloud_upload</mat-icon>
+      <mat-icon class="!text-4xl !w-9 !h-9 text-gray-400">cloud_upload</mat-icon>
       <p class="text-sm text-gray-500 m-0">
         Перетащите файл сюда или <span class="text-blue-600 font-medium">нажмите для выбора</span>
       </p>
@@ -32,7 +32,7 @@
   }
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="!pt-4">
+<mat-dialog-actions align="end" class="!pt-4 gap-4">
   <app-button text="Отмена" variant="secondary" (click)="cancel()" />
   <app-button text="Загрузить" variant="primary" icon="upload" [disabled]="!selectedFile()" (click)="upload()" />
 </mat-dialog-actions>

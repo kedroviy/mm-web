@@ -10,7 +10,20 @@ export const DASHBOARD_CONFIG = {
       data: {
         title: 'Жанры',
         canGoBack: true,
-        action: { link: 'create', label: 'Добавить жанр' },
+        action: { link: 'create', label: 'Добавить новую запись' },
+        uploadAction: { label: 'Загрузить из файла' },
+      },
+      CHILDREN: {
+        CREATE: { path: 'create', data: { title: 'Создание', canGoBack: true } },
+        VIEW: { path: ':id', data: { title: 'Просмотр', canGoBack: true } },
+      },
+    },
+    COUNTRIES: {
+      path: 'countries',
+      data: {
+        title: 'Страны',
+        canGoBack: true,
+        action: { link: 'create', label: 'Добавить новую запись' },
         uploadAction: { label: 'Загрузить из файла' },
       },
       CHILDREN: {

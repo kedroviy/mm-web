@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { COMMON_CONSTANTS } from '@core/constants';
 import { DASHBOARD_CONFIG as PAGES } from '@features/dashboard/lib/dashboard.config';
+import { CountriesCreate } from '@features/dashboard/pages/nsi-list/countries/countries-create';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -37,6 +38,29 @@ export const DASHBOARD_ROUTES: Routes = [
               import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
             data: PAGES.NSI.GENRES.CHILDREN.VIEW.data,
           },
+        ],
+      },
+      {
+        path: PAGES.NSI.COUNTRIES.path,
+        data: { title: PAGES.NSI.COUNTRIES.data.title },
+        children: [
+          {
+            path: COMMON_CONSTANTS.EMPTY_STRING,
+            loadComponent: () => import('./pages/nsi-list/countries').then((m) => m.Countries),
+            data: PAGES.NSI.COUNTRIES.data,
+          },
+          {
+            path: PAGES.NSI.COUNTRIES.CHILDREN.CREATE.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/countries/countries-create').then((m) => m.CountriesCreate),
+            data: PAGES.NSI.COUNTRIES.CHILDREN.CREATE.data,
+          },
+          // {
+          //   path: PAGES.NSI.COUNTRIES.CHILDREN.VIEW.path,
+          //   loadComponent: () =>
+          //     import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
+          //   data: PAGES.NSI.COUNTRIES.CHILDREN.VIEW.data,
+          // },
         ],
       },
     ],
