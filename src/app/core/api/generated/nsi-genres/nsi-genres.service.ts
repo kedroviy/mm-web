@@ -66,6 +66,7 @@ import {
 
 import type {
   CreateGenreDto,
+  FileUploadDto,
   GenrePaginationResponseDto,
   GenresControllerGetInfiniteParams,
   GenresControllerGetWithPagesParams,
@@ -73,6 +74,7 @@ import type {
   UpdateGenreDto
 } from '../../model';
 import { customParamsSerializer } from '@core/utils/api/generate-api-utils';
+
 
 
 interface HttpClientOptions {
@@ -98,7 +100,7 @@ interface HttpClientOptions {
 
 
 @Injectable({ providedIn: 'root' })
-export class GenresService {
+export class NsiGenresService {
   private readonly http = inject(HttpClient);
 /**
  * Возвращает данные с флагом hasNextPage для подгрузки при скролле
@@ -184,6 +186,22 @@ export class GenresService {
       createGenreDto,options
     );
   }
+/**
+ * Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.
+ * @summary Импорт жанров из Excel
+ */
+ genresControllerImportExcel<TData = unknown>(fileUploadDto: FileUploadDto, options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
+ genresControllerImportExcel<TData = unknown>(fileUploadDto: FileUploadDto, options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
+ genresControllerImportExcel<TData = unknown>(fileUploadDto: FileUploadDto, options?: HttpClientOptions & { observe: 'response' }): Observable<AngularHttpResponse<TData>>;
+  genresControllerImportExcel<TData = unknown>(
+    fileUploadDto: FileUploadDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {const formData = new FormData();
+formData.append(`file`, fileUploadDto.file)
+
+    return this.http.post<TData>(
+      `/api/v1/nsi/genres/import-excel`,
+      formData,options
+    );
+  }
 };
 
 export type GenresControllerGetInfiniteClientResult = NonNullable<unknown>
@@ -192,3 +210,4 @@ export type GenresControllerFindOneClientResult = NonNullable<IdParamDto>
 export type GenresControllerUpdateClientResult = NonNullable<void>
 export type GenresControllerRemoveClientResult = NonNullable<void>
 export type GenresControllerCreateClientResult = NonNullable<CreateGenreDto>
+export type GenresControllerImportExcelClientResult = NonNullable<unknown>

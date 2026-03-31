@@ -2,6 +2,13 @@
   [dataSource]="store.genres()"
   [columns]="columns"
   [loading]="store.loading()"
+  [cellTemplates]="{ createdAt: dateTpl }"
   [showViewAction]="true"
-  baseRoute="baseRoute"
+  baseRoute="."
 />
+
+<ng-template #dateTpl let-element>
+  <span>
+    {{ element.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+  </span>
+</ng-template>

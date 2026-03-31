@@ -73,7 +73,6 @@ import type {
 } from '../../model';
 
 
-
 interface HttpClientOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
   context?: HttpContext;

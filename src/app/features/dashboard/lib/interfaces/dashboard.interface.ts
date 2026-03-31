@@ -3,10 +3,15 @@ export interface PageAction {
   label: string;
 }
 
+export interface UploadAction {
+  label: string;
+}
+
 export interface PageData {
   title: string;
   canGoBack?: boolean;
   action?: PageAction;
+  uploadAction?: UploadAction;
 }
 
 export interface AppRouteConfig {

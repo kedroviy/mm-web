@@ -33,14 +33,26 @@
       </h2>
 
       @if (navService.activeData()['action']; as action) {
-        <a [routerLink]="[navService.currentBaseUrl(), action.link]" class="no-underline">
-          <app-button
-            [text]="action.label || 'Создать'"
-            variant="primary"
-            icon="add"
-            size="md"
-          />
-        </a>
+        <div class="flex items-center gap-3">
+          <a [routerLink]="[navService.currentBaseUrl(), action.link]" class="no-underline">
+            <app-button
+              [text]="action.label || 'Создать'"
+              variant="primary"
+              icon="add"
+              size="md"
+            />
+          </a>
+
+          @if (navService.activeData()['uploadAction']; as uploadAction) {
+            <app-button
+              [text]="uploadAction.label || 'Загрузить'"
+              variant="secondary"
+              icon="upload"
+              size="md"
+              (click)="openUploadDialog()"
+            />
+          }
+        </div>
       }
     </div>
 

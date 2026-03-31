@@ -40,7 +40,9 @@
 
  * OpenAPI spec version: 1.0
  */
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+} from '@angular/common/http';
 import type {
   HttpContext,
   HttpEvent,
@@ -49,11 +51,21 @@ import type {
   HttpResponse as AngularHttpResponse,
 } from '@angular/common/http';
 
-import { Injectable, inject } from '@angular/core';
+import {
+  Injectable,
+  inject,
+} from '@angular/core';
 
-import { Observable } from 'rxjs';
+import {
+  Observable,
+} from 'rxjs';
 
-import type { AdminLoginDto, LoginDto, LoginResponseDto } from '../../model';
+import type {
+  AdminLoginDto,
+  LoginDto,
+  LoginResponseDto,
+} from '../../model';
+
 
 interface HttpClientOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
@@ -75,6 +87,7 @@ interface HttpClientOptions {
   timeout?: number;
 }
 
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -83,102 +96,76 @@ export class AuthService {
    * Logs in a user by name. Creates a new user with unique ID if needed. No uniqueness check - multiple users can have the same name. Sets JWT tokens in cookies.
    * @summary Login by name
    */
+  authControllerLogin<TData = LoginResponseDto>(loginDto: LoginDto, options?: HttpClientOptions & {
+    observe?: 'body'
+  }): Observable<TData>;
+  authControllerLogin<TData = LoginResponseDto>(loginDto: LoginDto, options?: HttpClientOptions & {
+    observe: 'events'
+  }): Observable<HttpEvent<TData>>;
+  authControllerLogin<TData = LoginResponseDto>(loginDto: LoginDto, options?: HttpClientOptions & {
+    observe: 'response'
+  }): Observable<AngularHttpResponse<TData>>;
   authControllerLogin<TData = LoginResponseDto>(
-    loginDto: LoginDto,
-    options?: HttpClientOptions & {
-      observe?: 'body';
-    },
-  ): Observable<TData>;
-  authControllerLogin<TData = LoginResponseDto>(
-    loginDto: LoginDto,
-    options?: HttpClientOptions & {
-      observe: 'events';
-    },
-  ): Observable<HttpEvent<TData>>;
-  authControllerLogin<TData = LoginResponseDto>(
-    loginDto: LoginDto,
-    options?: HttpClientOptions & {
-      observe: 'response';
-    },
-  ): Observable<AngularHttpResponse<TData>>;
-  authControllerLogin<TData = LoginResponseDto>(
-    loginDto: LoginDto,
-    options?: HttpClientOptions & { observe?: any },
-  ): Observable<any> {
-    return this.http.post<TData>(`/api/v1/auth/login`, loginDto, options);
+    loginDto: LoginDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.post<TData>(
+      `/api/v1/auth/login`,
+      loginDto, options,
+    );
   }
 
+  authControllerRefreshToken<TData = void>(options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
+  authControllerRefreshToken<TData = void>(options?: HttpClientOptions & {
+    observe: 'events'
+  }): Observable<HttpEvent<TData>>;
+  authControllerRefreshToken<TData = void>(options?: HttpClientOptions & {
+    observe: 'response'
+  }): Observable<AngularHttpResponse<TData>>;
   authControllerRefreshToken<TData = void>(
-    options?: HttpClientOptions & { observe?: 'body' },
-  ): Observable<TData>;
-  authControllerRefreshToken<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'events';
-    },
-  ): Observable<HttpEvent<TData>>;
-  authControllerRefreshToken<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'response';
-    },
-  ): Observable<AngularHttpResponse<TData>>;
-  authControllerRefreshToken<TData = void>(
-    options?: HttpClientOptions & { observe?: any },
-  ): Observable<any> {
-    return this.http.post<TData>(`/api/v1/auth/refresh`, undefined, options);
+    options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.post<TData>(
+      `/api/v1/auth/refresh`, undefined, options,
+    );
   }
 
   /**
    * Revokes the current refresh token and clears authentication cookies.
    * @summary Logout user
    */
+  authControllerLogout<TData = void>(options?: HttpClientOptions & { observe?: 'body' }): Observable<TData>;
+  authControllerLogout<TData = void>(options?: HttpClientOptions & { observe: 'events' }): Observable<HttpEvent<TData>>;
+  authControllerLogout<TData = void>(options?: HttpClientOptions & {
+    observe: 'response'
+  }): Observable<AngularHttpResponse<TData>>;
   authControllerLogout<TData = void>(
-    options?: HttpClientOptions & { observe?: 'body' },
-  ): Observable<TData>;
-  authControllerLogout<TData = void>(
-    options?: HttpClientOptions & { observe: 'events' },
-  ): Observable<HttpEvent<TData>>;
-  authControllerLogout<TData = void>(
-    options?: HttpClientOptions & {
-      observe: 'response';
-    },
-  ): Observable<AngularHttpResponse<TData>>;
-  authControllerLogout<TData = void>(
-    options?: HttpClientOptions & { observe?: any },
-  ): Observable<any> {
-    return this.http.post<TData>(`/api/v1/auth/logout`, undefined, options);
+    options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.post<TData>(
+      `/api/v1/auth/logout`, undefined, options,
+    );
   }
 
   /**
    * Authenticates admin and sets JWT tokens in secure cookies.
    * @summary Admin login by email
    */
+  authControllerAdminLogin<TData = LoginResponseDto>(adminLoginDto: AdminLoginDto, options?: HttpClientOptions & {
+    observe?: 'body'
+  }): Observable<TData>;
+  authControllerAdminLogin<TData = LoginResponseDto>(adminLoginDto: AdminLoginDto, options?: HttpClientOptions & {
+    observe: 'events'
+  }): Observable<HttpEvent<TData>>;
+  authControllerAdminLogin<TData = LoginResponseDto>(adminLoginDto: AdminLoginDto, options?: HttpClientOptions & {
+    observe: 'response'
+  }): Observable<AngularHttpResponse<TData>>;
   authControllerAdminLogin<TData = LoginResponseDto>(
-    adminLoginDto: AdminLoginDto,
-    options?: HttpClientOptions & {
-      observe?: 'body';
-    },
-  ): Observable<TData>;
-  authControllerAdminLogin<TData = LoginResponseDto>(
-    adminLoginDto: AdminLoginDto,
-    options?: HttpClientOptions & {
-      observe: 'events';
-    },
-  ): Observable<HttpEvent<TData>>;
-  authControllerAdminLogin<TData = LoginResponseDto>(
-    adminLoginDto: AdminLoginDto,
-    options?: HttpClientOptions & {
-      observe: 'response';
-    },
-  ): Observable<AngularHttpResponse<TData>>;
-  authControllerAdminLogin<TData = LoginResponseDto>(
-    adminLoginDto: AdminLoginDto,
-    options?: HttpClientOptions & { observe?: any },
-  ): Observable<any> {
-    return this.http.post<TData>(`/api/v1/auth/admin/login`, adminLoginDto, options);
+    adminLoginDto: AdminLoginDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.post<TData>(
+      `/api/v1/auth/admin/login`,
+      adminLoginDto, options,
+    );
   }
-}
+};
 
-export type AuthControllerLoginClientResult = NonNullable<LoginResponseDto>;
-export type AuthControllerRefreshTokenClientResult = NonNullable<void>;
-export type AuthControllerLogoutClientResult = NonNullable<void>;
-export type AuthControllerAdminLoginClientResult = NonNullable<LoginResponseDto>;
+export type AuthControllerLoginClientResult = NonNullable<LoginResponseDto>
+export type AuthControllerRefreshTokenClientResult = NonNullable<void>
+export type AuthControllerLogoutClientResult = NonNullable<void>
+export type AuthControllerAdminLoginClientResult = NonNullable<LoginResponseDto>

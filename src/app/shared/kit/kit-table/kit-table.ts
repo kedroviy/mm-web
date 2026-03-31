@@ -63,6 +63,7 @@ export class KitTable<T extends object> {
   showViewAction = input(false);
   showDeleteAction = input(false);
   baseRoute = input(COMMON_CONSTANTS.EMPTY_STRING);
+  cellTemplates = input<Record<string, TemplateRef<unknown>> | null>(null);
 
   delete = output<T>();
   view = output<T>();
@@ -88,11 +89,19 @@ export class KitTable<T extends object> {
 
   readonly cellTemplateMap = computed(() => {
     const map: Record<string, TemplateRef<unknown>> = {};
+
     for (const def of this.cellDefs()) {
       map[def.columnKey()] = def.templateRef;
     }
+
+    const externalTemplates = this.cellTemplates();
+    if (externalTemplates) {
+      Object.assign(map, externalTemplates);
+    }
+
     return map;
   });
+
 
   isActionsColumn(column: string): boolean {
     return column === ACTIONS_KEY;

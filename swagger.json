@@ -1701,7 +1701,7 @@
         ],
         "summary": "Список жанров (Infinity Scroll)",
         "tags": [
-          "НСИ: Жанры"
+          "Nsi: Genres"
         ]
       }
     },
@@ -1745,21 +1745,6 @@
         ],
         "responses": {
           "200": {
-            "schema": {
-              "example": {
-                "data": [
-                  {
-                    "id": 1,
-                    "name": "Драма",
-                    "slug": "drama"
-                  }
-                ],
-                "totalItems": 45,
-                "totalPages": 5,
-                "currentPage": 1,
-                "limit": 10
-              }
-            },
             "description": "",
             "content": {
               "application/json": {
@@ -1780,7 +1765,7 @@
         ],
         "summary": "Список жанров (Классическая пагинация)",
         "tags": [
-          "НСИ: Жанры"
+          "Nsi: Genres"
         ]
       }
     },
@@ -1847,7 +1832,7 @@
         ],
         "summary": "Получить один жанр по ID",
         "tags": [
-          "НСИ: Жанры"
+          "Nsi: Genres"
         ]
       },
       "patch": {
@@ -1884,7 +1869,7 @@
         ],
         "summary": "Обновить жанр по ID",
         "tags": [
-          "НСИ: Жанры"
+          "Nsi: Genres"
         ]
       },
       "delete": {
@@ -1911,7 +1896,7 @@
         ],
         "summary": "Удалить жанр",
         "tags": [
-          "НСИ: Жанры"
+          "Nsi: Genres"
         ]
       }
     },
@@ -1948,7 +1933,48 @@
         ],
         "summary": "Создать новый жанр",
         "tags": [
-          "НСИ: Жанры"
+          "Nsi: Genres"
+        ]
+      }
+    },
+    "/api/v1/nsi/genres/import-excel": {
+      "post": {
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "operationId": "GenresController_importExcel",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Данные успешно импортированы",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "imported": 42
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Импорт жанров из Excel",
+        "tags": [
+          "Nsi: Genres"
         ]
       }
     }
@@ -2565,6 +2591,19 @@
             }
           }
         }
+      },
+      "FileUploadDto": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Excel файл (.xlsx)"
+          }
+        },
+        "required": [
+          "file"
+        ]
       }
     }
   }

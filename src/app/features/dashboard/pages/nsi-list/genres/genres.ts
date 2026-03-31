@@ -1,18 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { GenresStore } from './genres.store';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-genres',
-  standalone: true,
-  imports: [KitTable],
+  imports: [KitTable, DatePipe],
   templateUrl: './genres.html',
   styleUrl: './genres.css',
 })
 export class Genres implements OnInit {
-  readonly store = inject(GenresStore);
+  @ViewChild('dateCell', { static: true }) dateCell!: TemplateRef<unknown>;
 
+  readonly store = inject(GenresStore);
   readonly columns: TableColumn[] = [
     { key: 'id', label: '#' },
     { key: 'name', label: 'Название жанра' },

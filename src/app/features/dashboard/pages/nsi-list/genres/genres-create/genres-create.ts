@@ -6,7 +6,9 @@ import {
   FORM_COMPONENT_REGISTRY,
 } from '@shared/kit/kit-dynamic-form/form-factory.types';
 import { NavigationService } from '@core/services/layout/navigation.service';
-import { GenresService as GeneratedGenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
+import {
+  NsiGenresService as GeneratedGenresService,
+} from '@core/api/generated/nsi-genres/nsi-genres.service';
 import { CreateGenreDto } from '@core/api/model';
 import { NotificationsService } from '@core/services/notifications/notifications';
 import { FORM_COMPONENTS } from './genres-form-registry';

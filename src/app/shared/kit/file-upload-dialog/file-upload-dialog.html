@@ -1,0 +1,38 @@
+<h2 mat-dialog-title class="!text-xl !font-semibold !tracking-tight">Загрузка файла</h2>
+
+<mat-dialog-content>
+  @if (!selectedFile()) {
+    <div
+      class="dropzone flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 transition-colors cursor-pointer"
+      [class.border-blue-500]="isDragOver()"
+      [class.bg-blue-50]="isDragOver()"
+      [class.border-gray-300]="!isDragOver()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+      (click)="fileInput.click()">
+      <mat-icon class="!text-4xl text-gray-400">cloud_upload</mat-icon>
+      <p class="text-sm text-gray-500 m-0">
+        Перетащите файл сюда или <span class="text-blue-600 font-medium">нажмите для выбора</span>
+      </p>
+      <p class="text-xs text-gray-400 m-0">Поддерживаемые форматы: CSV, XLSX, JSON</p>
+    </div>
+    <input #fileInput type="file" accept=".csv,.xlsx,.json" class="hidden" (change)="onFileSelected($event)" />
+  } @else {
+    <div class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <mat-icon class="text-blue-500">description</mat-icon>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-gray-900 m-0 truncate">{{ selectedFile()!.name }}</p>
+        <p class="text-xs text-gray-400 m-0">{{ (selectedFile()!.size / 1024).toFixed(1) }} КБ</p>
+      </div>
+      <button mat-icon-button (click)="removeFile()" class="!text-gray-400 hover:!text-red-500">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!pt-4">
+  <app-button text="Отмена" variant="secondary" (click)="cancel()" />
+  <app-button text="Загрузить" variant="primary" icon="upload" [disabled]="!selectedFile()" (click)="upload()" />
+</mat-dialog-actions>
