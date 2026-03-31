@@ -1,55 +1,131 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { NsiGenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
-import { catchError, map, of } from 'rxjs';
+import {
+  ImportProgressEvent,
+  ImportProgressService,
+  ImportStatus,
+} from '@core/services/import-progress/import-progress.service';
+import { catchError, map, of, switchMap, tap, EMPTY } from 'rxjs';
 import { Genre } from './genres.types';
 
 interface GenresState {
   genres: Genre[];
   loading: boolean;
   loaded: boolean;
-  importing: boolean;
+  page: number;
+  limit: number;
+  totalItems: number;
+  importStatus: ImportStatus | 'idle';
+  importProgress: number;
+  importMessage: string;
 }
 
 const initialState: GenresState = {
   genres: [],
   loading: false,
   loaded: false,
-  importing: false,
+  page: 1,
+  limit: 10,
+  totalItems: 0,
+  importStatus: 'idle',
+  importProgress: 0,
+  importMessage: '',
 };
 
 export const GenresStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods((store, genresService = inject(NsiGenresService)) => ({
+  withMethods((
+    store,
+    genresService = inject(NsiGenresService),
+    progressService = inject(ImportProgressService),
+  ) => ({
     load(force = false): void {
       if (store.loaded() && !force) return;
 
       patchState(store, { loading: true });
 
       genresService
-        .genresControllerGetWithPages({ page: 1, limit: 10 })
+        .genresControllerGetWithPages({ page: store.page(), limit: store.limit() })
         .pipe(
-          map((res) => (res.data as Genre[]) ?? []),
-          catchError(() => of([])),
+          catchError(() => of({ data: [], totalItems: 0 })),
         )
-        .subscribe((genres) => {
-          patchState(store, { genres, loading: false, loaded: true });
+        .subscribe((res) => {
+          patchState(store, {
+            genres: (res.data as Genre[]) ?? [],
+            totalItems: res.totalItems ?? 0,
+            loading: false,
+            loaded: true,
+          });
         });
     },
+
+    setPage(page: number, limit: number): void {
+      patchState(store, { page, limit, loaded: false });
+      this.load(true);
+    },
+
     importExcel(file: File): void {
-      patchState(store, { importing: true });
+      patchState(store, {
+        importStatus: 'uploading',
+        importProgress: 0,
+        importMessage: 'Загрузка файла…',
+      });
 
       genresService
         .genresControllerImportExcel({ file })
-        .pipe(catchError(() => of(null)))
-        .subscribe((result) => {
-          patchState(store, { importing: false });
-          if (result !== null) {
-            this.reload();
-          }
+        .pipe(
+          catchError(() => {
+            patchState(store, {
+              importStatus: 'error',
+              importMessage: 'Ошибка загрузки файла',
+            });
+            return EMPTY;
+          }),
+          switchMap((res: unknown) => {
+            const { jobId } = res as { jobId: string };
+            patchState(store, {
+              importStatus: 'processing',
+              importMessage: 'Обработка…',
+            });
+            return progressService.connect(`/api/v1/nsi/genres/import-progress/${jobId}`).pipe(
+              tap((event) => {
+                patchState(store, {
+                  importStatus: event.status,
+                  importProgress: event.progress,
+                  importMessage: event.message ?? '',
+                });
+              }),
+              catchError(() => {
+                patchState(store, {
+                  importStatus: 'error',
+                  importMessage: 'Потеряно соединение с сервером',
+                });
+                return EMPTY;
+              }),
+            );
+          }),
+        )
+        .subscribe({
+          complete: () => {
+            const status = store.importStatus();
+            if (status === 'completed') {
+              this.reload();
+            }
+            this.resetImport();
+          },
         });
     },
+
+    resetImport(): void {
+      patchState(store, {
+        importStatus: 'idle',
+        importProgress: 0,
+        importMessage: '',
+      });
+    },
+
     invalidate(): void {
       patchState(store, { loaded: false });
     },

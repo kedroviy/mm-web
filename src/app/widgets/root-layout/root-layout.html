@@ -45,10 +45,12 @@
 
           @if (navService.activeData()['uploadAction']; as uploadAction) {
             <app-button
-              [text]="uploadAction.label || 'Загрузить'"
+              [text]="importButtonText()"
               variant="secondary"
               icon="upload"
               size="md"
+              [loading]="isImporting()"
+              [disabled]="isImporting()"
               (click)="openUploadDialog()"
             />
           }

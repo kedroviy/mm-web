@@ -26,6 +26,7 @@ import { TableService } from '@core/services/layout/table/table.service';
 import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { COMMON_CONSTANTS } from '@core/constants';
+import { KitPaginator, PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { TableColumn } from './kit-table.types';
 import { KitCellDef } from './kit-cell-def.directive';
 
@@ -48,6 +49,7 @@ const ACTIONS_KEY = 'actions';
     MatIcon,
     MatNoDataRow,
     NgTemplateOutlet,
+    KitPaginator,
   ],
   templateUrl: './kit-table.html',
   styleUrl: './kit-table.css',
@@ -65,8 +67,14 @@ export class KitTable<T extends object> {
   baseRoute = input(COMMON_CONSTANTS.EMPTY_STRING);
   cellTemplates = input<Record<string, TemplateRef<unknown>> | null>(null);
 
+  totalItems = input(0);
+  page = input(1);
+  limit = input(10);
+  pageSizeOptions = input([5, 10, 25, 50]);
+
   delete = output<T>();
   view = output<T>();
+  pageChange = output<PaginationState>();
 
   private cellDefs = contentChildren(KitCellDef);
 

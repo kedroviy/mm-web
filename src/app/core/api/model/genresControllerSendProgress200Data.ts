@@ -41,7 +41,7 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
  * OpenAPI spec version: 1.0
  */
 
-export interface FileUploadDto {
-  /** Excel файл (.xlsx) */
-  file: Blob;
-}
+export type GenresControllerSendProgress200Data = {
+  progress?: number;
+  status?: string;
+};

@@ -40,10 +40,8 @@ Chat functionality is available via WebSocket connections. See [WebSocket Chat D
 
  * OpenAPI spec version: 1.0
  */
+import type { GenresControllerSendProgress200Data } from './genresControllerSendProgress200Data';
 
-export interface UpdateGenreDto {
-  name?: string;
-  slug?: string;
-  description?: string;
-  keywords?: string[];
-}
+export type GenresControllerSendProgress200 = {
+  data?: GenresControllerSendProgress200Data;
+};

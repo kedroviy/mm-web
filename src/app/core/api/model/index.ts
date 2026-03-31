@@ -51,6 +51,8 @@ export * from './fileUploadDto';
 export * from './genrePaginationResponseDto';
 export * from './genresControllerGetInfiniteParams';
 export * from './genresControllerGetWithPagesParams';
+export * from './genresControllerSendProgress200';
+export * from './genresControllerSendProgress200Data';
 export * from './idParamDto';
 export * from './joinRoomDto';
 export * from './loginDto';

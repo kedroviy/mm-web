@@ -1977,6 +1977,58 @@
           "Nsi: Genres"
         ]
       }
+    },
+    "/api/v1/nsi/genres/import-progress/{jobId}": {
+      "get": {
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "operationId": "GenresController_sendProgress",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Поток прогресса импорта (SSE)",
+        "tags": [
+          "Nsi: Genres"
+        ]
+      }
     }
   },
   "info": {

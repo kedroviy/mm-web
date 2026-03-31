@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -15,6 +15,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
   imports: [KitHeader, MatIconModule, RouterLink, RouterOutlet, UiButtonComponent],
   templateUrl: './root-layout.html',
   styleUrl: './root-layout.css',
+  standalone: true,
 })
 export class RootLayout {
   protected readonly navService = inject(NavigationService);
@@ -22,19 +23,46 @@ export class RootLayout {
   private readonly genresStore = inject(GenresStore);
   private readonly notify = inject(NotificationsService);
 
+  readonly isImporting = computed(() => {
+    const status = this.genresStore.importStatus();
+    return status === 'uploading' || status === 'processing';
+  });
+
+  readonly importButtonText = computed(() => {
+    const status = this.genresStore.importStatus();
+    const progress = this.genresStore.importProgress();
+
+    switch (status) {
+      case 'uploading':
+        return 'Загрузка…';
+      case 'processing':
+        return `Импорт ${progress}%`;
+      default:
+        return this.navService.activeData()['uploadAction']?.['label'] ?? 'Загрузить';
+    }
+  });
+
+  private readonly importStatusEffect = effect(() => {
+    const status = this.genresStore.importStatus();
+    const message = this.genresStore.importMessage();
+
+    if (status === 'completed') {
+      this.notify.showSuccess(message || 'Импорт завершён');
+    } else if (status === 'error') {
+      this.notify.showError(message || 'Ошибка импорта');
+    }
+  });
+
   openUploadDialog() {
+    if (this.isImporting()) return;
+
     this.dialog
       .open(FileUploadDialog, { width: '480px', panelClass: 'upload-dialog' })
       .afterClosed()
       .subscribe((file: File | null) => {
         if (file) {
-          this.handleFileUpload(file);
+          this.genresStore.importExcel(file);
         }
       });
-  }
-
-  private handleFileUpload(file: File) {
-    this.genresStore.importExcel(file);
-    this.notify.showSuccess('Файл отправлен на импорт');
   }
 }

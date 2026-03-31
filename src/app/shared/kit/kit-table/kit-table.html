@@ -78,4 +78,14 @@
       </td>
     </tr>
   </table>
+
+  @if (totalItems() > 0) {
+    <app-kit-paginator
+      [totalItems]="totalItems()"
+      [page]="page()"
+      [limit]="limit()"
+      [pageSizeOptions]="pageSizeOptions()"
+      (pageChange)="pageChange.emit($event)"
+    />
+  }
 }

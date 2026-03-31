@@ -19,5 +19,9 @@ export class NsiList {
   readonly items = signal([
     { id: 'genres', position: 1, name: 'Жанры', route: 'genres' },
     { id: 'countries', position: 2, name: 'Страны', route: 'countries' },
+    { id: 'cens', position: 3, name: 'Возрастной ценз (MPAA / РФ)', route: 'cens' },
+    { id: 'content-types', position: 4, name: 'Формат контента', route: 'content-types' },
+    { id: 'awards', position: 5, name: 'Списки и награды', route: 'awards' },
+    { id: 'lists', position: 6, name: 'Подборки', route: 'lists' },
   ]);
 }

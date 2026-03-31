@@ -4,6 +4,10 @@
   [loading]="store.loading()"
   [cellTemplates]="{ createdAt: dateTpl }"
   [showViewAction]="true"
+  [totalItems]="store.totalItems()"
+  [page]="store.page()"
+  [limit]="store.limit()"
+  (pageChange)="onPageChange($event)"
   baseRoute="."
 />
 

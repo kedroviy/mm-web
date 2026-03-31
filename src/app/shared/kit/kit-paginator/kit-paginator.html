@@ -1,0 +1,8 @@
+<mat-paginator
+  [length]="this.totalItems()"
+  [pageSize]="this.limit()"
+  [pageIndex]="this.pageIndex()"
+  [pageSizeOptions]="this.pageSizeOptions()"
+  [showFirstLastButtons]="true"
+  (page)="this.onPage($event)"
+/>

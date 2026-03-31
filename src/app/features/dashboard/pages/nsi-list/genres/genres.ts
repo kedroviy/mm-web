@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
+import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { GenresStore } from './genres.store';
 import { DatePipe } from '@angular/common';
 
@@ -23,5 +24,9 @@ export class Genres implements OnInit {
 
   ngOnInit() {
     this.store.load();
+  }
+
+  onPageChange(event: PaginationState) {
+    this.store.setPage(event.page, event.limit);
   }
 }

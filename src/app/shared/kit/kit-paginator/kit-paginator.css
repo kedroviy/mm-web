@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+::ng-deep .mat-mdc-paginator {
+  background: transparent;
+  border-top: 1px solid #e2e8f0;
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  padding: 8px 16px;
+  justify-content: flex-end;
+}
