@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { COMMON_CONSTANTS } from '@core/constants';
 import { DASHBOARD_CONFIG as PAGES } from '@features/dashboard/lib/dashboard.config';
-import { CountriesCreate } from '@features/dashboard/pages/nsi-list/countries/countries-create';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -52,7 +51,7 @@ export const DASHBOARD_ROUTES: Routes = [
           {
             path: PAGES.NSI.COUNTRIES.CHILDREN.CREATE.path,
             loadComponent: () =>
-              import('./pages/nsi-list/countries/countries-create').then((m) => m.CountriesCreate),
+              import('./pages/nsi-list/countries').then((m) => m.CountriesCreate),
             data: PAGES.NSI.COUNTRIES.CHILDREN.CREATE.data,
           },
           // {
@@ -60,6 +59,98 @@ export const DASHBOARD_ROUTES: Routes = [
           //   loadComponent: () =>
           //     import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
           //   data: PAGES.NSI.COUNTRIES.CHILDREN.VIEW.data,
+          // },
+        ],
+      },
+      {
+        path: PAGES.NSI.AWARDS.path,
+        data: { title: PAGES.NSI.AWARDS.data.title },
+        children: [
+          {
+            path: COMMON_CONSTANTS.EMPTY_STRING,
+            loadComponent: () => import('./pages/nsi-list/awards').then((m) => m.Awards),
+            data: PAGES.NSI.AWARDS.data,
+          },
+          {
+            path: PAGES.NSI.AWARDS.CHILDREN.CREATE.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/awards').then((m) => m.AwardsCreate),
+            data: PAGES.NSI.AWARDS.CHILDREN.CREATE.data,
+          },
+          // {
+          //   path: PAGES.NSI.AWARDS.CHILDREN.VIEW.path,
+          //   loadComponent: () =>
+          //     import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
+          //   data: PAGES.NSI.AWARDS.CHILDREN.VIEW.data,
+          // },
+        ],
+      },
+      {
+        path: PAGES.NSI.CONTENT_TYPE.path,
+        data: { title: PAGES.NSI.CONTENT_TYPE.data.title },
+        children: [
+          {
+            path: COMMON_CONSTANTS.EMPTY_STRING,
+            loadComponent: () => import('./pages/nsi-list/content-types').then((m) => m.ContentTypes),
+            data: PAGES.NSI.CONTENT_TYPE.data,
+          },
+          {
+            path: PAGES.NSI.CONTENT_TYPE.CHILDREN.CREATE.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/content-types').then((m) => m.ContentTypeCreate),
+            data: PAGES.NSI.CONTENT_TYPE.CHILDREN.CREATE.data,
+          },
+          // {
+          //   path: PAGES.NSI.AWARDS.CHILDREN.VIEW.path,
+          //   loadComponent: () =>
+          //     import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
+          //   data: PAGES.NSI.AWARDS.CHILDREN.VIEW.data,
+          // },
+        ],
+      },
+      {
+        path: PAGES.NSI.AGE_RATING.path,
+        data: { title: PAGES.NSI.AGE_RATING.data.title },
+        children: [
+          {
+            path: COMMON_CONSTANTS.EMPTY_STRING,
+            loadComponent: () => import('./pages/nsi-list/age-ratings').then((m) => m.AgeRatings),
+            data: PAGES.NSI.AGE_RATING.data,
+          },
+          {
+            path: PAGES.NSI.AGE_RATING.CHILDREN.CREATE.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/age-ratings').then((m) => m.AgeRatingCreate),
+            data: PAGES.NSI.AGE_RATING.CHILDREN.CREATE.data,
+          },
+          // {
+          //   path: PAGES.NSI.AWARDS.CHILDREN.VIEW.path,
+          //   loadComponent: () =>
+          //     import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
+          //   data: PAGES.NSI.AWARDS.CHILDREN.VIEW.data,
+          // },
+        ],
+      },
+      {
+        path: PAGES.NSI.SELECTION.path,
+        data: { title: PAGES.NSI.SELECTION.data.title },
+        children: [
+          {
+            path: COMMON_CONSTANTS.EMPTY_STRING,
+            loadComponent: () => import('./pages/nsi-list/selections').then((m) => m.Selections),
+            data: PAGES.NSI.SELECTION.data,
+          },
+          {
+            path: PAGES.NSI.SELECTION.CHILDREN.CREATE.path,
+            loadComponent: () =>
+              import('./pages/nsi-list/selections').then((m) => m.SelectionsCreate),
+            data: PAGES.NSI.SELECTION.CHILDREN.CREATE.data,
+          },
+          // {
+          //   path: PAGES.NSI.AWARDS.CHILDREN.VIEW.path,
+          //   loadComponent: () =>
+          //     import('./pages/nsi-list/genres/genres-view/genres-view').then((m) => m.GenresView),
+          //   data: PAGES.NSI.AWARDS.CHILDREN.VIEW.data,
           // },
         ],
       },

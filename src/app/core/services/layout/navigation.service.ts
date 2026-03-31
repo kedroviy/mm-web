@@ -57,6 +57,7 @@ export class NavigationService {
   readonly canGoBack = computed(() => !!this.activeData()['canGoBack']);
 
   readonly currentBaseUrl = computed(() => {
+    this.navEnd();
     let route = this.route.snapshot.root;
     let url = COMMON_CONSTANTS.EMPTY_STRING;
     while (route.firstChild) {
