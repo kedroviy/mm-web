@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { defineConfig } from 'orval';
 
 export default defineConfig({
@@ -12,8 +11,8 @@ export default defineConfig({
     },
     output: {
       mode: 'tags-split',
-      target: './src/core/api/generated',
-      schemas: './src/core/api/model',
+      target: './src/app/core/api/generated',
+      schemas: './src/app/core/api/model',
       client: 'angular',
       // httpClient: 'angular',
       mock: false,

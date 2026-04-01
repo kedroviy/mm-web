@@ -1,14 +1,14 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { NsiGenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
 import {
   ImportProgressService,
 } from '@core/services/import-progress/import-progress.service';
 import { catchError, of, switchMap, tap, EMPTY } from 'rxjs';
-import { Genre, GenresState } from './genres.types';
+import { CountriesState, Country } from '@features/dashboard/pages/nsi-list/countries/countries.type';
+import { NsiCountriesService } from '@core/api/generated/nsi-countries/nsi-countries.service';
 
 
-const initialState: GenresState = {
+const initialState: CountriesState = {
   genres: [],
   loading: false,
   loaded: false,
@@ -20,12 +20,12 @@ const initialState: GenresState = {
   importMessage: '',
 };
 
-export const GenresStore = signalStore(
+export const CountriesStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((
     store,
-    genresService = inject(NsiGenresService),
+    countriesService = inject(NsiCountriesService),
     progressService = inject(ImportProgressService),
   ) => ({
     load(force = false): void {
@@ -33,14 +33,14 @@ export const GenresStore = signalStore(
 
       patchState(store, { loading: true });
 
-      genresService
-        .genresControllerGetWithPages({ page: store.page(), limit: store.limit() })
+      countriesService
+        .countriesControllerGetWithPages({ page: store.page(), limit: store.limit() })
         .pipe(
           catchError(() => of({ data: [], totalItems: 0 })),
         )
         .subscribe((res) => {
           patchState(store, {
-            genres: (res.data as Genre[]) ?? [],
+            genres: (res.data as Country[]) ?? [],
             totalItems: res.totalItems ?? 0,
             loading: false,
             loaded: true,
@@ -60,8 +60,8 @@ export const GenresStore = signalStore(
         importMessage: 'Загрузка файла…',
       });
 
-      genresService
-        .genresControllerImportExcel({ file })
+      countriesService
+        .countriesControllerImportExcel({ file })
         .pipe(
           catchError(() => {
             patchState(store, {

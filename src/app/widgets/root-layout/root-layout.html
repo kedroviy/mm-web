@@ -13,14 +13,12 @@
       <div class="flex items-center gap-1">
         @for (crumb of navService.breadcrumbs(); track crumb.url; let last = $last) {
           @if (!last) {
-            <!-- Оборачиваем в массив для надежности роутинга -->
             <a [routerLink]="[crumb.url]"
                class="hover:text-blue-600 transition-colors cursor-pointer no-underline">
               {{ crumb.label }}
             </a>
             <mat-icon class="text-gray-300 scale-75">chevron_right</mat-icon>
           } @else {
-            <!-- Последний элемент - просто текст -->
             <span class="text-gray-900 font-medium">{{ crumb.label }}</span>
           }
         }

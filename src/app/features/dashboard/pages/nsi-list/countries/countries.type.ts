@@ -1,13 +1,13 @@
-import { CreateGenreDto } from '@core/api/model';
 import { ImportStatus } from '@core/services/import-progress/import-progress.service';
+import { CreateCountryDto } from '@core/api/model';
 
-export interface Genre extends CreateGenreDto {
+export interface Country extends CreateCountryDto {
   id: number;
   createdAt: string;
 }
 
-export interface GenresState {
-  genres: Genre[];
+export interface CountriesState {
+  genres: Country[];
   loading: boolean;
   loaded: boolean;
   page: number;

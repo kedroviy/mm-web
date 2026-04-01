@@ -71,9 +71,11 @@ import type {
   GenresControllerGetInfiniteParams,
   GenresControllerGetWithPagesParams,
   GenresControllerSendProgress200,
+  GetGenreByIdDto,
   IdParamDto,
   UpdateGenreDto,
 } from '../../model';
+
 import { customParamsSerializer } from '@core/utils/api/generate-api-utils';
 
 
@@ -101,6 +103,26 @@ interface HttpClientOptions {
 @Injectable({ providedIn: 'root' })
 export class NsiGenresService {
   private readonly http = inject(HttpClient);
+
+  /**
+   * Подключение через EventSource для получения статуса обработки файла.
+   * @summary Поток прогресса импорта (SSE)
+   */
+  genresControllerSendProgress<TData = GenresControllerSendProgress200>(jobId: string | undefined | null, options?: HttpClientOptions & {
+    observe?: 'body'
+  }): Observable<TData>;
+  genresControllerSendProgress<TData = GenresControllerSendProgress200>(jobId: string | undefined | null, options?: HttpClientOptions & {
+    observe: 'events'
+  }): Observable<HttpEvent<TData>>;
+  genresControllerSendProgress<TData = GenresControllerSendProgress200>(jobId: string | undefined | null, options?: HttpClientOptions & {
+    observe: 'response'
+  }): Observable<AngularHttpResponse<TData>>;
+  genresControllerSendProgress<TData = GenresControllerSendProgress200>(
+    jobId: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
+    return this.http.get<TData>(
+      `/api/v1/nsi/genres/import-progress/${jobId}`, options,
+    );
+  }
 
   /**
    * Возвращает данные с флагом hasNextPage для подгрузки при скролле
@@ -155,16 +177,16 @@ export class NsiGenresService {
   /**
    * @summary Получить один жанр по ID
    */
-  genresControllerFindOne<TData = IdParamDto>(id: IdParamDto | undefined | null, options?: HttpClientOptions & {
+  genresControllerFindOne<TData = GetGenreByIdDto>(id: IdParamDto | undefined | null, options?: HttpClientOptions & {
     observe?: 'body'
   }): Observable<TData>;
-  genresControllerFindOne<TData = IdParamDto>(id: IdParamDto | undefined | null, options?: HttpClientOptions & {
+  genresControllerFindOne<TData = GetGenreByIdDto>(id: IdParamDto | undefined | null, options?: HttpClientOptions & {
     observe: 'events'
   }): Observable<HttpEvent<TData>>;
-  genresControllerFindOne<TData = IdParamDto>(id: IdParamDto | undefined | null, options?: HttpClientOptions & {
+  genresControllerFindOne<TData = GetGenreByIdDto>(id: IdParamDto | undefined | null, options?: HttpClientOptions & {
     observe: 'response'
   }): Observable<AngularHttpResponse<TData>>;
-  genresControllerFindOne<TData = IdParamDto>(
+  genresControllerFindOne<TData = GetGenreByIdDto>(
     id: IdParamDto | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
     return this.http.get<TData>(
       `/api/v1/nsi/genres/${id}`, options,
@@ -174,19 +196,19 @@ export class NsiGenresService {
   /**
    * @summary Обновить жанр по ID
    */
-  genresControllerUpdate<TData = void>(id: IdParamDto | undefined | null,
-                                       updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & {
+  genresControllerUpdate<TData = UpdateGenreDto>(id: IdParamDto | undefined | null,
+                                                 updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & {
       observe?: 'body'
     }): Observable<TData>;
-  genresControllerUpdate<TData = void>(id: IdParamDto | undefined | null,
-                                       updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & {
+  genresControllerUpdate<TData = UpdateGenreDto>(id: IdParamDto | undefined | null,
+                                                 updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & {
       observe: 'events'
     }): Observable<HttpEvent<TData>>;
-  genresControllerUpdate<TData = void>(id: IdParamDto | undefined | null,
-                                       updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & {
+  genresControllerUpdate<TData = UpdateGenreDto>(id: IdParamDto | undefined | null,
+                                                 updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & {
       observe: 'response'
     }): Observable<AngularHttpResponse<TData>>;
-  genresControllerUpdate<TData = void>(
+  genresControllerUpdate<TData = UpdateGenreDto>(
     id: IdParamDto | undefined | null,
     updateGenreDto: UpdateGenreDto, options?: HttpClientOptions & { observe?: any }): Observable<any> {
     return this.http.patch<TData>(
@@ -257,33 +279,13 @@ export class NsiGenresService {
       formData, options,
     );
   }
-
-  /**
-   * Подключение через EventSource для получения статуса обработки файла.
-   * @summary Поток прогресса импорта (SSE)
-   */
-  genresControllerSendProgress<TData = GenresControllerSendProgress200>(jobId: string | undefined | null, options?: HttpClientOptions & {
-    observe?: 'body'
-  }): Observable<TData>;
-  genresControllerSendProgress<TData = GenresControllerSendProgress200>(jobId: string | undefined | null, options?: HttpClientOptions & {
-    observe: 'events'
-  }): Observable<HttpEvent<TData>>;
-  genresControllerSendProgress<TData = GenresControllerSendProgress200>(jobId: string | undefined | null, options?: HttpClientOptions & {
-    observe: 'response'
-  }): Observable<AngularHttpResponse<TData>>;
-  genresControllerSendProgress<TData = GenresControllerSendProgress200>(
-    jobId: string | undefined | null, options?: HttpClientOptions & { observe?: any }): Observable<any> {
-    return this.http.get<TData>(
-      `/api/v1/nsi/genres/import-progress/${jobId}`, options,
-    );
-  }
 };
 
+export type GenresControllerSendProgressClientResult = NonNullable<GenresControllerSendProgress200>
 export type GenresControllerGetInfiniteClientResult = NonNullable<unknown>
 export type GenresControllerGetWithPagesClientResult = NonNullable<GenrePaginationResponseDto>
-export type GenresControllerFindOneClientResult = NonNullable<IdParamDto>
-export type GenresControllerUpdateClientResult = NonNullable<void>
+export type GenresControllerFindOneClientResult = NonNullable<GetGenreByIdDto>
+export type GenresControllerUpdateClientResult = NonNullable<UpdateGenreDto>
 export type GenresControllerRemoveClientResult = NonNullable<void>
 export type GenresControllerCreateClientResult = NonNullable<CreateGenreDto>
 export type GenresControllerImportExcelClientResult = NonNullable<unknown>
-export type GenresControllerSendProgressClientResult = NonNullable<GenresControllerSendProgress200>

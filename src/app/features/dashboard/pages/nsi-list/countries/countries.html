@@ -1,1 +1,18 @@
-<p>countries works!</p>
+<app-kit-table
+  [dataSource]="store.genres()"
+  [columns]="columns"
+  [loading]="store.loading()"
+  [cellTemplates]="{ createdAt: dateTpl }"
+  [showViewAction]="true"
+  [totalItems]="store.totalItems()"
+  [page]="store.page()"
+  [limit]="store.limit()"
+  (pageChange)="onPageChange($event)"
+  baseRoute="."
+/>
+
+<ng-template #dateTpl let-element>
+  <span>
+    {{ element.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+  </span>
+</ng-template>

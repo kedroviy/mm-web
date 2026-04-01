@@ -1630,6 +1630,58 @@
         ]
       }
     },
+    "/api/v1/nsi/genres/import-progress/{jobId}": {
+      "get": {
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "operationId": "GenresController_sendProgress",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Поток прогресса импорта (SSE)",
+        "tags": [
+          "Nsi: Genres"
+        ]
+      }
+    },
     "/api/v1/nsi/genres/get-infinity": {
       "get": {
         "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
@@ -1691,7 +1743,14 @@
             }
           },
           "401": {
-            "description": "JWT токен невалиден или отсутствует"
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1755,7 +1814,14 @@
             }
           },
           "404": {
-            "description": "Запись не найдена"
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1785,44 +1851,33 @@
         "responses": {
           "200": {
             "description": "Жанр найден",
-            "response": {
-              "status": 200,
-              "findOne": {
-                "operation": {
-                  "summary": "Получить один жанр по ID"
-                },
-                "response": {
-                  "status": 200,
-                  "description": "Жанр найден",
-                  "schema": {
-                    "example": {
-                      "id": 1,
-                      "name": "Боевик",
-                      "slug": "action",
-                      "description": "...",
-                      "keywords": [
-                        "..."
-                      ],
-                      "createdAt": "...",
-                      "updatedAt": "..."
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdParamDto"
+                  "$ref": "#/components/schemas/GetGenreByIdDto"
                 }
               }
             }
           },
           "404": {
-            "description": "Запись не найдена"
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
           },
-          "409": {
-            "description": "Конфликт данных (такой slug или name уже существует)"
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1859,7 +1914,32 @@
         },
         "responses": {
           "200": {
-            "description": "Жанр успешно обновлен"
+            "description": "Жанр успешно обновлен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateGenreDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Genre not found",
+                  "timestamp": "2024-03-31T...",
+                  "path": "/api/genres/1",
+                  "method": "GET"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1924,6 +2004,44 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Genre not found",
+                  "timestamp": "2024-03-31T...",
+                  "path": "/api/genres/1",
+                  "method": "GET"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1965,6 +2083,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Genre not found",
+                  "timestamp": "2024-03-31T...",
+                  "path": "/api/genres/1",
+                  "method": "GET"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1978,10 +2114,10 @@
         ]
       }
     },
-    "/api/v1/nsi/genres/import-progress/{jobId}": {
+    "/api/v1/nsi/countries/import-progress/{jobId}": {
       "get": {
         "description": "Подключение через EventSource для получения статуса обработки файла.",
-        "operationId": "GenresController_sendProgress",
+        "operationId": "CountriesController_sendProgress",
         "parameters": [
           {
             "name": "jobId",
@@ -2026,7 +2162,439 @@
         ],
         "summary": "Поток прогресса импорта (SSE)",
         "tags": [
-          "Nsi: Genres"
+          "Nsi: Countries"
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/get-infinity": {
+      "get": {
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "operationId": "CountriesController_getInfinite",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Поиск по названию",
+            "schema": {
+              "example": "Комедия",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Боевик",
+                        "slug": "action"
+                      }
+                    ],
+                    "hasNextPage": true,
+                    "nextPage": 2,
+                    "totalCount": 45
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Список стран (Infinity Scroll)",
+        "tags": [
+          "Nsi: Countries"
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/get-by-param": {
+      "get": {
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "operationId": "CountriesController_getWithPages",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Поиск по названию",
+            "schema": {
+              "example": "Комедия",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountriesPaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Список стран (Классическая пагинация)",
+        "tags": [
+          "Nsi: Countries"
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/{id}": {
+      "get": {
+        "operationId": "CountriesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/IdParamDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Жанр найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCountryByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Получить один жанр по ID",
+        "tags": [
+          "Nsi: Countries"
+        ]
+      },
+      "patch": {
+        "operationId": "CountriesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/IdParamDto"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGenreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Страна успешно обновлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCountryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Genre not found",
+                  "timestamp": "2024-03-31T...",
+                  "path": "/api/genres/1",
+                  "method": "GET"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Обновить страну по ID",
+        "tags": [
+          "Nsi: Countries"
+        ]
+      },
+      "delete": {
+        "operationId": "CountriesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Запись о стране успешно удалена"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Удалить запись о стране",
+        "tags": [
+          "Nsi: Countries"
+        ]
+      }
+    },
+    "/api/v1/nsi/countries": {
+      "post": {
+        "operationId": "CountriesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGenreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Страна успешно добавлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCountryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Genre not found",
+                  "timestamp": "2024-03-31T...",
+                  "path": "/api/genres/1",
+                  "method": "GET"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Добавить новую запись о стране",
+        "tags": [
+          "Nsi: Countries"
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/import-excel": {
+      "post": {
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "operationId": "CountriesController_importExcel",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Данные успешно импортированы",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "imported": 42
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Genre not found",
+                  "timestamp": "2024-03-31T...",
+                  "path": "/api/genres/1",
+                  "method": "GET"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Импорт списка стран из Excel",
+        "tags": [
+          "Nsi: Countries"
         ]
       }
     }
@@ -2122,12 +2690,10 @@
         "properties": {
           "statusCode": {
             "type": "number",
-            "description": "HTTP status code",
-            "example": 400
+            "description": "HTTP status code"
           },
           "message": {
             "description": "Error message or array of error messages",
-            "example": "Invalid room code. Code must be exactly 6 digits.",
             "oneOf": [
               {
                 "type": "string"
@@ -2142,23 +2708,19 @@
           },
           "error": {
             "type": "string",
-            "description": "Error type name",
-            "example": "Bad Request"
+            "description": "Error type name"
           },
           "timestamp": {
             "type": "string",
-            "description": "ISO timestamp when error occurred",
-            "example": "2024-01-15T10:30:00.000Z"
+            "description": "ISO timestamp when error occurred"
           },
           "path": {
             "type": "string",
-            "description": "Request path",
-            "example": "/rooms/join"
+            "description": "Request path"
           },
           "method": {
             "type": "string",
-            "description": "HTTP method",
-            "example": "POST"
+            "description": "HTTP method"
           }
         },
         "required": [
@@ -2617,6 +3179,34 @@
           "id"
         ]
       },
+      "GetGenreByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Комедия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "comedy"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
       "UpdateGenreDto": {
         "type": "object",
         "properties": {
@@ -2656,6 +3246,126 @@
         "required": [
           "file"
         ]
+      },
+      "CreateCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Германия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "germany"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание страны"
+          },
+          "keywords": {
+            "example": [
+              "германия",
+              "дойчланд"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "CountriesPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCountryDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "GetCountryByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Италия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "italy"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
+      "UpdateCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Германия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "germany"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание страны"
+          },
+          "keywords": {
+            "example": [
+              "германия",
+              "дойчланд"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   }

@@ -10,6 +10,7 @@ import { DatePipe } from '@angular/common';
   imports: [KitTable, DatePipe],
   templateUrl: './genres.html',
   styleUrl: './genres.css',
+  standalone: true,
 })
 export class Genres implements OnInit {
   @ViewChild('dateCell', { static: true }) dateCell!: TemplateRef<unknown>;
