@@ -1,11 +1,11 @@
 <mat-toolbar class="kit-header">
   <div class="header-container">
     <div class="header-left">
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 sm:gap-3">
         @if (logoUrl()) {
-          <img [src]="logoUrl()" alt="Logo" class="h-8 w-8 object-contain" />
+          <img [src]="logoUrl()" alt="Logo" class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
         }
-        <span class="font-medium text-lg tracking-tight">{{ appName() }}</span>
+        <span class="font-medium text-sm sm:text-lg tracking-tight truncate max-w-[150px] sm:max-w-none">{{ appName() }}</span>
       </div>
 
       <ng-content select="[left]"></ng-content>

@@ -1,9 +1,37 @@
-.main-content {
-  padding: 16px 36px;
-}
-
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Контейнер всегда не меньше экрана */
+  height: auto; /* Но может расти бесконечно вниз */
+}
+
+/* Это тот div, который идет после хедера */
+.layout-container > div:last-of-type {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto; /* 1 - растет, 0 - не сжимается, auto - по контенту */
+}
+
+main {
+  flex: 1 0 auto; /* Занимает всё пространство и толкает футер вниз */
+  width: 100%;
+}
+
+footer {
+  flex-shrink: 0; /* Гарантирует, что футер не сожмется, если контента очень много */
 }

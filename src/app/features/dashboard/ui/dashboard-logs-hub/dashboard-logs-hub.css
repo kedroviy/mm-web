@@ -1,9 +1,33 @@
 .hub-grid {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  width: 100%;
+  gap: 2rem;
+}
 
+.hub-grid__container {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .hub-grid__card {
-  width: 300px
+  flex: 1 1 300px;
+  max-width: 450px;
+  min-width: 250px;
+  width: 100%;
+}
+
+@media screen and (max-width: 880px) {
+  .hub-grid__container {
+    flex-direction: column;
+    justify-content: flex-start;
+    /*gap: 0.3rem;*/
+  }
+  .hub-grid__card {
+    flex: 1 1 100px;
+    max-width: 150px;
+    min-width: 250px;
+    width: 100%;
+  }
 }

@@ -14,7 +14,7 @@ export class GridLayoutService {
   private readonly BASE_CONFIG = {
     columns: 12,
     rowHeight: '80px',
-    totalRows: 12,
+    totalRows: 4,
     gutter: '16px',
   };
 
@@ -36,8 +36,8 @@ export class GridLayoutService {
         // { text: 'Side Menu', cols: isExpanded ? 1 : 0, rows: 11 },
         {
           text: 'Admin Statistics',
-          cols: 11,
-          rows: 5,
+          cols: 12,
+          rows: 4,
           component: DashboardHubSection,
           inputs: {
             title: 'Модули',
@@ -45,8 +45,8 @@ export class GridLayoutService {
         },
         {
           text: 'System Logs',
-          cols: 11,
-          rows: 6,
+          cols: 12,
+          rows: 4,
           component: DashboardLogsHub,
           inputs: {
             title: 'Аналитика',

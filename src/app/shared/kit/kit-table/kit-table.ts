@@ -21,7 +21,6 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { NgTemplateOutlet } from '@angular/common';
 import { TableService } from '@core/services/layout/table/table.service';
 import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
@@ -48,7 +47,6 @@ const ACTIONS_KEY = 'actions';
     RouterLink,
     MatIcon,
     MatNoDataRow,
-    NgTemplateOutlet,
     KitPaginator,
   ],
   templateUrl: "./kit-table.html",

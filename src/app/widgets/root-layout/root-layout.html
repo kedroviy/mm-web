@@ -1,12 +1,13 @@
 <div class="layout-container flex flex-col min-h-screen bg-white">
   <app-kit-header class="header-container" />
 
-  <div class="px-8 pt-6 flex flex-col flex-1">
+  <div class="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 flex flex-col flex-1">
 
-    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+    <nav
+      class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 overflow-x-auto scrollbar-none whitespace-nowrap">
       @if (navService.canGoBack()) {
-        <button (click)="navService.goBack()" class="mr-2 p-1 hover:bg-gray-100 rounded-full">
-          <mat-icon class="text-xl">arrow_back</mat-icon>
+        <button (click)="navService.goBack()" class="shrink-0 mr-1 sm:mr-2 p-1 hover:bg-gray-100 rounded-full">
+          <mat-icon class="text-lg sm:text-xl">arrow_back</mat-icon>
         </button>
       }
 
@@ -14,30 +15,38 @@
         @for (crumb of navService.breadcrumbs(); track crumb.url; let last = $last) {
           @if (!last) {
             <a [routerLink]="[crumb.url]"
-               class="hover:text-blue-600 transition-colors cursor-pointer no-underline">
+               class="hover:text-blue-600 transition-colors cursor-pointer no-underline shrink-0">
               {{ crumb.label }}
             </a>
-            <mat-icon class="text-gray-300 scale-75">chevron_right</mat-icon>
+            <mat-icon class="text-gray-300 scale-75 shrink-0">chevron_right</mat-icon>
           } @else {
-            <span class="text-gray-900 font-medium">{{ crumb.label }}</span>
+            <span class="text-gray-900 font-medium shrink-0">{{ crumb.label }}</span>
           }
         }
       </div>
     </nav>
 
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-3xl font-medium tracking-tight text-gray-900 m-0">
+    <div class="flex items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+      <h2 class="text-xl sm:text-2xl lg:text-3xl font-medium tracking-tight text-gray-900 m-0 truncate">
         {{ navService.pageTitle() }}
       </h2>
 
       @if (navService.activeData()['action']; as action) {
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
           <a [routerLink]="[navService.currentBaseUrl(), action.link]" class="no-underline">
             <app-button
               [text]="action.label || 'Создать'"
               variant="primary"
               icon="add"
               size="md"
+              class="hidden sm:block"
+            />
+            <app-button
+              variant="primary"
+              icon="add"
+              size="md"
+              [isCircle]="true"
+              class="block sm:hidden"
             />
           </a>
 
@@ -50,17 +59,28 @@
               [loading]="isImporting()"
               [disabled]="isImporting()"
               (click)="openUploadDialog()"
+              class="hidden sm:block"
+            />
+            <app-button
+              variant="secondary"
+              icon="upload"
+              size="md"
+              [isCircle]="true"
+              [loading]="isImporting()"
+              [disabled]="isImporting()"
+              (click)="openUploadDialog()"
+              class="block sm:hidden"
             />
           }
         </div>
       }
     </div>
 
-    <main class="flex-1">
+    <main class="flex-1 w-full">
       <router-outlet />
     </main>
 
-    <footer class="py-6 border-t text-gray-400 text-sm">
+    <footer class="py-4 sm:py-6 border-t text-gray-400 text-xs sm:text-sm">
       Footer content
     </footer>
   </div>

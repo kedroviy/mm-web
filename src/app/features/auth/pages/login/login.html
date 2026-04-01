@@ -1,34 +1,53 @@
-<app-page-wrapper size="md">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col justify-center items-center">
-    <h1 class="mb-10">Вход</h1>
-    <div class="w-full">
-      <app-input
-        [inputFormControl]="form.controls.login"
-        label="Email"
-        placeholder="Enter your email"
-        type="email"
-        [required]="required"
-      >
-      </app-input>
+<div class="login-container flex items-center justify-center min-h-[80vh] px-4">
+  <app-page-wrapper size="sm"> <!-- Уменьшил размер до sm для более аккуратного вида -->
+    <div class="login-card">
+      <!-- Декоративный элемент в стиле дашборда -->
+      <div class="login-accent"></div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+        <div class="text-center mb-4">
+          <div class="inline-flex p-3 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
+            <mat-icon class="scale-125">lock_open</mat-icon>
+          </div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight m-0">Вход в систему</h1>
+          <p class="text-slate-400 text-sm mt-2">Введите свои данные для входа в систему</p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="w-full">
+            <app-input
+              [inputFormControl]="form.controls.login"
+              label="Электронная почта"
+              placeholder="example@mail.com"
+              type="email"
+              [required]="required"
+            ></app-input>
+          </div>
+
+          <div class="w-full">
+            <app-input
+              [inputFormControl]="form.controls.password"
+              label="Пароль"
+              placeholder="••••••••"
+              type="password"
+              [required]="required"
+            ></app-input>
+            <div class="flex justify-end mt-2">
+              <a href="#" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 no-underline">Забыли
+                пароль?</a>
+            </div>
+          </div>
+        </div>
+
+        <app-button
+          variant="primary"
+          class="w-full mt-2"
+          [text]="buttonText() || 'Войти в аккаунт'"
+          [loading]="isLoading()"
+          type="submit"
+        ></app-button>
+
+      </form>
     </div>
-    <div class="w-full">
-
-      <app-input
-        [inputFormControl]="form.controls.password"
-        label="Password"
-        placeholder="Enter your password"
-        type="password"
-        [required]="required"
-      >
-      </app-input>
-
-    </div>
-
-    <app-button
-      variant="primary"
-      [text]="buttonText()"
-      [loading]="isLoading()"
-      type="submit"
-    ></app-button>
-  </form>
-</app-page-wrapper>
+  </app-page-wrapper>
+</div>

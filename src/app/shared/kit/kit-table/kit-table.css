@@ -1,90 +1,129 @@
-/* Фиксируем колонку действий справа */
-.mat-column-actions {
-  position: sticky;
-  right: 0;
-  background-color: inherit; /* Чтобы фон под кнопками не был прозрачным при скролле */
-  z-index: 2;
-  text-align: right; /* Прижимаем контент внутри ячейки вправо */
-  padding-right: 24px !important;
-  width: 100px; /* Задайте фиксированную ширину, чтобы она не "прыгала" */
+:host {
+  display: block;
+  width: 100%;
 }
 
-/* Добавляем небольшую тень слева, когда таблица скроллится (опционально) */
-.mat-column-actions::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -5px;
-  width: 5px;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.05), transparent);
-  pointer-events: none;
+.table-scroll-container {
+  padding: 1rem;
+  background: #f8fafc;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Убедитесь, что заголовок тоже прижат */
-th.mat-column-actions {
-  text-align: right;
-  font-weight: bold;
+:host ::ng-deep table.mat-mdc-table {
+  background: transparent !important;
+  border-collapse: separate !important;
+  /* Уменьшили расстояние между карточками */
+  border-spacing: 0 8px !important;
+  width: 100% !important;
+  min-width: 600px;
 }
 
-th:last-child,
-td:last-child {
-  position: sticky;
-  right: 0;
-  z-index: 2;
-  text-align: right;
-  min-width: 100px;
+/* Заголовки: стали темнее (контрастнее) и чуть плотнее */
+:host ::ng-deep .mat-mdc-header-cell {
+  border-bottom: none !important;
+  color: #475569 !important; /* Slate 600 — более контрастный */
+  font-size: 11px !important;
+  font-weight: 700 !important; /* Вернул жирность для читаемости */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 24px !important;
 }
 
-.mat-mdc-table {
-  --mat-table-row-item-outline-color: #e2e8f0;
+/* Строки-карточки: стали ниже */
+:host ::ng-deep .mat-mdc-row {
+  background: #ffffff !important;
+  border-radius: 12px !important; /* Чуть меньше скругление для узких строк */
+  height: 52px !important; /* Фиксированная небольшая высота */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  cursor: pointer;
 }
 
-/* Skeleton loading */
-.skeleton-header {
+/* Ячейки: единый цвет текста для всего контента */
+:host ::ng-deep .mat-mdc-cell {
+  border-bottom: none !important;
+  padding: 8px 24px !important; /* Уменьшили вертикальный паддинг */
+  color: #1e293b !important; /* Тот самый темный Slate 900 */
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* Сохраняем скругления только для крайних ячеек */
+:host ::ng-deep .mat-mdc-cell:first-child { border-radius: 12px 0 0 12px !important; }
+:host ::ng-deep .mat-mdc-cell:last-child { border-radius: 0 12px 12px 0 !important; }
+
+/* Ховер: более деликатный подъем */
+:host ::ng-deep .mat-mdc-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1) !important;
+  background: #ffffff !important;
+}
+
+:host ::ng-deep .mat-mdc-row:hover .mat-mdc-cell:first-child {
+  box-shadow: inset 4px 0 0 #6366f1 !important;
+}
+
+/* Адаптив для мобилок */
+@media (max-width: 639px) {
+  :host ::ng-deep .mat-mdc-row { height: 48px !important; }
+  :host ::ng-deep .mat-mdc-cell { padding: 4px 12px !important; }
+}
+
+/* Кнопки действий: чуть компактнее */
+.action-icon-btn {
   display: flex;
-  gap: 16px;
-  padding: 16px 24px;
-  background: #fafafa;
-  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: #64748b;
+  transition: all 0.2s;
+  border: none;
+  background: #f1f5f9;
+  cursor: pointer;
 }
 
-.skeleton-header-cell {
-  flex: 1;
-  height: 14px;
-  border-radius: 4px;
-  background: #e2e8f0;
+.action-icon-btn:hover {
+  background: #eef2ff;
+  color: #6366f1;
+  transform: scale(1.1);
 }
 
-.skeleton-row {
+.skeleton-card {
+  height: 52px; /* Такая же высота, как у наших строк */
+  background: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 8px; /* Расстояние как в border-spacing */
   display: flex;
-  gap: 16px;
-  padding: 18px 24px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.skeleton-cell {
-  flex: 1;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .skeleton-bar {
-  height: 12px;
+  height: 10px;
   width: 70%;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 25%,
+    #e2e8f0 50%,
+    #f1f5f9 75%
+  );
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-}
-
-.skeleton-row:nth-child(even) .skeleton-bar {
-  width: 55%;
-}
-
-.skeleton-row:nth-child(3n) .skeleton-bar {
-  width: 80%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 6px;
 }
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* Скрываем скелетон-бары для колонки действий, чтобы было чище */
+.skeleton-card div:last-child .skeleton-bar {
+  width: 40px;
+  height: 20px;
+  float: right;
+  border-radius: 8px;
 }

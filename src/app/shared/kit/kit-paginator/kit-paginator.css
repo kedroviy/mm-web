@@ -8,6 +8,34 @@
 }
 
 ::ng-deep .mat-mdc-paginator-container {
-  padding: 8px 16px;
-  justify-content: flex-end;
+  padding: 4px 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+@media (min-width: 640px) {
+  ::ng-deep .mat-mdc-paginator-container {
+    padding: 8px 16px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0;
+  }
+}
+
+/* Hide page size selector on very small screens */
+@media (max-width: 479px) {
+  ::ng-deep .mat-mdc-paginator-page-size {
+    display: none;
+  }
+}
+
+::ng-deep .mat-mdc-paginator-range-label {
+  font-size: 12px;
+}
+
+@media (min-width: 640px) {
+  ::ng-deep .mat-mdc-paginator-range-label {
+    font-size: 14px;
+  }
 }

@@ -1,6 +1,5 @@
 @if (isAdmin) {
-  <app-kit-grid-component [config]="layout.adminConfig()"/>
+  <app-kit-grid-component [config]="layout.adminConfig()" />
 } @else {
   <app-kit-grid-component [config]="layout.userConfig()"></app-kit-grid-component>
 }
-`

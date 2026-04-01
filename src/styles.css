@@ -2,20 +2,87 @@
 
 @import 'tailwindcss';
 
-.mat-mdc-snack-bar-container.success-snackbar {
-  --mdc-snackbar-container-color: #2e7d32 !important;
-  --mdc-snackbar-supporting-text-color: #ffffff !important;
+/* ── Toast base ── */
+.mat-mdc-snack-bar-container.toast {
+  --mdc-snackbar-container-color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #1e293b !important;
+  --mdc-snackbar-container-shape: 12px !important;
+
+  .mdc-snackbar__surface {
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+  }
+
+  .mat-mdc-snack-bar-label {
+    color: #1e293b !important;
+  }
+
+  .mdc-snackbar__surface::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+  }
 
   .mdc-button__label {
-    color: #ffffff !important;
+    color: #64748b !important;
+    font-weight: 500 !important;
+  }
+
+  .mat-mdc-snack-bar-label {
+    font-weight: 500 !important;
+    font-size: 14px !important;
   }
 }
 
-.mat-mdc-snack-bar-container.error-snackbar {
-  --mdc-snackbar-container-color: #d32f2f !important;
-  --mdc-snackbar-supporting-text-color: #ffffff !important;
+/* ── Success: green ── */
+.mat-mdc-snack-bar-container.toast-success {
+  .mdc-snackbar__surface::before {
+    background: #16a34a;
+  }
 
   .mdc-button__label {
-    color: #ffffff !important;
+    color: #16a34a !important;
   }
+}
+
+/* ── Error: red ── */
+.mat-mdc-snack-bar-container.toast-error {
+  .mdc-snackbar__surface::before {
+    background: #dc2626;
+  }
+
+  .mdc-button__label {
+    color: #dc2626 !important;
+  }
+}
+
+/* ── Warning: amber ── */
+.mat-mdc-snack-bar-container.toast-warning {
+  .mdc-snackbar__surface::before {
+    background: #d97706;
+  }
+
+  .mdc-button__label {
+    color: #d97706 !important;
+  }
+}
+
+/* ── Info: blue ── */
+.mat-mdc-snack-bar-container.toast-info {
+  .mdc-snackbar__surface::before {
+    background: #2563eb;
+  }
+
+  .mdc-button__label {
+    color: #2563eb !important;
+  }
+}
+
+.mat-mdc-card-outlined {
+  border: none !important;
 }

@@ -10,13 +10,14 @@ import { PageWrapper } from '@shared/kit/page-wrapper/page-wrapper';
 import { AdminLoginDto } from '@core/api/model';
 import { NotificationsService } from '@core/services/notifications/notifications';
 import { tap } from 'rxjs';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
-  imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper],
+  imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper, MatIcon],
 })
 export class AdminLogin {
   private auth = inject(AuthService);

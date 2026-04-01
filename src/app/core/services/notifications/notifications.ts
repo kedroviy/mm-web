@@ -7,14 +7,27 @@ export class NotificationsService {
 
   showSuccess(message: string) {
     this.snackBar.open(message, 'OK', {
-      panelClass: ['success-snackbar'],
+      panelClass: ['toast', 'toast-success'],
     });
   }
 
   showError(message: string) {
     this.snackBar.open(message, 'Закрыть', {
-      panelClass: ['error-snackbar'],
+      panelClass: ['toast', 'toast-error'],
       duration: 5000,
+    });
+  }
+
+  showWarning(message: string) {
+    this.snackBar.open(message, 'OK', {
+      panelClass: ['toast', 'toast-warning'],
+      duration: 4000,
+    });
+  }
+
+  showInfo(message: string) {
+    this.snackBar.open(message, 'OK', {
+      panelClass: ['toast', 'toast-info'],
     });
   }
 }

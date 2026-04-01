@@ -1,17 +1,27 @@
-<mat-card [appearance]="appearance">
-  <mat-card-header>
+<mat-card [appearance]="appearance" class="modern-card">
+  <div class="card-accent-bar"></div> <!-- Тонкая полоска сверху для акцента -->
+
+  <mat-card-header class="modern-header">
+    <div mat-card-avatar class="header-icon">
+      <mat-icon>dashboard_customize</mat-icon>
+    </div>
     @if (title) {
-      <mat-card-title>{{ title }}</mat-card-title>
+      <mat-card-title class="modern-title">{{ title }}</mat-card-title>
     }
     @if (description) {
-      <mat-card-subtitle>{{ description }}</mat-card-subtitle>
+      <mat-card-subtitle class="modern-subtitle">{{ description }}</mat-card-subtitle>
     }
   </mat-card-header>
 
+  <mat-card-content class="modern-content">
+    <ng-content></ng-content>
+  </mat-card-content>
+
   @if (actionText) {
-    <mat-card-actions [align]="align">
-      <button mat-button (click)="actionClick.emit()">
-        {{ actionText }}
+    <mat-card-actions [align]="align" class="modern-actions">
+      <button mat-button class="action-btn" (click)="actionClick.emit()">
+        <span>{{ actionText }}</span>
+        <mat-icon>arrow_forward</mat-icon>
       </button>
     </mat-card-actions>
   }
