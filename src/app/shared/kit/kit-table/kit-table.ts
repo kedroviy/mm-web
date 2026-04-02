@@ -8,6 +8,7 @@ import {
   output,
   TemplateRef,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   MatCell,
   MatCellDef,
@@ -30,10 +31,13 @@ import { TableColumn } from './kit-table.types';
 import { KitCellDef } from './kit-cell-def.directive';
 
 const ACTIONS_KEY = 'actions';
+const EXPAND_COLUMN_KEY = '__expand';
+const DETAIL_COLUMN_KEY = 'expandedDetail';
 
 @Component({
   selector: 'app-kit-table',
   imports: [
+    NgTemplateOutlet,
     MatTable,
     MatHeaderCell,
     MatCell,
@@ -65,6 +69,14 @@ export class KitTable<T extends object> {
   baseRoute = input(COMMON_CONSTANTS.EMPTY_STRING);
   cellTemplates = input<Record<string, TemplateRef<unknown>> | null>(null);
 
+  /** Две строки на запись: основная + опциональная детальная (см. expandDetailTemplate). */
+  expandable = input(false);
+  /** Какие строки развёрнуты — сравнение по полю expandRowIdKey (по умолчанию id). */
+  expandedKeys = input<readonly PropertyKey[]>([]);
+  expandRowIdKey = input<string>('id');
+  expandDetailTemplate = input<TemplateRef<unknown> | null>(null);
+  expandToggle = output<T>();
+
   totalItems = input(0);
   page = input(1);
   limit = input(10);
@@ -76,13 +88,18 @@ export class KitTable<T extends object> {
 
   private cellDefs = contentChildren(KitCellDef);
 
+  readonly expandColumnKey = EXPAND_COLUMN_KEY;
+  readonly detailColumnKey = DETAIL_COLUMN_KEY;
+
   readonly displayedKeys = computed(() => {
     const keys = this.columns().map((c) => c.key);
     const hasActions = this.showViewAction() || this.showDeleteAction();
-    if (hasActions && !keys.includes(ACTIONS_KEY)) {
-      return [...keys, ACTIONS_KEY];
+    let result =
+      hasActions && !keys.includes(ACTIONS_KEY) ? [...keys, ACTIONS_KEY] : [...keys];
+    if (this.expandable()) {
+      result = [EXPAND_COLUMN_KEY, ...result];
     }
-    return keys;
+    return result;
   });
 
   readonly labelMap = computed(() => {
@@ -111,6 +128,22 @@ export class KitTable<T extends object> {
 
   isActionsColumn(column: string): boolean {
     return column === ACTIONS_KEY;
+  }
+
+  isExpandColumn(column: string): boolean {
+    return column === EXPAND_COLUMN_KEY;
+  }
+
+  isRowExpanded(row: T): boolean {
+    const id = (row as unknown as Record<string, PropertyKey | undefined>)[
+      this.expandRowIdKey()
+    ];
+    if (id === undefined) return false;
+    return this.expandedKeys().includes(id);
+  }
+
+  onExpandClick(row: T): void {
+    this.expandToggle.emit(row);
   }
 
   onRowClick(row: T): void {

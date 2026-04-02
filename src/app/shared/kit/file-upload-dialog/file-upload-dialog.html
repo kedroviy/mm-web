@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
   @if (!selectedFile()) {
-    <div
+    <button
       class="dropzone flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 transition-colors cursor-pointer"
       [class.border-blue-500]="isDragOver()"
       [class.bg-blue-50]="isDragOver()"
@@ -16,7 +16,7 @@
         Перетащите файл сюда или <span class="text-blue-600 font-medium">нажмите для выбора</span>
       </p>
       <p class="text-xs text-gray-400 m-0">Поддерживаемые форматы: CSV, XLSX, JSON</p>
-    </div>
+    </button>
     <input #fileInput type="file" accept=".csv,.xlsx,.json" class="hidden" (change)="onFileSelected($event)" />
   } @else {
     <div class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">

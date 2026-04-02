@@ -1,0 +1,194 @@
+/* Вложенная таблица категорий — та же стилистика, что у kit-table, с холодным индиго-оттенком */
+
+.awards-nested {
+  --nested-header: #64748b;
+  --nested-text: #475569;
+  --nested-text-strong: #1e293b;
+  --nested-row-from: #f8f9ff;
+  --nested-row-to: #ffffff;
+  --nested-row-hover-from: #f1f4ff;
+  --nested-row-hover-to: #fafbff;
+  --nested-accent: #6366f1;
+  --nested-shadow: 0 1px 2px rgba(99, 102, 241, 0.07);
+  --nested-shadow-hover: 0 10px 22px -10px rgba(99, 102, 241, 0.22);
+}
+
+.awards-nested__loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0 8px;
+}
+
+.awards-nested__skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    var(--nested-row-from) 0%,
+    var(--nested-row-to) 100%
+  );
+  box-shadow: var(--nested-shadow);
+}
+
+.awards-nested__skeleton-bar {
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #e8eaf6 25%,
+    #eef2ff 50%,
+    #e8eaf6 75%
+  );
+  background-size: 200% 100%;
+  animation: awards-nested-shimmer 1.4s ease-in-out infinite;
+}
+
+.awards-nested__skeleton-bar--sm {
+  width: 48px;
+}
+
+.awards-nested__skeleton-bar--md {
+  flex: 1;
+  max-width: 180px;
+}
+
+.awards-nested__skeleton-bar--lg {
+  flex: 1.2;
+  max-width: 240px;
+}
+
+@keyframes awards-nested-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.awards-nested__empty {
+  margin: 0;
+  padding: 20px 16px 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--nested-header);
+  background: linear-gradient(
+    160deg,
+    rgba(238, 242, 255, 0.65) 0%,
+    rgba(248, 250, 252, 0.9) 100%
+  );
+  border-radius: 12px;
+  border: 1px dashed rgba(99, 102, 241, 0.2);
+}
+
+.awards-nested-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin: 0;
+  table-layout: fixed;
+}
+
+.awards-nested-table thead th {
+  padding: 0 16px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nested-header);
+  text-align: left;
+  vertical-align: bottom;
+  border: none;
+}
+
+.awards-nested-table thead th:first-child {
+  width: 56px;
+  padding-left: 20px;
+}
+
+.awards-nested-table thead th.awards-nested-table__col-desc {
+  width: 28%;
+}
+
+.awards-nested-table tbody tr {
+  transition:
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.22s ease;
+}
+
+.awards-nested-table tbody td {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--nested-text);
+  vertical-align: middle;
+  border: none;
+  background: linear-gradient(
+    180deg,
+    var(--nested-row-from) 0%,
+    var(--nested-row-to) 55%
+  );
+  box-shadow: var(--nested-shadow);
+}
+
+.awards-nested-table tbody td:first-child {
+  border-radius: 12px 0 0 12px;
+  padding-left: 20px;
+  color: var(--nested-header);
+  font-variant-numeric: tabular-nums;
+}
+
+.awards-nested-table tbody td:last-child {
+  border-radius: 0 12px 12px 0;
+}
+
+.awards-nested-table tbody tr:hover td {
+  background: linear-gradient(
+    180deg,
+    var(--nested-row-hover-from) 0%,
+    var(--nested-row-hover-to) 100%
+  );
+  box-shadow: var(--nested-shadow-hover);
+}
+
+.awards-nested-table tbody tr:hover td:first-child {
+  box-shadow:
+    inset 4px 0 0 var(--nested-accent),
+    var(--nested-shadow-hover);
+}
+
+.awards-nested-table__name {
+  color: var(--nested-text-strong);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.awards-nested-table__muted {
+  color: var(--nested-header);
+  font-weight: 500;
+}
+
+.awards-nested-table__desc {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--nested-text);
+}
+
+@media (max-width: 639px) {
+  .awards-nested-table thead th.awards-nested-table__col-desc,
+  .awards-nested-table tbody td.awards-nested-table__col-desc {
+    display: none;
+  }
+
+  .awards-nested-table tbody td {
+    padding: 8px 12px;
+  }
+}

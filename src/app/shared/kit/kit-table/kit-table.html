@@ -22,10 +22,35 @@
   </div>
 } @else {
   <div class="table-scroll-container">
-    <table mat-table [dataSource]="dataSource()" class="w-full">
+    <table
+      mat-table
+      [dataSource]="dataSource()"
+      [multiTemplateDataRows]="expandable()"
+      class="w-full"
+    >
 
       @for (column of displayedKeys(); track column) {
-        @if (isActionsColumn(column)) {
+        @if (isExpandColumn(column)) {
+          <ng-container [matColumnDef]="expandColumnKey">
+            <th mat-header-cell *matHeaderCellDef class="kit-expand-header"></th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              class="kit-expand-cell"
+              (click)="$event.stopPropagation()"
+            >
+              <button
+                type="button"
+                class="expand-toggle-btn"
+                (click)="onExpandClick(element)"
+              >
+                <mat-icon class="scale-90">
+                  {{ isRowExpanded(element) ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+              </button>
+            </td>
+          </ng-container>
+        } @else if (isActionsColumn(column)) {
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="text-right"></th>
             <td mat-cell *matCellDef="let element">
@@ -61,8 +86,35 @@
         }
       }
 
+      @if (expandable()) {
+        <ng-container [matColumnDef]="detailColumnKey">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="displayedKeys().length"
+            class="kit-expand-detail-cell"
+          >
+            @if (isRowExpanded(element) && expandDetailTemplate(); as detailTpl) {
+              <div class="expand-detail-panel">
+                <ng-container
+                  *ngTemplateOutlet="detailTpl; context: { $implicit: element }"
+                />
+              </div>
+            }
+          </td>
+        </ng-container>
+      }
+
       <tr mat-header-row *matHeaderRowDef="displayedKeys()"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedKeys();" (click)="onRowClick(row)"></tr>
+      @if (expandable()) {
+        <tr
+          mat-row
+          *matRowDef="let row; columns: [detailColumnKey]"
+          class="kit-expand-detail-row"
+          [style.display]="isRowExpanded(row) ? 'table-row' : 'none'"
+        ></tr>
+      }
 
       <!-- Пустое состояние (тоже в стиле Dribbble) -->
       <tr class="mat-row bg-transparent" *matNoDataRow>

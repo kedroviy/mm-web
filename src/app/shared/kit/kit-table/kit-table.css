@@ -127,3 +127,66 @@
   float: right;
   border-radius: 8px;
 }
+
+.kit-expand-header {
+  width: 48px;
+  max-width: 48px;
+  padding-left: 16px !important;
+  padding-right: 8px !important;
+}
+
+.kit-expand-cell {
+  width: 48px;
+  max-width: 48px;
+  padding: 4px 8px 4px 16px !important;
+}
+
+.expand-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: #64748b;
+  transition: color 0.2s, background 0.2s;
+  border: none;
+  background: #f1f5f9;
+  cursor: pointer;
+}
+
+.expand-toggle-btn:hover {
+  background: #eef2ff;
+  color: #6366f1;
+}
+
+:host ::ng-deep tr.kit-expand-detail-row {
+  height: auto !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+
+:host ::ng-deep tr.kit-expand-detail-row:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep tr.kit-expand-detail-row .mat-mdc-cell {
+  border-radius: 0 0 12px 12px !important;
+  padding-top: 0 !important;
+  padding-bottom: 12px !important;
+}
+
+:host ::ng-deep tr.kit-expand-detail-row .mat-mdc-cell:first-child {
+  box-shadow: none !important;
+}
+
+.expand-detail-panel {
+  margin-top: -2px;
+  padding: 4px 4px 2px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}

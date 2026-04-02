@@ -4,6 +4,10 @@
   [loading]="store.loading()"
   [cellTemplates]="{ createdAt: dateTpl }"
   [showViewAction]="true"
+  [expandable]="true"
+  [expandedKeys]="expandedKeysList()"
+  [expandDetailTemplate]="awardCategoriesTpl"
+  (expandToggle)="onExpandToggle($event)"
   [totalItems]="store.totalItems()"
   [page]="store.page()"
   [limit]="store.limit()"
@@ -15,4 +19,49 @@
   <span>
     {{ element.createdAt | date: 'dd.MM.yyyy HH:mm' }}
   </span>
+</ng-template>
+
+<ng-template #awardCategoriesTpl let-award>
+  <div class="awards-nested">
+    @if (isCategoriesLoading(award.id)) {
+      <div class="awards-nested__loading" aria-busy="true">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="awards-nested__skeleton-row">
+            <div class="awards-nested__skeleton-bar awards-nested__skeleton-bar--sm"></div>
+            <div class="awards-nested__skeleton-bar awards-nested__skeleton-bar--lg"></div>
+            <div class="awards-nested__skeleton-bar awards-nested__skeleton-bar--md"></div>
+          </div>
+        }
+      </div>
+    } @else if (categoriesForAward(award.id).length === 0) {
+      <p class="awards-nested__empty">Категорий для этой премии пока нет</p>
+    } @else {
+      <table class="awards-nested-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Категория</th>
+            <th scope="col">URL-путь</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col" class="awards-nested-table__col-desc">Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cat of categoriesForAward(award.id); track cat.id) {
+            <tr>
+              <td>{{ cat.id }}</td>
+              <td class="awards-nested-table__name">{{ cat.name }}</td>
+              <td class="awards-nested-table__muted">{{ cat.slug }}</td>
+              <td class="awards-nested-table__muted">
+                {{ cat.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+              </td>
+              <td class="awards-nested-table__desc awards-nested-table__col-desc" [title]="cat.description ?? ''">
+                {{ cat.description || '—' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
 </ng-template>
