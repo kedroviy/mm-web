@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { COMMON_CONSTANTS } from '@core/constants';
 import { DASHBOARD_CONFIG as PAGES } from '@features/dashboard/lib/dashboard.config';
-import { AwardCategory } from '@features/dashboard/pages/nsi-list/award-category';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
