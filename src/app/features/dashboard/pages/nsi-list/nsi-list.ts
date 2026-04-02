@@ -22,6 +22,6 @@ export class NsiList {
     { id: 'age-rating', position: 3, name: 'Возрастной ценз (MPAA / РФ)', route: 'age-rating' },
     { id: 'content-types', position: 4, name: 'Формат контента', route: 'content-types' },
     { id: 'awards', position: 5, name: 'Списки и награды', route: 'awards' },
-    { id: 'lists', position: 6, name: 'Подборки', route: 'lists' },
+    { id: 'award-category', position: 6, name: 'Категории наград', route: 'award-category' },
   ]);
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Selections } from './selections';
+import { AwardCategoryCreate } from './award-category-create';
 
-describe('Selections', () => {
-  let component: Selections;
-  let fixture: ComponentFixture<Selections>;
+describe('AwardCategoryCreate', () => {
+  let component: AwardCategoryCreate;
+  let fixture: ComponentFixture<AwardCategoryCreate>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Selections]
+      imports: [AwardCategoryCreate]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Selections);
+    fixture = TestBed.createComponent(AwardCategoryCreate);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -7,7 +7,7 @@ export interface Country extends CreateCountryDto {
 }
 
 export interface CountriesState {
-  genres: Country[];
+  data: Country[];
   loading: boolean;
   loaded: boolean;
   page: number;

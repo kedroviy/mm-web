@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { NavigationService } from '@core/services/layout/navigation.service';
 import { UiButtonComponent } from '@shared/kit/button/button';
 import { FileUploadDialog } from '@shared/kit/file-upload-dialog/file-upload-dialog';
-import { GenresStore } from '@features/dashboard/pages/nsi-list/genres/genres.store';
+import { ActiveImportService } from '@core/services/import-progress/active-import.service';
 import { NotificationsService } from '@core/services/notifications/notifications';
 
 @Component({
@@ -15,22 +15,21 @@ import { NotificationsService } from '@core/services/notifications/notifications
   imports: [KitHeader, MatIconModule, RouterLink, RouterOutlet, UiButtonComponent],
   templateUrl: './root-layout.html',
   styleUrl: './root-layout.css',
-  standalone: true,
 })
 export class RootLayout {
   protected readonly navService = inject(NavigationService);
   private readonly dialog = inject(MatDialog);
-  private readonly genresStore = inject(GenresStore);
+  private readonly activeImport = inject(ActiveImportService);
   private readonly notify = inject(NotificationsService);
 
   readonly isImporting = computed(() => {
-    const status = this.genresStore.importStatus();
+    const status = this.activeImport.importStatus();
     return status === 'uploading' || status === 'processing';
   });
 
   readonly importButtonText = computed(() => {
-    const status = this.genresStore.importStatus();
-    const progress = this.genresStore.importProgress();
+    const status = this.activeImport.importStatus();
+    const progress = this.activeImport.importProgress();
 
     switch (status) {
       case 'uploading':
@@ -43,8 +42,8 @@ export class RootLayout {
   });
 
   private readonly importStatusEffect = effect(() => {
-    const status = this.genresStore.importStatus();
-    const message = this.genresStore.importMessage();
+    const status = this.activeImport.importStatus();
+    const message = this.activeImport.importMessage();
 
     if (status === 'completed') {
       this.notify.showSuccess(message || 'Импорт завершён');
@@ -61,7 +60,7 @@ export class RootLayout {
       .afterClosed()
       .subscribe((file: File | null) => {
         if (file) {
-          this.genresStore.importExcel(file);
+          this.activeImport.importExcel(file);
         }
       });
   }

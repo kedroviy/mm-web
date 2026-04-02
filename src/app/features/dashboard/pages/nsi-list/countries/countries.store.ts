@@ -9,7 +9,7 @@ import { NsiCountriesService } from '@core/api/generated/nsi-countries/nsi-count
 
 
 const initialState: CountriesState = {
-  genres: [],
+  data: [],
   loading: false,
   loaded: false,
   page: 1,
@@ -40,7 +40,7 @@ export const CountriesStore = signalStore(
         )
         .subscribe((res) => {
           patchState(store, {
-            genres: (res.data as Country[]) ?? [],
+            data: (res.data as Country[]) ?? [],
             totalItems: res.totalItems ?? 0,
             loading: false,
             loaded: true,

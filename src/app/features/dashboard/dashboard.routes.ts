@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { COMMON_CONSTANTS } from '@core/constants';
 import { DASHBOARD_CONFIG as PAGES } from '@features/dashboard/lib/dashboard.config';
+import { AwardCategory } from '@features/dashboard/pages/nsi-list/award-category';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -132,19 +133,19 @@ export const DASHBOARD_ROUTES: Routes = [
         ],
       },
       {
-        path: PAGES.NSI.SELECTION.path,
-        data: { title: PAGES.NSI.SELECTION.data.title },
+        path: PAGES.NSI.AWARD_CATEGORY.path,
+        data: { title: PAGES.NSI.AWARD_CATEGORY.data.title },
         children: [
           {
             path: COMMON_CONSTANTS.EMPTY_STRING,
-            loadComponent: () => import('./pages/nsi-list/selections').then((m) => m.Selections),
-            data: PAGES.NSI.SELECTION.data,
+            loadComponent: () => import('./pages/nsi-list/award-category').then((m) => m.AwardCategory),
+            data: PAGES.NSI.AWARD_CATEGORY.data,
           },
           {
-            path: PAGES.NSI.SELECTION.CHILDREN.CREATE.path,
+            path: PAGES.NSI.AWARD_CATEGORY.CHILDREN.CREATE.path,
             loadComponent: () =>
-              import('./pages/nsi-list/selections').then((m) => m.SelectionsCreate),
-            data: PAGES.NSI.SELECTION.CHILDREN.CREATE.data,
+              import('./pages/nsi-list/award-category').then((m) => m.AwardCategory),
+            data: PAGES.NSI.AWARD_CATEGORY.CHILDREN.CREATE.data,
           },
           // {
           //   path: PAGES.NSI.AWARDS.CHILDREN.VIEW.path,

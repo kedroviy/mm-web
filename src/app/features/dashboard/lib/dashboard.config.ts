@@ -26,6 +26,6 @@ export const DASHBOARD_CONFIG = {
     AWARDS: createNsiItem('awards', 'Списки и награды'),
     CONTENT_TYPE: createNsiItem('content-types', 'Формат контента'),
     AGE_RATING: createNsiItem('age-rating', 'Возрастной ценз (MPAA / РФ)'),
-    SELECTION: createNsiItem('selection', 'Подборки'),
+    AWARD_CATEGORY: createNsiItem('award-category', 'Категории наград'),
   },
 } as const satisfies Record<string, AppRouteConfig>;
