@@ -9,11 +9,17 @@ import {
 } from '@angular/core';
 import { CookieService } from '@core/services/cookie/cookie.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { isPlatformServer } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
 import { UserProfileResponseDto } from '@core/api/model';
 import { UsersService as GeneratedUserService } from '@core/api/generated/users/users.service';
 import { AuthService as GeneratedAuthService } from '@core/api/generated/auth/auth.service';
+import {
+  AVATAR_SESSION_HUE_KEY,
+  parseStoredHue,
+  pickRandomAvatarHue,
+  stableHueFromSeed,
+} from '@core/utils/avatar-session-hue';
 
 const AUTH_KEY = makeStateKey<boolean>('auth_state');
 
@@ -31,6 +37,8 @@ export class AuthService {
 
   readonly authStatus = signal<boolean | null>(null);
   readonly profile = signal<UserProfileResponseDto | undefined>(undefined);
+  /** Оттенок фона аватара (HSL 0–359); при логине назначается случайный. */
+  readonly avatarHue = signal<number | null>(null);
   hasAuthenticated = signal<boolean | null>(null);
 
   private readonly ACCESS_TOKEN_COOKIE = 'access_token';
@@ -41,6 +49,7 @@ export class AuthService {
       tap(() => this.hasAuthenticated.set(true)),
       shareReplay(1),
       catchError((err) => {
+        this.clearAvatarHue();
         this.logout();
         // Перебрасываем ошибку дальше (например, для интерцептора)
         return throwError(() => err);
@@ -67,12 +76,14 @@ export class AuthService {
     return this.usersApi.usersControllerGetProfile({ headers }).pipe(
       tap((userData) => {
         this.profile.set(userData);
+        this.syncAvatarHueAfterProfileLoad(userData);
         this.authStatus.set(true);
         this.transferState.set(AUTH_KEY, true);
       }),
       map(() => true),
       catchError(() => {
         this.profile.set(undefined);
+        this.clearAvatarHue();
         this.authStatus.set(false);
         this.transferState.set(AUTH_KEY, false);
         return of(false);
@@ -152,5 +163,41 @@ export class AuthService {
         return true;
       }),
     );
+  }
+
+  /**
+   * Новый случайный цвет аватара (вызывать после успешного логина).
+   */
+  assignRandomAvatarHueForSession(): void {
+    const h = pickRandomAvatarHue();
+    this.avatarHue.set(h);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem(AVATAR_SESSION_HUE_KEY, String(h));
+    }
+  }
+
+  private syncAvatarHueAfterProfileLoad(user: UserProfileResponseDto): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const stored = parseStoredHue(sessionStorage.getItem(AVATAR_SESSION_HUE_KEY));
+      if (stored !== null) {
+        this.avatarHue.set(stored);
+        return;
+      }
+      if (this.avatarHue() !== null) {
+        return;
+      }
+      const h = stableHueFromSeed(user.userId);
+      this.avatarHue.set(h);
+      sessionStorage.setItem(AVATAR_SESSION_HUE_KEY, String(h));
+      return;
+    }
+    this.avatarHue.set(stableHueFromSeed(user.userId));
+  }
+
+  private clearAvatarHue(): void {
+    this.avatarHue.set(null);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.removeItem(AVATAR_SESSION_HUE_KEY);
+    }
   }
 }

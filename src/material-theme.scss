@@ -38,19 +38,19 @@ body {
 }
 
 .mat-mdc-snack-bar-container.success-snackbar {
-  --mdc-snackbar-container-color: #2e7d32 !important;
-  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mdc-snackbar-container-color: var(--app-snackbar-success-bg) !important;
+  --mdc-snackbar-supporting-text-color: var(--app-snackbar-on-solid) !important;
 
   .mdc-button__label {
-    color: #ffffff !important;
+    color: var(--app-snackbar-on-solid) !important;
   }
 }
 
 .mat-mdc-snack-bar-container.error-snackbar {
-  --mdc-snackbar-container-color: #d32f2f !important;
-  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mdc-snackbar-container-color: var(--app-snackbar-error-bg) !important;
+  --mdc-snackbar-supporting-text-color: var(--app-snackbar-on-solid) !important;
 
   .mdc-button__label {
-    color: #ffffff !important;
+    color: var(--app-snackbar-on-solid) !important;
   }
 }

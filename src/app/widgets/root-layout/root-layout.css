@@ -18,6 +18,7 @@
   flex-direction: column;
   min-height: 100vh; /* Контейнер всегда не меньше экрана */
   height: auto; /* Но может расти бесконечно вниз */
+  background-color: var(--app-color-surface-raised);
 }
 
 /* Это тот div, который идет после хедера */

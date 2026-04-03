@@ -56,6 +56,7 @@ export class AdminLogin {
       .subscribe({
         next: () => {
           this.notify.showSuccess(`Вход успешно осуществлён!`);
+          this.customAuthService.assignRandomAvatarHueForSession();
 
           void this.router.navigate(['/dashboard/home']);
         },

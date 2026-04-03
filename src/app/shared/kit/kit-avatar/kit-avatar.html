@@ -1,0 +1,17 @@
+<button
+  type="button"
+  class="kit-avatar"
+  [class.kit-avatar--sm]="size() === 'sm'"
+  [class.kit-avatar--md]="size() === 'md'"
+  [class.kit-avatar--lg]="size() === 'lg'"
+  [class.kit-avatar--disabled]="disabled()"
+  [disabled]="disabled()"
+  [attr.aria-label]="label()"
+  (click)="onActivate()"
+>
+  @if (imageUrl()) {
+    <img class="kit-avatar__img" [src]="imageUrl()!" alt="" decoding="async" loading="lazy" />
+  } @else {
+    <span class="kit-avatar__initials" aria-hidden="true">{{ initials() }}</span>
+  }
+</button>

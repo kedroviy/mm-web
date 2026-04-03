@@ -15,15 +15,13 @@
       <ng-content select="[actions]"></ng-content>
 
       @if (profile(); as user) {
-        <app-button
-          [isCircle]="true"
-          [customColor]="userColor()"
-          (click)="profileClick.emit()"
-        >
-
-          <span class="initials">{{ userInitials() }}</span>
-
-        </app-button>
+        <app-kit-avatar
+          [displayName]="user.name"
+          [accentHue]="avatarHue()"
+          [label]="profileAriaLabel()"
+          size="md"
+          (activated)="profileClick.emit()"
+        />
       }
     </div>
   </div>

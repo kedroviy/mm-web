@@ -4,19 +4,19 @@
 
 /* ── Toast base ── */
 .mat-mdc-snack-bar-container.toast {
-  --mdc-snackbar-container-color: #ffffff !important;
-  --mdc-snackbar-supporting-text-color: #1e293b !important;
+  --mdc-snackbar-container-color: var(--app-toast-surface) !important;
+  --mdc-snackbar-supporting-text-color: var(--app-toast-text) !important;
   --mdc-snackbar-container-shape: 12px !important;
 
   .mdc-snackbar__surface {
-    background-color: #ffffff !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06) !important;
-    border: 1px solid #e2e8f0;
+    background-color: var(--app-toast-surface) !important;
+    box-shadow: var(--app-shadow-toast) !important;
+    border: 1px solid var(--app-toast-border);
     overflow: hidden;
   }
 
   .mat-mdc-snack-bar-label {
-    color: #1e293b !important;
+    color: var(--app-toast-text) !important;
   }
 
   .mdc-snackbar__surface::before {
@@ -29,7 +29,7 @@
   }
 
   .mdc-button__label {
-    color: #64748b !important;
+    color: var(--app-toast-action-text) !important;
     font-weight: 500 !important;
   }
 
@@ -42,44 +42,44 @@
 /* ── Success: green ── */
 .mat-mdc-snack-bar-container.toast-success {
   .mdc-snackbar__surface::before {
-    background: #16a34a;
+    background: var(--app-toast-accent-success);
   }
 
   .mdc-button__label {
-    color: #16a34a !important;
+    color: var(--app-toast-accent-success) !important;
   }
 }
 
 /* ── Error: red ── */
 .mat-mdc-snack-bar-container.toast-error {
   .mdc-snackbar__surface::before {
-    background: #dc2626;
+    background: var(--app-toast-accent-error);
   }
 
   .mdc-button__label {
-    color: #dc2626 !important;
+    color: var(--app-toast-accent-error) !important;
   }
 }
 
 /* ── Warning: amber ── */
 .mat-mdc-snack-bar-container.toast-warning {
   .mdc-snackbar__surface::before {
-    background: #d97706;
+    background: var(--app-toast-accent-warning);
   }
 
   .mdc-button__label {
-    color: #d97706 !important;
+    color: var(--app-toast-accent-warning) !important;
   }
 }
 
 /* ── Info: blue ── */
 .mat-mdc-snack-bar-container.toast-info {
   .mdc-snackbar__surface::before {
-    background: #2563eb;
+    background: var(--app-toast-accent-info);
   }
 
   .mdc-button__label {
-    color: #2563eb !important;
+    color: var(--app-toast-accent-info) !important;
   }
 }
 

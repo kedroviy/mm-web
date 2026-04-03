@@ -1,0 +1,74 @@
+/**
+ * Глобальные цветовые и типографические токены приложения.
+ * Компоненты ссылаются только на var(--app-…); сырые hex — только здесь.
+ */
+:root {
+  /* —— Базовая палитра (нейтральные) —— */
+  --app-palette-neutral-0: #ffffff;
+  --app-palette-neutral-50: #f8fafc;
+  --app-palette-neutral-100: #f1f5f9;
+  --app-palette-neutral-200: #e2e8f0;
+  --app-palette-neutral-400: #94a3b8;
+  --app-palette-neutral-500: #64748b;
+  --app-palette-neutral-700: #334155;
+  --app-palette-neutral-800: #1e293b;
+  --app-palette-black-a5: rgb(0 0 0 / 0.05);
+  --app-palette-black-a10: rgb(0 0 0 / 0.1);
+  --app-palette-black-a25: rgb(0 0 0 / 0.25);
+
+  /* —— Акценты (UI, карточки, ссылки) —— */
+  --app-palette-blue-500: #3b82f6;
+  --app-palette-violet-500: #8b5cf6;
+  --app-palette-blue-hover-border: #cbdaf8;
+
+  /* —— Семантика (статусы / тосты) —— */
+  --app-palette-success-600: #16a34a;
+  --app-palette-success-800: #2e7d32;
+  --app-palette-error-600: #dc2626;
+  --app-palette-error-700: #d32f2f;
+  --app-palette-warning-600: #d97706;
+  --app-palette-info-600: #2563eb;
+
+  /* —— Семантические алиасы —— */
+  --app-color-text-primary: var(--app-palette-neutral-800);
+  --app-color-text-muted: var(--app-palette-neutral-500);
+  --app-color-border-subtle: var(--app-palette-neutral-200);
+  --app-color-surface-raised: var(--app-palette-neutral-0);
+  --app-color-surface-muted: var(--app-palette-neutral-100);
+  --app-color-icon-accent-bg: var(--app-palette-neutral-100);
+  --app-color-icon-accent-fg: var(--app-palette-blue-500);
+
+  /* —— Тени —— */
+  --app-shadow-header: 0 2px 4px var(--app-palette-black-a10);
+  --app-shadow-toast: 0 4px 24px var(--app-palette-black-a10), 0 1px 4px var(--app-palette-black-a5);
+  --app-shadow-card: 0 4px 20px -5px var(--app-palette-black-a5);
+  --app-shadow-card-hover: 0 20px 25px -5px var(--app-palette-black-a10),
+    0 10px 10px -5px var(--app-palette-black-a5);
+
+  /* —— Snackbar (legacy-классы в material-theme) —— */
+  --app-snackbar-success-bg: var(--app-palette-success-800);
+  --app-snackbar-error-bg: var(--app-palette-error-700);
+  --app-snackbar-on-solid: var(--app-palette-neutral-0);
+
+  /* —— Toast (styles.css) —— */
+  --app-toast-surface: var(--app-palette-neutral-0);
+  --app-toast-text: var(--app-palette-neutral-800);
+  --app-toast-action-text: var(--app-palette-neutral-500);
+  --app-toast-border: var(--app-palette-neutral-200);
+  --app-toast-accent-success: var(--app-palette-success-600);
+  --app-toast-accent-error: var(--app-palette-error-600);
+  --app-toast-accent-warning: var(--app-palette-warning-600);
+  --app-toast-accent-info: var(--app-palette-info-600);
+
+  /* —— Аватар (фон задаётся через --kit-avatar-h на элементе) —— */
+  --app-avatar-saturation: 65%;
+  --app-avatar-lightness: 45%;
+  --app-avatar-text: var(--app-palette-neutral-0);
+  --app-avatar-default-hue: 210;
+  --app-avatar-focus-ring: var(--mat-sys-primary, #1565c0);
+  --app-avatar-radius: 9999px;
+
+  /* —— Фокус / доступность —— */
+  --app-focus-ring-width: 2px;
+  --app-focus-ring-offset: 2px;
+}

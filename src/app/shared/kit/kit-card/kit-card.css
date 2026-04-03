@@ -1,29 +1,35 @@
 .modern-card {
+  --accent-x: 50;
   position: relative;
-  border-radius: 16px !important; /* Сильное скругление */
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  background: #ffffff;
+  border-radius: 16px !important;
+  border: 1px solid var(--app-palette-black-a5) !important;
+  background: var(--app-color-surface-raised);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: var(--app-shadow-card) !important;
   overflow: hidden;
   padding: 8px;
 }
 
 .modern-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-  0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  border-color: #cbdaf8 !important; /* Синяя рамка при наведении */
+  box-shadow: var(--app-shadow-card-hover) !important;
+  border-color: var(--app-palette-blue-hover-border) !important;
 }
 
-/* Акцентная полоска сверху */
 .card-accent-bar {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 38% 900% at calc(var(--accent-x) * 1%) -120%,
+    var(--app-palette-neutral-0),
+    var(--app-palette-violet-500) 30%,
+    var(--app-palette-blue-500) 62%,
+    var(--app-palette-info-600) 100%
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -35,18 +41,18 @@
 .modern-title {
   font-size: 1.25rem !important;
   font-weight: 600 !important;
-  color: #1e293b;
+  color: var(--app-color-text-primary);
   letter-spacing: -0.025em;
 }
 
 .modern-subtitle {
-  color: #64748b !important;
+  color: var(--app-color-text-muted) !important;
   font-size: 0.875rem !important;
 }
 
 .header-icon {
-  background-color: #f1f5f9;
-  color: #3b82f6;
+  background-color: var(--app-color-icon-accent-bg);
+  color: var(--app-color-icon-accent-fg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,11 +61,11 @@
 
 .modern-actions {
   padding: 12px 16px !important;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--app-color-surface-muted);
 }
 
 .action-btn {
-  color: #3b82f6 !important;
+  color: var(--app-palette-blue-500) !important;
   font-weight: 500 !important;
   text-transform: none !important;
   display: flex !important;
