@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { catchError, of } from 'rxjs';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 import { ActiveImportService } from '@core/services/import-progress/active-import.service';
-import { NsiAwardcategoryService } from '@core/api/generated/nsi-awardcategory/nsi-awardcategory.service';
+import { NsiAwardcategoryService } from '@core/api/nsi-admin/generated/nsi-awardcategory/nsi-awardcategory.service';
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { AwardsStore } from '@features/dashboard/pages/nsi-list/awards/awards.store';

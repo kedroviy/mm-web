@@ -7,51 +7,54 @@ import {
   TransferState,
   makeStateKey,
 } from '@angular/core';
-import { CookieService } from '@core/services/cookie/cookie.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
-import { UserProfileResponseDto } from '@core/api/model';
-import { UsersService as GeneratedUserService } from '@core/api/generated/users/users.service';
+import { GetMeType } from '@core/api/model';
+import { UserService as GeneratedUserService } from '@core/api/generated/user/user.service';
 import { AuthService as GeneratedAuthService } from '@core/api/generated/auth/auth.service';
+import { CookieService } from '@core/services/cookie/cookie.service';
 import {
   AVATAR_SESSION_HUE_KEY,
   parseStoredHue,
   pickRandomAvatarHue,
   stableHueFromSeed,
 } from '@core/utils/avatar-session-hue';
+import {
+  ACCESS_TOKEN_COOKIE,
+  AUTH_EMAIL_STORAGE_KEY,
+  AUTH_TOKEN_STORAGE_KEY,
+  USER_EMAIL_COOKIE,
+} from './auth.constants';
 
 const AUTH_KEY = makeStateKey<boolean>('auth_state');
+const AUTH_COOKIE_MAX_DAYS = 7;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private cookies = inject(CookieService);
-  private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
   private usersApi = inject(GeneratedUserService);
+  private cookies = inject(CookieService);
   private request = inject(REQUEST, { optional: true });
   private transferState = inject(TransferState);
   private readonly api = inject(GeneratedAuthService);
 
-  private authState$?: Observable<boolean>;
-
   readonly authStatus = signal<boolean | null>(null);
-  readonly profile = signal<UserProfileResponseDto | undefined>(undefined);
-  /** Оттенок фона аватара (HSL 0–359); при логине назначается случайный. */
+  readonly profile = signal<GetMeType | undefined>(undefined);
   readonly avatarHue = signal<number | null>(null);
   hasAuthenticated = signal<boolean | null>(null);
 
-  private readonly ACCESS_TOKEN_COOKIE = 'access_token';
-  private readonly REFRESH_TOKEN_COOKIE = 'refresh_token';
-
   initAuth(): Observable<void> {
-    return this.api.authControllerRefreshToken({ withCredentials: true }).pipe(
+    if (!this.getAccessToken()) {
+      return of(undefined);
+    }
+
+    return this.fetchProfile().pipe(
       tap(() => this.hasAuthenticated.set(true)),
+      map(() => undefined),
       shareReplay(1),
       catchError((err) => {
-        this.clearAvatarHue();
-        this.logout();
-        // Перебрасываем ошибку дальше (например, для интерцептора)
+        this.clearSession();
         return throwError(() => err);
       }),
     );
@@ -65,6 +68,12 @@ export class AuthService {
       return of(isAuth);
     }
 
+    if (!this.getAccessToken()) {
+      this.clearSessionState();
+      this.transferState.set(AUTH_KEY, false);
+      return of(false);
+    }
+
     let headers = new HttpHeaders();
     if (isPlatformServer(this.platformId) && this.request) {
       const cookieHeader = this.request.headers.get('cookie');
@@ -73,7 +82,7 @@ export class AuthService {
       }
     }
 
-    return this.usersApi.usersControllerGetProfile({ headers }).pipe(
+    return this.fetchProfile({ headers }).pipe(
       tap((userData) => {
         this.profile.set(userData);
         this.syncAvatarHueAfterProfileLoad(userData);
@@ -82,9 +91,7 @@ export class AuthService {
       }),
       map(() => true),
       catchError(() => {
-        this.profile.set(undefined);
-        this.clearAvatarHue();
-        this.authStatus.set(false);
+        this.clearSessionState();
         this.transferState.set(AUTH_KEY, false);
         return of(false);
       }),
@@ -96,78 +103,69 @@ export class AuthService {
     return this.authStatus() === true;
   }
 
-  refreshToken(): Observable<void> {
-    return this.api.authControllerRefreshToken({ withCredentials: true }).pipe(
-      tap(() => this.hasAuthenticated.set(true)),
-      shareReplay(1),
-      catchError((err) => {
-        this.logout();
-        // Перебрасываем ошибку дальше (например, для интерцептора)
-        return throwError(() => err);
+  login(email: string, password: string): Observable<void> {
+    return this.api.authControllerLogin({ email, password }).pipe(
+      tap(({ token }) => {
+        this.setAccessToken(token);
+        this.setSessionEmail(email);
       }),
+      map(() => undefined),
     );
   }
 
-  // isAuthenticated(): Observable<boolean> {
-  //   const hasCookie =
-  //     !!this.cookies.get(this.ACCESS_TOKEN_COOKIE) || !!this.cookies.get(this.REFRESH_TOKEN_COOKIE);
-  //
-  //   if (!hasCookie) {
-  //     return of(false);
-  //   }
-  //
-  //   if (!this.authState$) {
-  //     const tokenCookie = this.cookies.get(this.ACCESS_TOKEN_COOKIE);
-  //     const refreshTokenCookie = this.cookies.get(this.REFRESH_TOKEN_COOKIE);
-  //     const cookieHeader =
-  //       tokenCookie && refreshTokenCookie
-  //         ? `access_token=${tokenCookie}; refresh_token=${refreshTokenCookie}`
-  //         : tokenCookie
-  //           ? `access_token=${tokenCookie}`
-  //           : refreshTokenCookie
-  //             ? `refresh_token=${refreshTokenCookie}`
-  //             : COMMON_CONSTANTS.EMPTY_STRING;
-  //
-  //     const options =
-  //       isPlatformServer(this.platformId) && cookieHeader
-  //         ? { headers: new HttpHeaders({ Cookie: cookieHeader }) }
-  //         : undefined;
-  //
-  //     this.authState$ = this.http.get('/api/v1/users/profile', options).pipe(
-  //       map(() => true),
-  //       catchError(() => of(false)),
-  //       shareReplay(1),
-  //     );
-  //   }
-  //
-  //   return this.authState$;
-  // }
-
-  clearCache() {
-    this.authState$ = undefined;
+  logout(): Observable<void> {
+    this.clearSession();
+    return of(undefined);
   }
 
-  // login(data: { login: string; password: string }) {
-  //   return this.http.post('/api/login', data).pipe(
-  //     map(() => {
-  //       this.clearCache();
-  //       return true;
-  //     }),
-  //   );
-  // }
+  getAccessToken(): string | null {
+    const fromStorage = isPlatformBrowser(this.platformId)
+      ? localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
+      : null;
+    const fromCookie = this.cookies.get(ACCESS_TOKEN_COOKIE);
 
-  logout() {
-    return this.http.post('/api/logout', {}).pipe(
-      map(() => {
-        this.clearCache();
-        return true;
-      }),
-    );
+    const token = fromStorage ?? fromCookie;
+
+    if (token && isPlatformBrowser(this.platformId) && !fromStorage && fromCookie) {
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
+    }
+
+    return token;
   }
 
-  /**
-   * Новый случайный цвет аватара (вызывать после успешного логина).
-   */
+  getSessionEmail(): string | null {
+    const fromStorage = isPlatformBrowser(this.platformId)
+      ? localStorage.getItem(AUTH_EMAIL_STORAGE_KEY)
+      : null;
+    const fromCookie = this.cookies.get(USER_EMAIL_COOKIE);
+
+    const email = fromStorage ?? fromCookie;
+
+    if (email && isPlatformBrowser(this.platformId) && !fromStorage && fromCookie) {
+      localStorage.setItem(AUTH_EMAIL_STORAGE_KEY, email);
+    }
+
+    return email;
+  }
+
+  setAccessToken(token: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
+    }
+    this.cookies.set(ACCESS_TOKEN_COOKIE, token, { days: AUTH_COOKIE_MAX_DAYS });
+  }
+
+  setSessionEmail(email: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(AUTH_EMAIL_STORAGE_KEY, email);
+    }
+    this.cookies.set(USER_EMAIL_COOKIE, email, { days: AUTH_COOKIE_MAX_DAYS });
+  }
+
+  clearCache(): void {
+    // kept for login flow compatibility
+  }
+
   assignRandomAvatarHueForSession(): void {
     const h = pickRandomAvatarHue();
     this.avatarHue.set(h);
@@ -176,7 +174,35 @@ export class AuthService {
     }
   }
 
-  private syncAvatarHueAfterProfileLoad(user: UserProfileResponseDto): void {
+  private fetchProfile(options?: { headers?: HttpHeaders }): Observable<GetMeType> {
+    const email = this.getSessionEmail();
+    if (!email) {
+      return throwError(() => new Error('User email is not available for profile request'));
+    }
+
+    return this.usersApi.userControllerGetMe({ userEmail: email }, options);
+  }
+
+  private clearSession(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(AUTH_EMAIL_STORAGE_KEY);
+    }
+    this.cookies.remove(ACCESS_TOKEN_COOKIE);
+    this.cookies.remove(USER_EMAIL_COOKIE);
+    this.clearSessionState();
+  }
+
+  private clearSessionState(): void {
+    this.profile.set(undefined);
+    this.clearAvatarHue();
+    this.authStatus.set(false);
+    this.hasAuthenticated.set(false);
+  }
+
+  private syncAvatarHueAfterProfileLoad(user: GetMeType): void {
+    const seed = String(user.id);
+
     if (isPlatformBrowser(this.platformId)) {
       const stored = parseStoredHue(sessionStorage.getItem(AVATAR_SESSION_HUE_KEY));
       if (stored !== null) {
@@ -186,12 +212,13 @@ export class AuthService {
       if (this.avatarHue() !== null) {
         return;
       }
-      const h = stableHueFromSeed(user.userId);
+      const h = stableHueFromSeed(seed);
       this.avatarHue.set(h);
       sessionStorage.setItem(AVATAR_SESSION_HUE_KEY, String(h));
       return;
     }
-    this.avatarHue.set(stableHueFromSeed(user.userId));
+
+    this.avatarHue.set(stableHueFromSeed(seed));
   }
 
   private clearAvatarHue(): void {

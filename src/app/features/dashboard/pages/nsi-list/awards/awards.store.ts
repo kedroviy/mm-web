@@ -5,7 +5,7 @@ import {
 } from '@core/services/import-progress/import-progress.service';
 import { catchError, of, switchMap, tap, EMPTY } from 'rxjs';
 import { Awards, AwardsState } from '@features/dashboard/pages/nsi-list/awards/awards.types';
-import { NsiAwardService } from '@core/api/generated/nsi-award/nsi-award.service';
+import { NsiAwardService } from '@core/api/nsi-admin/generated/nsi-award/nsi-award.service';
 
 
 const initialState: AwardsState = {

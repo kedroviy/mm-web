@@ -8,7 +8,7 @@ import {
   AwardCategory,
   AwardCategoryState,
 } from '@features/dashboard/pages/nsi-list/award-category/award-category.types';
-import { NsiAwardcategoryService } from '@core/api/generated/nsi-awardcategory/nsi-awardcategory.service';
+import { NsiAwardcategoryService } from '@core/api/nsi-admin/generated/nsi-awardcategory/nsi-awardcategory.service';
 
 
 const initialState: AwardCategoryState = {

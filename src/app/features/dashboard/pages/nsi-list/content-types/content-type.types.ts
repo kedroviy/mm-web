@@ -1,4 +1,4 @@
-import { CreateContentTypeDto } from '@core/api/model';
+import { CreateContentTypeDto } from '@core/api/nsi-admin/model';
 import { ImportStatus } from '@core/services/import-progress/import-progress.service';
 
 export interface ContentType extends CreateContentTypeDto {

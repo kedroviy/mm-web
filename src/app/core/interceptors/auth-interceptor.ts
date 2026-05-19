@@ -2,63 +2,60 @@ import { isPlatformServer } from '@angular/common';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError, switchMap, BehaviorSubject, filter, take } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import { AuthService } from '@core/services/auth/auth.service';
 
-let isRefreshing = false;
-const refreshTokenSubject = new BehaviorSubject<boolean | null>(null);
+function resolveApiUrl(url: string): string {
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  if (url.startsWith('/')) {
+    return `${environment.apiBaseUrl}${url}`;
+  }
+
+  return url;
+}
+
+function isPublicAuthRequest(url: string): boolean {
+  return (
+    url.includes('/auth/login') ||
+    url.includes('/auth/register') ||
+    url.includes('/auth/verify-id-token') ||
+    url.includes('/auth/send-code-to-email') ||
+    url.includes('/auth/verify-code')
+  );
+}
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
   const platformId = inject(PLATFORM_ID);
 
-  let url = req.url;
-  if (url.startsWith('/api/')) {
-    url = `${environment.apiBaseUrl}${url}`;
+  const url = resolveApiUrl(req.url);
+  const token = authService.getAccessToken();
+
+  let headers = req.headers;
+  if (token && !isPublicAuthRequest(url)) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const cloned = req.clone({ url, withCredentials: true });
+  const cloned = req.clone({ url, headers, withCredentials: true });
 
   return next(cloned).pipe(
     catchError((err) => {
       if (
         err instanceof HttpErrorResponse &&
         err.status === 401 &&
-        !req.url.includes('/login') &&
-        !req.url.includes('/refresh')
+        !isPublicAuthRequest(url)
       ) {
         if (isPlatformServer(platformId)) {
           return throwError(() => err);
         }
 
-        if (isRefreshing) {
-          return refreshTokenSubject.pipe(
-            filter((result) => result !== null),
-            take(1),
-            switchMap(() => next(req.clone({ url, withCredentials: true }))),
-          );
-        }
-
-        isRefreshing = true;
-        refreshTokenSubject.next(null);
-
-        return authService.refreshToken().pipe(
-          switchMap(() => {
-            isRefreshing = false;
-            refreshTokenSubject.next(true);
-            return next(req.clone({ url, withCredentials: true }));
-          }),
-          catchError((refreshErr) => {
-            isRefreshing = false;
-            refreshTokenSubject.next(false);
-
-            authService.logout();
-            router.navigate(['/auth/login']);
-            return throwError(() => refreshErr);
-          }),
-        );
+        authService.logout().subscribe();
+        void router.navigate(['/auth/login']);
       }
 
       return throwError(() => err);

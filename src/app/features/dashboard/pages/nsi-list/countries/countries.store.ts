@@ -5,7 +5,7 @@ import {
 } from '@core/services/import-progress/import-progress.service';
 import { catchError, of, switchMap, tap, EMPTY } from 'rxjs';
 import { CountriesState, Country } from '@features/dashboard/pages/nsi-list/countries/countries.type';
-import { NsiCountriesService } from '@core/api/generated/nsi-countries/nsi-countries.service';
+import { NsiCountriesService } from '@core/api/nsi-admin/generated/nsi-countries/nsi-countries.service';
 
 
 const initialState: CountriesState = {

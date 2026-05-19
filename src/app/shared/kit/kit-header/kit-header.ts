@@ -31,7 +31,7 @@ export class KitHeader {
   avatarHue = this.authService.avatarHue;
 
   profileAriaLabel = computed(() => {
-    const name = this.profile()?.name?.trim();
+    const name = this.profile()?.username?.trim();
     return name ? `Профиль: ${name}` : 'Профиль';
   });
 

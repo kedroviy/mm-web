@@ -16,7 +16,7 @@
 
       @if (profile(); as user) {
         <app-kit-avatar
-          [displayName]="user.name"
+          [displayName]="user.username"
           [accentHue]="avatarHue()"
           [label]="profileAriaLabel()"
           size="md"

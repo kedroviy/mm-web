@@ -2,5 +2,8 @@ import { AuthService as CustomAuthService } from '@core/services/auth/auth.servi
 import { catchError, of } from 'rxjs';
 
 export function initializeAuth(authService: CustomAuthService) {
-  return () => authService.initAuth().pipe(catchError(() => of(false)));
+  return () =>
+    authService.initAuth().pipe(
+      catchError(() => of(undefined)),
+    );
 }

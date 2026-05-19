@@ -1,6 +1,6 @@
-import { UserProfileResponseDto } from '@core/api/model';
+import { GetMeType } from '@core/api/model';
 
-export type HeaderUser = UserProfileResponseDto;
+export type HeaderUser = GetMeType;
 
 export interface HeaderConfig {
   showNotifications?: boolean;
@@ -10,7 +10,7 @@ export interface HeaderConfig {
 export interface MenuItem {
   label: string;
   icon?: string;
-  route?: string; // Для навигации
-  action?: string; // Для вызова функций (например, 'logout')
-  roles?: string[]; // На всякий случай для доп. фильтрации на фронте
+  route?: string;
+  action?: string;
+  roles?: string[];
 }

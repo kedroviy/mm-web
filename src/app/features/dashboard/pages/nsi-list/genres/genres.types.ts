@@ -1,4 +1,4 @@
-import { CreateGenreDto } from '@core/api/model';
+import { CreateGenreDto } from '@core/api/nsi-admin/model';
 import { ImportStatus } from '@core/services/import-progress/import-progress.service';
 
 export interface Genre extends CreateGenreDto {

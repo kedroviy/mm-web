@@ -8,8 +8,8 @@ import {
 import { NavigationService } from '@core/services/layout/navigation.service';
 import {
   NsiGenresService as GeneratedGenresService,
-} from '@core/api/generated/nsi-genres/nsi-genres.service';
-import { CreateGenreDto } from '@core/api/model';
+} from '@core/api/nsi-admin/generated/nsi-genres/nsi-genres.service';
+import { CreateGenreDto } from '@core/api/nsi-admin/model';
 import { NotificationsService } from '@core/services/notifications/notifications';
 import { FORM_COMPONENTS } from './genres-form-registry';
 import { GenresStore } from '@features/dashboard/pages/nsi-list/genres/genres.store';

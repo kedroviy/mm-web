@@ -1,5 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { AuthService } from '@core/api/generated/auth/auth.service';
 import { AuthService as CustomAuthService } from '@core/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { UiButtonComponent } from '@shared/kit/button/button';
@@ -7,9 +6,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { KitInputComponent } from '@shared/kit/input/input';
 import { COMMON_CONSTANTS } from '@core/index';
 import { PageWrapper } from '@shared/kit/page-wrapper/page-wrapper';
-import { AdminLoginDto } from '@core/api/model';
 import { NotificationsService } from '@core/services/notifications/notifications';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
@@ -20,8 +18,7 @@ import { MatIcon } from '@angular/material/icon';
   imports: [UiButtonComponent, ReactiveFormsModule, KitInputComponent, PageWrapper, MatIcon],
 })
 export class AdminLogin {
-  private auth = inject(AuthService);
-  private customAuthService = inject(CustomAuthService);
+  private authService = inject(CustomAuthService);
   private router = inject(Router);
   private notify = inject(NotificationsService);
 
@@ -42,21 +39,19 @@ export class AdminLogin {
 
     this.isLoading.set(true);
 
-    const payload: AdminLoginDto = {
-      email: this.form.value.login ?? COMMON_CONSTANTS.EMPTY_STRING,
-      password: this.form.value.password ?? COMMON_CONSTANTS.EMPTY_STRING,
-    };
+    const email = this.form.value.login ?? COMMON_CONSTANTS.EMPTY_STRING;
+    const password = this.form.value.password ?? COMMON_CONSTANTS.EMPTY_STRING;
 
-    this.auth
-      .authControllerAdminLogin(payload)
+    this.authService
+      .login(email, password)
       .pipe(
-        tap(() => this.customAuthService.authStatus.set(true)),
-        tap(() => this.customAuthService.clearCache()),
+        switchMap(() => this.authService.checkAuth()),
+        tap(() => this.authService.clearCache()),
       )
       .subscribe({
         next: () => {
           this.notify.showSuccess(`Вход успешно осуществлён!`);
-          this.customAuthService.assignRandomAvatarHueForSession();
+          this.authService.assignRandomAvatarHueForSession();
 
           void this.router.navigate(['/dashboard/home']);
         },
@@ -64,7 +59,7 @@ export class AdminLogin {
           this.notify.showError(`Ошибка входа!`);
           this.isLoading.set(false);
           console.error(err);
-          this.customAuthService.authStatus.set(false);
+          this.authService.logout().subscribe();
         },
       });
   }

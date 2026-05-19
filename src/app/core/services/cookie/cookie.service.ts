@@ -1,6 +1,14 @@
 import { Injectable, inject, PLATFORM_ID, REQUEST } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
+export interface CookieSetOptions {
+  /** Срок жизни в днях. По умолчанию — сессионная cookie. */
+  days?: number;
+  path?: string;
+  sameSite?: 'Lax' | 'Strict' | 'None';
+  secure?: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CookieService {
   private platformId = inject(PLATFORM_ID);
@@ -17,6 +25,38 @@ export class CookieService {
     }
 
     return null;
+  }
+
+  set(name: string, value: string, options?: CookieSetOptions): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const path = options?.path ?? '/';
+    const sameSite = options?.sameSite ?? 'Lax';
+    const parts = [
+      `${name}=${encodeURIComponent(value)}`,
+      `path=${path}`,
+      `SameSite=${sameSite}`,
+    ];
+
+    if (options?.days !== undefined) {
+      parts.push(`max-age=${options.days * 24 * 60 * 60}`);
+    }
+
+    if (options?.secure) {
+      parts.push('Secure');
+    }
+
+    document.cookie = parts.join('; ');
+  }
+
+  remove(name: string, path = '/'): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    document.cookie = `${name}=; path=${path}; max-age=0`;
   }
 
   private getFromBrowser(name: string): string | null {

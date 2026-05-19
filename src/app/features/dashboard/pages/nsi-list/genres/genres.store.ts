@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { NsiGenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
+import { NsiGenresService } from '@core/api/nsi-admin/generated/nsi-genres/nsi-genres.service';
 import {
   ImportProgressService,
 } from '@core/services/import-progress/import-progress.service';

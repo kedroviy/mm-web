@@ -5,7 +5,7 @@ import {
 } from '@core/services/import-progress/import-progress.service';
 import { catchError, of, switchMap, tap, EMPTY } from 'rxjs';
 import { AgeRating, AgeRatingState } from '@features/dashboard/pages/nsi-list/age-ratings/age-rating.types';
-import { NsiAgeratingService } from '@core/api/generated/nsi-agerating/nsi-agerating.service';
+import { NsiAgeratingService } from '@core/api/nsi-admin/generated/nsi-agerating/nsi-agerating.service';
 
 
 const initialState: AgeRatingState = {

@@ -1,5 +1,5 @@
 import { ImportStatus } from '@core/services/import-progress/import-progress.service';
-import { CreateAwardCategoryDto } from '@core/api/model';
+import { CreateAwardCategoryDto } from '@core/api/nsi-admin/model';
 
 export interface AwardCategory extends CreateAwardCategoryDto {
   id: number;

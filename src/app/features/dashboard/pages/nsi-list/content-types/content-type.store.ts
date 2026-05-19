@@ -8,7 +8,7 @@ import {
   ContentType,
   ContentTypeState,
 } from '@features/dashboard/pages/nsi-list/content-types/content-type.types';
-import { NsiContenttypeService } from '@core/api/generated/nsi-contenttype/nsi-contenttype.service';
+import { NsiContenttypeService } from '@core/api/nsi-admin/generated/nsi-contenttype/nsi-contenttype.service';
 
 
 const initialState: ContentTypeState = {

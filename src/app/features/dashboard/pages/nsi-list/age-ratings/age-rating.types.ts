@@ -1,5 +1,5 @@
 import { ImportStatus } from '@core/services/import-progress/import-progress.service';
-import { CreateAgeRatingDto } from '@core/api/model';
+import { CreateAgeRatingDto } from '@core/api/nsi-admin/model';
 
 export interface AgeRating extends CreateAgeRatingDto {
   id: number;
