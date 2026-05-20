@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 
-import { AdminMeDto } from '@core/api/admin-auth/model';
-import { AdminAuthService as GeneratedAdminAuthService } from '@core/api/admin-auth/generated/admin-auth/admin-auth.service';
+import type { AdminMeDto } from '@core/api/model';
+import { AdminAuthService as GeneratedAdminAuthService } from '@core/api/generated/admin-auth/admin-auth.service';
 import { HeaderUser } from '@shared/kit/kit-header/kit-header.type';
 import { AuthService } from './auth.service';
 

@@ -6,7 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NsiUsersService } from '@core/api/generated/nsi-users/nsi-users.service';
-import { ClientType } from '@core/api/model';
+import type { UserNsiResponseDto } from '@core/api/model';
+import { UserNsiResponseDtoClient } from '@core/api/model';
 import { NotificationsService } from '@core/services/notifications/notifications';
 import { UsersStore } from '@features/dashboard/pages/users/users.store';
 import { catchError, finalize, of } from 'rxjs';
@@ -36,12 +37,14 @@ export class UserView implements OnInit {
 
   readonly loading = signal(false);
   readonly saving = signal(false);
-  readonly clientTypes = [ClientType.NONE, ClientType.GOOGLE] as const;
+  readonly clientTypes = [UserNsiResponseDtoClient.NONE, UserNsiResponseDtoClient.GOOGLE] as const;
 
   readonly form = this.fb.group({
     username: this.fb.control('', { validators: [Validators.required, Validators.minLength(1)] }),
     email: this.fb.control('', { validators: [Validators.required, Validators.email] }),
-    client: this.fb.control<ClientType>(ClientType.NONE, { validators: [Validators.required] }),
+    client: this.fb.control<UserNsiResponseDto['client']>(UserNsiResponseDtoClient.NONE, {
+      validators: [Validators.required],
+    }),
     password: this.fb.control(''),
   });
 
@@ -135,7 +138,7 @@ export class UserView implements OnInit {
       });
   }
 
-  private patchForm(user: { username: string; email: string; client: ClientType }): void {
+  private patchForm(user: Pick<UserNsiResponseDto, 'username' | 'email' | 'client'>): void {
     this.form.patchValue({
       username: user.username,
       email: user.email,

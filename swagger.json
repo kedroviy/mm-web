@@ -1855,6 +1855,3093 @@
           }
         ]
       }
+    },
+    "/api/v1/nsi/genres/import-progress/{jobId}": {
+      "get": {
+        "operationId": "GenresNsiController_sendProgress",
+        "summary": "Поток прогресса импорта (SSE)",
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/genres/get-infinity": {
+      "get": {
+        "operationId": "GenresNsiController_getInfinite",
+        "summary": "Список жанров (Infinity Scroll)",
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Комедия",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Боевик",
+                        "slug": "action"
+                      }
+                    ],
+                    "hasNextPage": true,
+                    "nextPage": 2,
+                    "totalCount": 45
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/genres/get-by-param": {
+      "get": {
+        "operationId": "GenresNsiController_getWithPages",
+        "summary": "Список жанров (Классическая пагинация)",
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Комедия",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenrePaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/genres/{id}": {
+      "get": {
+        "operationId": "GenresNsiController_findOne",
+        "summary": "Получить один жанр по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Жанр найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetGenreByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "GenresNsiController_update",
+        "summary": "Обновить жанр по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGenreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Жанр успешно обновлен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateGenreDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "GenresNsiController_remove",
+        "summary": "Удалить жанр",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Жанр успешно удален"
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/genres": {
+      "post": {
+        "operationId": "GenresNsiController_create",
+        "summary": "Создать новый жанр",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGenreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Жанр успешно создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateGenreDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/genres/import-excel": {
+      "post": {
+        "operationId": "GenresNsiController_importExcel",
+        "summary": "Импорт жанров из Excel",
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Данные успешно импортированы",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "jobId": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Genres"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/import-progress/{jobId}": {
+      "get": {
+        "operationId": "CountriesNsiController_sendProgress",
+        "summary": "Поток прогресса импорта (SSE)",
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/get-infinity": {
+      "get": {
+        "operationId": "CountriesNsiController_getInfinite",
+        "summary": "Список стран (Infinity Scroll)",
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Беларусь",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Германия",
+                        "slug": "germany"
+                      }
+                    ],
+                    "hasNextPage": true,
+                    "nextPage": 2,
+                    "totalCount": 45
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/get-by-param": {
+      "get": {
+        "operationId": "CountriesNsiController_getWithPages",
+        "summary": "Список стран (Классическая пагинация)",
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Беларусь",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountriesPaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/{id}": {
+      "get": {
+        "operationId": "CountriesNsiController_findOne",
+        "summary": "Получить одну страну по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Страна найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCountryByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "CountriesNsiController_update",
+        "summary": "Обновить страну по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCountryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Страна успешно обновлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCountryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CountriesNsiController_remove",
+        "summary": "Удалить страну по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Страна успешно удалена"
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/countries": {
+      "post": {
+        "operationId": "CountriesNsiController_create",
+        "summary": "Создать новую страну",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCountryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Страна успешно создана",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCountryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/countries/import-excel": {
+      "post": {
+        "operationId": "CountriesNsiController_importExcel",
+        "summary": "Импорт стран из Excel",
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Импорт запущен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "jobId": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Countries"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/ageRating/import-progress/{jobId}": {
+      "get": {
+        "operationId": "AgeRatingNsiController_sendProgress",
+        "summary": "Поток прогресса импорта (SSE)",
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/ageRating/get-infinity": {
+      "get": {
+        "operationId": "AgeRatingNsiController_getInfinite",
+        "summary": "Список возрастных рейтингов (Infinity Scroll)",
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "PG-13",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "PG-13",
+                        "slug": "pg-13"
+                      }
+                    ],
+                    "hasNextPage": false,
+                    "nextPage": null,
+                    "totalCount": 10
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/ageRating/get-by-param": {
+      "get": {
+        "operationId": "AgeRatingNsiController_getWithPages",
+        "summary": "Список возрастных рейтингов (Классическая пагинация)",
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "PG-13",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgeRatingPaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/ageRating/{id}": {
+      "get": {
+        "operationId": "AgeRatingNsiController_findOne",
+        "summary": "Получить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Найдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAgeRatingByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "AgeRatingNsiController_update",
+        "summary": "Обновить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAgeRatingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновлено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAgeRatingDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AgeRatingNsiController_remove",
+        "summary": "Удалить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалено"
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/ageRating": {
+      "post": {
+        "operationId": "AgeRatingNsiController_create",
+        "summary": "Создать возрастной рейтинг",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgeRatingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Создано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAgeRatingDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/ageRating/import-excel": {
+      "post": {
+        "operationId": "AgeRatingNsiController_importExcel",
+        "summary": "Импорт возрастных рейтингов из Excel",
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Импорт запущен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "jobId": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AgeRating"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/award/import-progress/{jobId}": {
+      "get": {
+        "operationId": "AwardsNsiController_sendProgress",
+        "summary": "Поток прогресса импорта (SSE)",
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/award/get-infinity": {
+      "get": {
+        "operationId": "AwardsNsiController_getInfinite",
+        "summary": "Список премий (Infinity Scroll)",
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Оскар",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Оскар",
+                        "slug": "oscar"
+                      }
+                    ],
+                    "hasNextPage": false,
+                    "nextPage": null,
+                    "totalCount": 12
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/award/get-by-param": {
+      "get": {
+        "operationId": "AwardsNsiController_getWithPages",
+        "summary": "Список премий (Классическая пагинация)",
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Оскар",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwardPaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/award/{id}": {
+      "get": {
+        "operationId": "AwardsNsiController_findOne",
+        "summary": "Получить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Найдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAwardByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "AwardsNsiController_update",
+        "summary": "Обновить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAwardDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновлено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAwardDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AwardsNsiController_remove",
+        "summary": "Удалить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалено"
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/award": {
+      "post": {
+        "operationId": "AwardsNsiController_create",
+        "summary": "Создать премию",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAwardDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Создано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAwardDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/award/import-excel": {
+      "post": {
+        "operationId": "AwardsNsiController_importExcel",
+        "summary": "Импорт премий из Excel",
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Импорт запущен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "jobId": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: Award"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/contentType/import-progress/{jobId}": {
+      "get": {
+        "operationId": "ContentTypeNsiController_sendProgress",
+        "summary": "Поток прогресса импорта (SSE)",
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/contentType/get-infinity": {
+      "get": {
+        "operationId": "ContentTypeNsiController_getInfinite",
+        "summary": "Список типов контента (Infinity Scroll)",
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Фильм",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Фильм",
+                        "slug": "movie"
+                      }
+                    ],
+                    "hasNextPage": false,
+                    "nextPage": null,
+                    "totalCount": 5
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/contentType/get-by-param": {
+      "get": {
+        "operationId": "ContentTypeNsiController_getWithPages",
+        "summary": "Список типов контента (Классическая пагинация)",
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Фильм",
+            "description": "Поиск по названию",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentTypePaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/contentType/{id}": {
+      "get": {
+        "operationId": "ContentTypeNsiController_findOne",
+        "summary": "Получить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Найдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContentTypeByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ContentTypeNsiController_update",
+        "summary": "Обновить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContentTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновлено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateContentTypeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ContentTypeNsiController_remove",
+        "summary": "Удалить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалено"
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/contentType": {
+      "post": {
+        "operationId": "ContentTypeNsiController_create",
+        "summary": "Создать тип контента",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContentTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Создано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateContentTypeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/contentType/import-excel": {
+      "post": {
+        "operationId": "ContentTypeNsiController_importExcel",
+        "summary": "Импорт типов контента из Excel",
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Импорт запущен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "jobId": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: ContentType"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/awardCategory/import-progress/{jobId}": {
+      "get": {
+        "operationId": "AwardCategoryNsiController_sendProgress",
+        "summary": "Поток прогресса импорта (SSE)",
+        "description": "Подключение через EventSource для получения статуса обработки файла.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Стрим событий прогресса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "progress": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "processing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/awardCategory/get-infinity": {
+      "get": {
+        "operationId": "AwardCategoryNsiController_getInfinite",
+        "summary": "Список категорий премий (Infinity Scroll)",
+        "description": "Возвращает данные с флагом hasNextPage для подгрузки при скролле",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Лучший фильм",
+            "description": "Поиск по названию категории",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "required": false,
+            "in": "query",
+            "example": "оскар",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "awardId",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "ID родительской премии",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение списка",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "name": "Лучший фильм",
+                        "slug": "best-picture",
+                        "awardId": 1
+                      }
+                    ],
+                    "hasNextPage": false,
+                    "nextPage": null,
+                    "totalCount": 20
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/awardCategory/get-by-param": {
+      "get": {
+        "operationId": "AwardCategoryNsiController_getWithPages",
+        "summary": "Список категорий премий (Классическая пагинация)",
+        "description": "Возвращает данные с общим количеством страниц для админок",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "Номер страницы",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "description": "Элементов на страницу",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "example": "Лучший фильм",
+            "description": "Поиск по названию категории",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "required": false,
+            "in": "query",
+            "example": "оскар",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "awardId",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "description": "ID родительской премии",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwardCategoryPaginationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/awardCategory/{id}": {
+      "get": {
+        "operationId": "AwardCategoryNsiController_findOne",
+        "summary": "Получить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Найдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAwardCategoryByIdDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Запись с указанным ID не найдена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера (база данных недоступна или баг в коде)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "AwardCategoryNsiController_update",
+        "summary": "Обновить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAwardCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Обновлено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAwardCategoryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AwardCategoryNsiController_remove",
+        "summary": "Удалить по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Удалено"
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/awardCategory": {
+      "post": {
+        "operationId": "AwardCategoryNsiController_create",
+        "summary": "Создать категорию премии",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAwardCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Создано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAwardCategoryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "JWT токен невалиден или отсутствует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для выполнения операции",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
+    },
+    "/api/v1/nsi/awardCategory/import-excel": {
+      "post": {
+        "operationId": "AwardCategoryNsiController_importExcel",
+        "summary": "Импорт категорий премий из Excel",
+        "description": "Загрузка файла .xlsx. Заголовки должны совпадать с полями модели.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Excel файл",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Импорт запущен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "jobId": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации (неверный формат данных)",
+            "example": {
+              "statusCode": 400,
+              "error": "Bad Request",
+              "message": "Validation failed",
+              "timestamp": "2024-03-31T...",
+              "path": "/api/v1/nsi/genres",
+              "method": "POST"
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Nsi: AwardCategory"
+        ],
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "admin_session": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -1874,6 +4961,30 @@
     },
     {
       "name": "NsiUsers",
+      "description": ""
+    },
+    {
+      "name": "Nsi: Genres",
+      "description": ""
+    },
+    {
+      "name": "Nsi: Countries",
+      "description": ""
+    },
+    {
+      "name": "Nsi: AgeRating",
+      "description": ""
+    },
+    {
+      "name": "Nsi: Award",
+      "description": ""
+    },
+    {
+      "name": "Nsi: ContentType",
+      "description": ""
+    },
+    {
+      "name": "Nsi: AwardCategory",
       "description": ""
     }
   ],
@@ -3017,6 +6128,823 @@
               "GOOGLE",
               "NONE"
             ]
+          }
+        }
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "HTTP status code"
+          },
+          "message": {
+            "description": "Error message or array of error messages",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "error": {
+            "type": "string",
+            "description": "Error type name"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "ISO timestamp when error occurred"
+          },
+          "path": {
+            "type": "string",
+            "description": "Request path"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error",
+          "timestamp",
+          "path",
+          "method"
+        ]
+      },
+      "CreateGenreDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Боевик"
+          },
+          "slug": {
+            "type": "string",
+            "example": "action"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание жанра"
+          },
+          "keywords": {
+            "example": [
+              "экшен",
+              "драки"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "GenrePaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateGenreDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "GetGenreByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Комедия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "comedy"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
+      "UpdateGenreDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Боевик"
+          },
+          "slug": {
+            "type": "string",
+            "example": "action"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание жанра"
+          },
+          "keywords": {
+            "example": [
+              "экшен",
+              "драки"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "FileUploadDto": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Excel файл (.xlsx)"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "CreateCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Германия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "germany"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание страны"
+          },
+          "keywords": {
+            "example": [
+              "германия",
+              "дойчланд"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "CountriesPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCountryDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "GetCountryByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Италия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "italy"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
+      "UpdateCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Германия"
+          },
+          "slug": {
+            "type": "string",
+            "example": "germany"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание страны"
+          },
+          "keywords": {
+            "example": [
+              "германия",
+              "дойчланд"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateAgeRatingDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "PG-13"
+          },
+          "slug": {
+            "type": "string",
+            "example": "pg-13"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание возрастного рейтинга"
+          },
+          "keywords": {
+            "example": [
+              "подростки"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "AgeRatingPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateAgeRatingDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "GetAgeRatingByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "PG-13"
+          },
+          "slug": {
+            "type": "string",
+            "example": "pg-13"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
+      "UpdateAgeRatingDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "PG-13"
+          },
+          "slug": {
+            "type": "string",
+            "example": "pg-13"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание возрастного рейтинга"
+          },
+          "keywords": {
+            "example": [
+              "подростки"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateAwardDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Оскар"
+          },
+          "slug": {
+            "type": "string",
+            "example": "oscar"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание премии"
+          },
+          "keywords": {
+            "example": [
+              "кино",
+              "награда"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "AwardPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateAwardDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "GetAwardByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Оскар"
+          },
+          "slug": {
+            "type": "string",
+            "example": "oscar"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
+      "UpdateAwardDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Оскар"
+          },
+          "slug": {
+            "type": "string",
+            "example": "oscar"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание премии"
+          },
+          "keywords": {
+            "example": [
+              "кино",
+              "награда"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateContentTypeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Фильм"
+          },
+          "slug": {
+            "type": "string",
+            "example": "movie"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание типа контента"
+          },
+          "keywords": {
+            "example": [
+              "кино",
+              "фильм"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "ContentTypePaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateContentTypeDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "GetContentTypeByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Фильм"
+          },
+          "slug": {
+            "type": "string",
+            "example": "movie"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt"
+        ]
+      },
+      "UpdateContentTypeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Фильм"
+          },
+          "slug": {
+            "type": "string",
+            "example": "movie"
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание типа контента"
+          },
+          "keywords": {
+            "example": [
+              "кино",
+              "фильм"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GetAwardCategoryByIdDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Лучший фильм"
+          },
+          "slug": {
+            "type": "string",
+            "example": "best-picture"
+          },
+          "awardId": {
+            "type": "number",
+            "example": 1
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-31T..."
+          },
+          "description": {
+            "type": "string",
+            "example": "Описание..."
+          },
+          "keywords": {
+            "example": [
+              "кино",
+              "награда"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "awardId",
+          "createdAt",
+          "updatedAt",
+          "keywords"
+        ]
+      },
+      "AwardCategoryPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetAwardCategoryByIdDto"
+            }
+          },
+          "totalItems": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "data",
+          "totalItems",
+          "totalPages",
+          "page",
+          "limit"
+        ]
+      },
+      "CreateAwardCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Лучший режиссер"
+          },
+          "slug": {
+            "type": "string",
+            "example": "best-director"
+          },
+          "awardId": {
+            "type": "number",
+            "example": 1,
+            "description": "ID премии (напр. Оскар)"
+          },
+          "description": {
+            "type": "string",
+            "example": "Награда за выдающуюся постановку"
+          },
+          "keywords": {
+            "example": [
+              "режиссура",
+              "постановка",
+              "directing"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "awardId"
+        ]
+      },
+      "UpdateAwardCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Лучший режиссер"
+          },
+          "slug": {
+            "type": "string",
+            "example": "best-director"
+          },
+          "awardId": {
+            "type": "number",
+            "example": 1,
+            "description": "ID премии (напр. Оскар)"
+          },
+          "description": {
+            "type": "string",
+            "example": "Награда за выдающуюся постановку"
+          },
+          "keywords": {
+            "example": [
+              "режиссура",
+              "постановка",
+              "directing"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

@@ -8,8 +8,8 @@ import {
 import { NavigationService } from '@core/services/layout/navigation.service';
 import {
   NsiGenresService as GeneratedGenresService,
-} from '@core/api/nsi-admin/generated/nsi-genres/nsi-genres.service';
-import { CreateGenreDto } from '@core/api/nsi-admin/model';
+} from '@core/api/generated/nsi-genres/nsi-genres.service';
+import { CreateGenreDto } from '@core/api/model';
 import { NotificationsService } from '@core/services/notifications/notifications';
 import { FORM_COMPONENTS } from './genres-form-registry';
 import { GenresStore } from '@features/dashboard/pages/nsi-list/genres/genres.store';
@@ -61,14 +61,14 @@ export class GenresCreate {
   onSubmit(formData: Record<string, unknown>) {
     this.loading.set(true);
     const payload = formData as unknown as CreateGenreDto;
-    this.genresService.genresControllerCreate(payload).subscribe({
+    this.genresService.genresNsiControllerCreate(payload).subscribe({
       next: () => {
         this.loading.set(false);
         this.notify.showSuccess('Жанр успешно создан');
         this.genresStore.reload();
         this.onGoBack();
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.loading.set(false);
         this.notify.showError('Ошибка при создании жанра');
         console.error(err);

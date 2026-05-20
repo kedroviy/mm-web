@@ -10,8 +10,8 @@ import {
 import { HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, map, Observable, of, shareReplay, tap } from 'rxjs';
-import { AdminMeDto } from '@core/api/admin-auth/model';
-import { AdminAuthService as GeneratedAdminAuthService } from '@core/api/admin-auth/generated/admin-auth/admin-auth.service';
+import type { AdminMeDto } from '@core/api/model';
+import { AdminAuthService as GeneratedAdminAuthService } from '@core/api/generated/admin-auth/admin-auth.service';
 import {
   AVATAR_SESSION_HUE_KEY,
   parseStoredHue,

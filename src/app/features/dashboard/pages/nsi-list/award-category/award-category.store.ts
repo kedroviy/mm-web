@@ -8,7 +8,7 @@ import {
   AwardCategory,
   AwardCategoryState,
 } from '@features/dashboard/pages/nsi-list/award-category/award-category.types';
-import { NsiAwardcategoryService } from '@core/api/nsi-admin/generated/nsi-awardcategory/nsi-awardcategory.service';
+import { NsiAwardcategoryService } from '@core/api/generated/nsi-awardcategory/nsi-awardcategory.service';
 
 
 const initialState: AwardCategoryState = {
@@ -37,11 +37,11 @@ export const AwardCategoryStore = signalStore(
       patchState(store, { loading: true });
 
       awardCategoryService
-        .awardCategoryControllerGetWithPages({ page: store.page(), limit: store.limit() })
+        .awardCategoryNsiControllerGetWithPages({ page: store.page(), limit: store.limit() })
         .pipe(
           catchError(() => of({ data: [], totalItems: 0 })),
         )
-        .subscribe((res) => {
+        .subscribe((res: { data?: AwardCategory[]; totalItems?: number }) => {
           patchState(store, {
             data: (res.data as AwardCategory[]) ?? [],
             totalItems: res.totalItems ?? 0,
@@ -64,7 +64,7 @@ export const AwardCategoryStore = signalStore(
       });
 
       awardCategoryService
-        .awardCategoryControllerImportExcel({ file })
+        .awardCategoryNsiControllerImportExcel({ file })
         .pipe(
           catchError(() => {
             patchState(store, {

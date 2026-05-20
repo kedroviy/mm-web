@@ -5,7 +5,7 @@ import {
 } from '@core/services/import-progress/import-progress.service';
 import { catchError, of, switchMap, tap, EMPTY } from 'rxjs';
 import { Awards, AwardsState } from '@features/dashboard/pages/nsi-list/awards/awards.types';
-import { NsiAwardService } from '@core/api/nsi-admin/generated/nsi-award/nsi-award.service';
+import { NsiAwardService } from '@core/api/generated/nsi-award/nsi-award.service';
 
 
 const initialState: AwardsState = {
@@ -34,7 +34,7 @@ export const AwardsStore = signalStore(
       patchState(store, { loading: true });
 
       awardsService
-        .awardsControllerGetWithPages({ page: store.page(), limit: store.limit() })
+        .awardsNsiControllerGetWithPages({ page: store.page(), limit: store.limit() })
         .pipe(
           catchError(() => of({ data: [], totalItems: 0 })),
         )
@@ -61,7 +61,7 @@ export const AwardsStore = signalStore(
       });
 
       awardsService
-        .awardsControllerImportExcel({ file })
+        .awardsNsiControllerImportExcel({ file })
         .pipe(
           catchError(() => {
             patchState(store, {

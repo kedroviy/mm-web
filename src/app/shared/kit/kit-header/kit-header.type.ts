@@ -1,4 +1,4 @@
-import { AdminMeDto } from '@core/api/admin-auth/model';
+import type { AdminMeDto } from '@core/api/model';
 
 export type HeaderUser = AdminMeDto;
 

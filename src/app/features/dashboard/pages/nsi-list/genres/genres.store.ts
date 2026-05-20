@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { NsiGenresService } from '@core/api/nsi-admin/generated/nsi-genres/nsi-genres.service';
+import { NsiGenresService } from '@core/api/generated/nsi-genres/nsi-genres.service';
 import {
   ImportProgressService,
 } from '@core/services/import-progress/import-progress.service';
@@ -34,7 +34,7 @@ export const GenresStore = signalStore(
       patchState(store, { loading: true });
 
       genresService
-        .genresControllerGetWithPages({ page: store.page(), limit: store.limit() })
+        .genresNsiControllerGetWithPages({ page: store.page(), limit: store.limit() })
         .pipe(
           catchError(() => of({ data: [], totalItems: 0 })),
         )
@@ -61,7 +61,7 @@ export const GenresStore = signalStore(
       });
 
       genresService
-        .genresControllerImportExcel({ file })
+        .genresNsiControllerImportExcel({ file })
         .pipe(
           catchError(() => {
             patchState(store, {

@@ -8,7 +8,7 @@ import {
   ContentType,
   ContentTypeState,
 } from '@features/dashboard/pages/nsi-list/content-types/content-type.types';
-import { NsiContenttypeService } from '@core/api/nsi-admin/generated/nsi-contenttype/nsi-contenttype.service';
+import { NsiContenttypeService } from '@core/api/generated/nsi-contenttype/nsi-contenttype.service';
 
 
 const initialState: ContentTypeState = {
@@ -37,7 +37,7 @@ export const ContentTypeStore = signalStore(
       patchState(store, { loading: true });
 
       contentTypeService
-        .contentTypeControllerGetWithPages({ page: store.page(), limit: store.limit() })
+        .contentTypeNsiControllerGetWithPages({ page: store.page(), limit: store.limit() })
         .pipe(
           catchError(() => of({ data: [], totalItems: 0 })),
         )
@@ -64,7 +64,7 @@ export const ContentTypeStore = signalStore(
       });
 
       contentTypeService
-        .contentTypeControllerImportExcel({ file })
+        .contentTypeNsiControllerImportExcel({ file })
         .pipe(
           catchError(() => {
             patchState(store, {

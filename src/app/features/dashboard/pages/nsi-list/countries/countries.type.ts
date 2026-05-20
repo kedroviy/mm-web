@@ -1,5 +1,5 @@
 import { ImportStatus } from '@core/services/import-progress/import-progress.service';
-import { CreateCountryDto } from '@core/api/nsi-admin/model';
+import { CreateCountryDto } from '@core/api/model';
 
 export interface Country extends CreateCountryDto {
   id: number;
