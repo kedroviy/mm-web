@@ -10,39 +10,22 @@ function resolveApiUrl(url: string): string {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-
   if (url.startsWith('/')) {
     return `${environment.apiBaseUrl}${url}`;
   }
-
   return url;
 }
 
 function isPublicAuthRequest(url: string): boolean {
-  return (
-    url.includes('/auth/login') ||
-    url.includes('/auth/register') ||
-    url.includes('/auth/verify-id-token') ||
-    url.includes('/auth/send-code-to-email') ||
-    url.includes('/auth/verify-code')
-  );
+  return url.includes('/admin/auth/login');
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
   const platformId = inject(PLATFORM_ID);
-
   const url = resolveApiUrl(req.url);
-  const token = authService.getAccessToken();
-
-  let headers = req.headers;
-  if (token && !isPublicAuthRequest(url)) {
-    headers = headers.set('Authorization', `Bearer ${token}`);
-  }
-
-  const cloned = req.clone({ url, headers, withCredentials: true });
-
+  const cloned = req.clone({ url, withCredentials: true });
   return next(cloned).pipe(
     catchError((err) => {
       if (
@@ -53,11 +36,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         if (isPlatformServer(platformId)) {
           return throwError(() => err);
         }
-
         authService.logout().subscribe();
         void router.navigate(['/auth/login']);
       }
-
       return throwError(() => err);
     }),
   );

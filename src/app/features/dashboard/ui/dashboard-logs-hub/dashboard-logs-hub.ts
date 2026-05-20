@@ -17,6 +17,7 @@ export class DashboardLogsHub {
   title = input<string>('Модули');
 
   navigate(path: string) {
-    void this.router.navigate([path]);
+    const url = path.startsWith('/') ? path : `/${path}`;
+    void this.router.navigateByUrl(url);
   }
 }

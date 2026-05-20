@@ -1,6 +1,6 @@
-import { GetMeType } from '@core/api/model';
+import { AdminMeDto } from '@core/api/admin-auth/model';
 
-export type HeaderUser = GetMeType;
+export type HeaderUser = AdminMeDto;
 
 export interface HeaderConfig {
   showNotifications?: boolean;

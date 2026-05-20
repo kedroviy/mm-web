@@ -1,0 +1,16 @@
+<app-kit-table
+  [dataSource]="store.items()"
+  [columns]="columns"
+  [loading]="store.loading()"
+  [showViewAction]="true"
+  [totalItems]="store.totalItems()"
+  [page]="store.page()"
+  [limit]="store.limit()"
+  (pageChange)="onPageChange($event)"
+  baseRoute="."
+  [cellTemplates]="{ createdAt: dateTpl }"
+/>
+
+<ng-template #dateTpl let-element>
+  <span>{{ element.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+</ng-template>

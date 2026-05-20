@@ -1,0 +1,59 @@
+.feedback-view {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card-block {
+  padding: 0.25rem 0;
+}
+
+.title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+.subtitle {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.label {
+  font-weight: 600;
+  margin-right: 0.35rem;
+}
+
+.message-box,
+.reply-box {
+  margin-top: 1rem;
+}
+
+.body-text {
+  white-space: pre-wrap;
+  margin: 0.35rem 0 0;
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.muted {
+  color: var(--mat-sys-on-surface-variant, #666);
+}
+
+.small {
+  font-size: 0.85rem;
+}

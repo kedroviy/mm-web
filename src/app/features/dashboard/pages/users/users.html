@@ -1,0 +1,11 @@
+<app-kit-table
+  [dataSource]="store.users()"
+  [columns]="columns"
+  [loading]="store.loading()"
+  [showViewAction]="true"
+  [totalItems]="store.totalItems()"
+  [page]="store.page()"
+  [limit]="store.limit()"
+  (pageChange)="onPageChange($event)"
+  baseRoute="."
+/>

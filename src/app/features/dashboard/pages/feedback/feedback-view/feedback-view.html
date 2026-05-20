@@ -1,0 +1,48 @@
+<div class="feedback-view">
+  @if (loading()) {
+    <p class="muted">Загрузка…</p>
+  } @else {
+    @if (message(); as m) {
+      <section class="card-block">
+        <h2 class="title">Обращение #{{ m.id }}</h2>
+        <p><span class="label">Email:</span> {{ m.email }}</p>
+        <p><span class="label">Статус:</span> {{ m.status }}</p>
+        <p><span class="label">Создано:</span> {{ m.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+        <div class="message-box">
+          <span class="label">Текст</span>
+          <p class="body-text">{{ m.text }}</p>
+        </div>
+        @if (m.adminReply) {
+          <div class="reply-box">
+            <span class="label">Текущий ответ администратора</span>
+            <p class="body-text">{{ m.adminReply }}</p>
+            @if (m.adminRepliedAt) {
+              <p class="muted small">{{ m.adminRepliedAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+            }
+          </div>
+        }
+      </section>
+      <section class="card-block">
+        <h3 class="subtitle">Ответить</h3>
+        <form [formGroup]="replyForm" (ngSubmit)="submitReply()" class="form-stack">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Ответ пользователю</mat-label>
+            <textarea matInput rows="5" formControlName="adminReply"></textarea>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Статус</mat-label>
+            <mat-select formControlName="status">
+              @for (s of statuses; track s) {
+                <mat-option [value]="s">{{ s }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <div class="actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving()">Сохранить ответ</button>
+            <button mat-stroked-button type="button" routerLink="..">К списку</button>
+          </div>
+        </form>
+      </section>
+    }
+  }
+</div>

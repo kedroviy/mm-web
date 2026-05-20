@@ -16,8 +16,22 @@ const createNsiItem = (path: string, title: string) => ({
   CHILDREN: DEFAULT_NSI_CHILDREN,
 } as const);
 
+const VIEW_ONLY_CHILDREN = {
+  VIEW: { path: ':id', data: { title: 'Просмотр', canGoBack: true } },
+} as const;
+
 export const DASHBOARD_CONFIG = {
   HOME: { path: 'home', data: { title: 'Главная' } },
+  USERS: {
+    path: 'users',
+    data: { title: 'Пользователи', canGoBack: true },
+    CHILDREN: VIEW_ONLY_CHILDREN,
+  },
+  FEEDBACK: {
+    path: 'feedback',
+    data: { title: 'Обращения пользователей', canGoBack: true },
+    CHILDREN: VIEW_ONLY_CHILDREN,
+  },
   NSI: {
     path: 'nsi-list',
     data: { title: 'Справочники', canGoBack: true },

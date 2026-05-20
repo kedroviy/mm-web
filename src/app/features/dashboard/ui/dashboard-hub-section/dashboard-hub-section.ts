@@ -16,6 +16,7 @@ export class DashboardHubSection {
   title = input<string>('Заголовок по умолчанию');
 
   navigate(path: string) {
-    void this.router.navigate([path]);
+    const url = path.startsWith('/') ? path : `/${path}`;
+    void this.router.navigateByUrl(url);
   }
 }

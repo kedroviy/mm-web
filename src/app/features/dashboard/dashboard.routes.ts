@@ -9,6 +9,40 @@ export const DASHBOARD_ROUTES: Routes = [
     data: PAGES.HOME.data,
   },
   {
+    path: PAGES.USERS.path,
+    data: PAGES.USERS.data,
+    children: [
+      {
+        path: COMMON_CONSTANTS.EMPTY_STRING,
+        loadComponent: () => import('./pages/users/users').then((m) => m.Users),
+        data: PAGES.USERS.data,
+      },
+      {
+        path: PAGES.USERS.CHILDREN.VIEW.path,
+        loadComponent: () =>
+          import('./pages/users/user-view/user-view').then((m) => m.UserView),
+        data: PAGES.USERS.CHILDREN.VIEW.data,
+      },
+    ],
+  },
+  {
+    path: PAGES.FEEDBACK.path,
+    data: PAGES.FEEDBACK.data,
+    children: [
+      {
+        path: COMMON_CONSTANTS.EMPTY_STRING,
+        loadComponent: () => import('./pages/feedback/feedback').then((m) => m.FeedbackAdminList),
+        data: PAGES.FEEDBACK.data,
+      },
+      {
+        path: PAGES.FEEDBACK.CHILDREN.VIEW.path,
+        loadComponent: () =>
+          import('./pages/feedback/feedback-view/feedback-view').then((m) => m.FeedbackView),
+        data: PAGES.FEEDBACK.CHILDREN.VIEW.data,
+      },
+    ],
+  },
+  {
     path: PAGES.NSI.path,
     data: PAGES.NSI.data,
     children: [

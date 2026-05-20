@@ -9,53 +9,46 @@ import {
 } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { catchError, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
-import { GetMeType } from '@core/api/model';
-import { UserService as GeneratedUserService } from '@core/api/generated/user/user.service';
-import { AuthService as GeneratedAuthService } from '@core/api/generated/auth/auth.service';
-import { CookieService } from '@core/services/cookie/cookie.service';
+import { catchError, map, Observable, of, shareReplay, tap } from 'rxjs';
+import { AdminMeDto } from '@core/api/admin-auth/model';
+import { AdminAuthService as GeneratedAdminAuthService } from '@core/api/admin-auth/generated/admin-auth/admin-auth.service';
 import {
   AVATAR_SESSION_HUE_KEY,
   parseStoredHue,
   pickRandomAvatarHue,
   stableHueFromSeed,
 } from '@core/utils/avatar-session-hue';
-import {
-  ACCESS_TOKEN_COOKIE,
-  AUTH_EMAIL_STORAGE_KEY,
-  AUTH_TOKEN_STORAGE_KEY,
-  USER_EMAIL_COOKIE,
-} from './auth.constants';
 
 const AUTH_KEY = makeStateKey<boolean>('auth_state');
-const AUTH_COOKIE_MAX_DAYS = 7;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private platformId = inject(PLATFORM_ID);
-  private usersApi = inject(GeneratedUserService);
-  private cookies = inject(CookieService);
   private request = inject(REQUEST, { optional: true });
   private transferState = inject(TransferState);
-  private readonly api = inject(GeneratedAuthService);
+  private readonly adminApi = inject(GeneratedAdminAuthService);
 
   readonly authStatus = signal<boolean | null>(null);
-  readonly profile = signal<GetMeType | undefined>(undefined);
+  readonly profile = signal<AdminMeDto | undefined>(undefined);
   readonly avatarHue = signal<number | null>(null);
   hasAuthenticated = signal<boolean | null>(null);
 
   initAuth(): Observable<void> {
-    if (!this.getAccessToken()) {
-      return of(undefined);
-    }
-
-    return this.fetchProfile().pipe(
-      tap(() => this.hasAuthenticated.set(true)),
+    return this.fetchProfile(this.buildSsrHeaders()).pipe(
+      tap((admin) => {
+        if (!admin.isAdmin) {
+          throw new Error('Admin access is not granted');
+        }
+        this.profile.set(admin);
+        this.syncAvatarHueAfterProfileLoad(admin);
+        this.authStatus.set(true);
+        this.hasAuthenticated.set(true);
+      }),
       map(() => undefined),
       shareReplay(1),
-      catchError((err) => {
-        this.clearSession();
-        return throwError(() => err);
+      catchError(() => {
+        this.clearSessionState();
+        return of(undefined);
       }),
     );
   }
@@ -68,24 +61,13 @@ export class AuthService {
       return of(isAuth);
     }
 
-    if (!this.getAccessToken()) {
-      this.clearSessionState();
-      this.transferState.set(AUTH_KEY, false);
-      return of(false);
-    }
-
-    let headers = new HttpHeaders();
-    if (isPlatformServer(this.platformId) && this.request) {
-      const cookieHeader = this.request.headers.get('cookie');
-      if (cookieHeader) {
-        headers = headers.set('Cookie', cookieHeader);
-      }
-    }
-
-    return this.fetchProfile({ headers }).pipe(
-      tap((userData) => {
-        this.profile.set(userData);
-        this.syncAvatarHueAfterProfileLoad(userData);
+    return this.fetchProfile(this.buildSsrHeaders()).pipe(
+      tap((admin) => {
+        if (!admin.isAdmin) {
+          throw new Error('Admin access is not granted');
+        }
+        this.profile.set(admin);
+        this.syncAvatarHueAfterProfileLoad(admin);
         this.authStatus.set(true);
         this.transferState.set(AUTH_KEY, true);
       }),
@@ -104,62 +86,20 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<void> {
-    return this.api.authControllerLogin({ email, password }).pipe(
-      tap(({ token }) => {
-        this.setAccessToken(token);
-        this.setSessionEmail(email);
-      }),
-      map(() => undefined),
-    );
+    return this.adminApi
+      .adminAuthControllerLogin({ email, password }, { withCredentials: true })
+      .pipe(map(() => undefined));
   }
 
   logout(): Observable<void> {
-    this.clearSession();
-    return of(undefined);
-  }
-
-  getAccessToken(): string | null {
-    const fromStorage = isPlatformBrowser(this.platformId)
-      ? localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
-      : null;
-    const fromCookie = this.cookies.get(ACCESS_TOKEN_COOKIE);
-
-    const token = fromStorage ?? fromCookie;
-
-    if (token && isPlatformBrowser(this.platformId) && !fromStorage && fromCookie) {
-      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-    }
-
-    return token;
-  }
-
-  getSessionEmail(): string | null {
-    const fromStorage = isPlatformBrowser(this.platformId)
-      ? localStorage.getItem(AUTH_EMAIL_STORAGE_KEY)
-      : null;
-    const fromCookie = this.cookies.get(USER_EMAIL_COOKIE);
-
-    const email = fromStorage ?? fromCookie;
-
-    if (email && isPlatformBrowser(this.platformId) && !fromStorage && fromCookie) {
-      localStorage.setItem(AUTH_EMAIL_STORAGE_KEY, email);
-    }
-
-    return email;
-  }
-
-  setAccessToken(token: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-    }
-    this.cookies.set(ACCESS_TOKEN_COOKIE, token, { days: AUTH_COOKIE_MAX_DAYS });
-  }
-
-  setSessionEmail(email: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(AUTH_EMAIL_STORAGE_KEY, email);
-    }
-    this.cookies.set(USER_EMAIL_COOKIE, email, { days: AUTH_COOKIE_MAX_DAYS });
+    return this.adminApi.adminAuthControllerLogout({ withCredentials: true }).pipe(
+      tap(() => this.clearSessionState()),
+      catchError(() => {
+        this.clearSessionState();
+        return of(undefined);
+      }),
+      map(() => undefined),
+    );
   }
 
   clearCache(): void {
@@ -174,23 +114,22 @@ export class AuthService {
     }
   }
 
-  private fetchProfile(options?: { headers?: HttpHeaders }): Observable<GetMeType> {
-    const email = this.getSessionEmail();
-    if (!email) {
-      return throwError(() => new Error('User email is not available for profile request'));
-    }
-
-    return this.usersApi.userControllerGetMe({ userEmail: email }, options);
+  private fetchProfile(headers?: HttpHeaders): Observable<AdminMeDto> {
+    return this.adminApi.adminAuthControllerGetMe({
+      headers,
+      withCredentials: true,
+    });
   }
 
-  private clearSession(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      localStorage.removeItem(AUTH_EMAIL_STORAGE_KEY);
+  private buildSsrHeaders(): HttpHeaders | undefined {
+    if (!isPlatformServer(this.platformId) || !this.request) {
+      return undefined;
     }
-    this.cookies.remove(ACCESS_TOKEN_COOKIE);
-    this.cookies.remove(USER_EMAIL_COOKIE);
-    this.clearSessionState();
+    const cookieHeader = this.request.headers.get('cookie');
+    if (!cookieHeader) {
+      return undefined;
+    }
+    return new HttpHeaders().set('Cookie', cookieHeader);
   }
 
   private clearSessionState(): void {
@@ -200,9 +139,8 @@ export class AuthService {
     this.hasAuthenticated.set(false);
   }
 
-  private syncAvatarHueAfterProfileLoad(user: GetMeType): void {
-    const seed = String(user.id);
-
+  private syncAvatarHueAfterProfileLoad(admin: AdminMeDto): void {
+    const seed = String(admin.id);
     if (isPlatformBrowser(this.platformId)) {
       const stored = parseStoredHue(sessionStorage.getItem(AVATAR_SESSION_HUE_KEY));
       if (stored !== null) {
@@ -217,7 +155,6 @@ export class AuthService {
       sessionStorage.setItem(AVATAR_SESSION_HUE_KEY, String(h));
       return;
     }
-
     this.avatarHue.set(stableHueFromSeed(seed));
   }
 

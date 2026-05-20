@@ -35,4 +35,26 @@ export default defineConfig({
     //   afterAllFilesWrite: 'prettier --write',
     // },
   },
+  adminAuth: {
+    input: {
+      target: './swagger-admin-auth.json',
+      validation: false,
+    },
+    output: {
+      mode: 'tags-split',
+      target: './src/app/core/api/admin-auth/generated',
+      schemas: './src/app/core/api/admin-auth/model',
+      client: 'angular',
+      mock: false,
+      override: {
+        query: { useQuery: true },
+        paramsSerializer: {
+          path: './src/app/core/utils/api/generate-api-utils.ts',
+          name: 'customParamsSerializer',
+        },
+      },
+      allParamsOptional: true,
+      urlEncodeParameters: true,
+    },
+  },
 });

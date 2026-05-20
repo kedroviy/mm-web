@@ -1192,6 +1192,237 @@
         ]
       }
     },
+    "/nsi-users/users": {
+      "get": {
+        "operationId": "UsersNsiController_getUsers",
+        "summary": "List users (admin)",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "emailQuery",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "usernameQuery",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id:desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersNsiPageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NsiUsers"
+        ],
+        "security": [
+          {
+            "admin_session": []
+          },
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "UsersNsiController_createUser",
+        "summary": "Create user (admin)",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserNsiDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserNsiResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NsiUsers"
+        ],
+        "security": [
+          {
+            "admin_session": []
+          },
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/nsi-users/users/{id}": {
+      "get": {
+        "operationId": "UsersNsiController_getUserById",
+        "summary": "Get user by id (admin)",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserNsiResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NsiUsers"
+        ],
+        "security": [
+          {
+            "admin_session": []
+          },
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "UsersNsiController_updateUser",
+        "summary": "Update user (admin)",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserNsiDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserNsiResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NsiUsers"
+        ],
+        "security": [
+          {
+            "admin_session": []
+          },
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "UsersNsiController_deleteUser",
+        "summary": "Delete user (admin)",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "NsiUsers"
+        ],
+        "security": [
+          {
+            "admin_session": []
+          },
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/feedback": {
       "post": {
         "operationId": "FeedbackController_createFeedbackMessage",
@@ -1346,6 +1577,9 @@
         ],
         "security": [
           {
+            "admin_session": []
+          },
+          {
             "bearer": []
           }
         ]
@@ -1495,6 +1729,9 @@
         ],
         "security": [
           {
+            "admin_session": []
+          },
+          {
             "bearer": []
           }
         ]
@@ -1540,6 +1777,9 @@
         ],
         "security": [
           {
+            "admin_session": []
+          },
+          {
             "bearer": []
           }
         ]
@@ -1556,6 +1796,10 @@
     {
       "name": "movie",
       "description": ""
+    },
+    {
+      "name": "NsiUsers",
+      "description": ""
     }
   ],
   "servers": [],
@@ -1565,9 +1809,112 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "type": "http"
+      },
+      "admin_session": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "mm_admin_session"
       }
     },
     "schemas": {
+      "ClientType": {
+        "type": "string",
+        "enum": [
+          "GOOGLE",
+          "NONE"
+        ]
+      },
+      "UserNsiResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "client": {
+            "$ref": "#/components/schemas/ClientType"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "email",
+          "client"
+        ]
+      },
+      "UsersNsiPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserNsiResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "items"
+        ]
+      },
+      "CreateUserNsiDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8
+          },
+          "client": {
+            "$ref": "#/components/schemas/ClientType"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password",
+          "client"
+        ]
+      },
+      "UpdateUserNsiDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8
+          },
+          "client": {
+            "$ref": "#/components/schemas/ClientType"
+          }
+        }
+      },
       "RegisterUserDto": {
         "type": "object",
         "properties": {
