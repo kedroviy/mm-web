@@ -5,12 +5,8 @@
  * The Match-Movie API description
  * OpenAPI spec version: 1.0
  */
-import type { CreateUserNsiDtoClient } from './createUserNsiDtoClient';
 
-export interface CreateUserNsiDto {
-  username: string;
+export interface AdminLoginDto {
   email: string;
-  /** @minLength 8 */
   password: string;
-  client: CreateUserNsiDtoClient;
 }

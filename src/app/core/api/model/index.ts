@@ -6,15 +6,17 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from './adminLoginDto';
+export * from './adminMeDto';
 export * from './backdrop';
 export * from './bearerToken';
-export * from './clientType';
 export * from './country';
 export * from './createFeedbackMessageDto';
 export * from './createRoomDto';
 export * from './createRoomDtoFilters';
 export * from './createRoomKeyResponse';
 export * from './createUserNsiDto';
+export * from './createUserNsiDtoClient';
 export * from './feedbackAdminReplyPayload';
 export * from './feedbackControllerGetFeedbackMessagesParams';
 export * from './feedbackControllerGetFeedbackMessagesStatus';
@@ -56,11 +58,13 @@ export * from './updateFeedbackMessageDto';
 export * from './updateFeedbackMessageDtoStatus';
 export * from './updateMyFeedbackMessageDto';
 export * from './updateUserNsiDto';
+export * from './updateUserNsiDtoClient';
 export * from './updateUserStatusDto';
 export * from './updateUserStatusDtoUserStatus';
 export * from './updateUsernameDto';
 export * from './userControllerGetMeParams';
 export * from './userNsiResponseDto';
+export * from './userNsiResponseDtoClient';
 export * from './userRoomMembershipDto';
 export * from './userRoomMembershipDtoRole';
 export * from './usersNsiControllerGetUsersParams';

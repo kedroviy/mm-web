@@ -37,13 +37,13 @@ export default defineConfig({
   },
   adminAuth: {
     input: {
-      target: './swagger-admin-auth.json',
+      target: './swagger.json',
       validation: false,
     },
     output: {
       mode: 'tags-split',
-      target: './src/app/core/api/admin-auth/generated',
-      schemas: './src/app/core/api/admin-auth/model',
+      target: './src/app/core/api/generated',
+      schemas: './src/app/core/api/model',
       client: 'angular',
       mock: false,
       override: {

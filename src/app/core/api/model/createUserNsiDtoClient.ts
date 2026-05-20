@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ClientType = typeof ClientType[keyof typeof ClientType];
+export type CreateUserNsiDtoClient = typeof CreateUserNsiDtoClient[keyof typeof CreateUserNsiDtoClient];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ClientType = {
+export const CreateUserNsiDtoClient = {
   GOOGLE: 'GOOGLE',
   NONE: 'NONE',
 } as const;

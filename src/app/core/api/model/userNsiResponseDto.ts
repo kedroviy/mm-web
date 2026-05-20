@@ -5,11 +5,11 @@
  * The Match-Movie API description
  * OpenAPI spec version: 1.0
  */
-import type { ClientType } from './clientType';
+import type { UserNsiResponseDtoClient } from './userNsiResponseDtoClient';
 
 export interface UserNsiResponseDto {
   id: number;
   username: string;
   email: string;
-  client: ClientType;
+  client: UserNsiResponseDtoClient;
 }

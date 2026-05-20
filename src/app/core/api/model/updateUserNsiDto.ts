@@ -5,12 +5,15 @@
  * The Match-Movie API description
  * OpenAPI spec version: 1.0
  */
-import type { ClientType } from './clientType';
+import type { UpdateUserNsiDtoClient } from './updateUserNsiDtoClient';
 
 export interface UpdateUserNsiDto {
   username?: string;
   email?: string;
-  /** @minLength 8 */
+  /**
+   * If omitted, password is not changed.
+   * @minLength 8
+   */
   password?: string;
-  client?: ClientType;
+  client?: UpdateUserNsiDtoClient;
 }

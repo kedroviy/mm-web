@@ -16,7 +16,16 @@ page?: number;
  * @maximum 100
  */
 limit?: number;
+/**
+ * Case-insensitive partial match on email
+ */
 emailQuery?: string;
+/**
+ * Case-insensitive partial match on username
+ */
 usernameQuery?: string;
+/**
+ * createdAt:asc or createdAt:desc
+ */
 sort?: string;
 };
