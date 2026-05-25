@@ -6039,13 +6039,20 @@
               "GOOGLE",
               "NONE"
             ]
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last successful sign-in (password or Google)"
           }
         },
         "required": [
           "id",
           "username",
           "email",
-          "client"
+          "client",
+          "lastLoginAt"
         ]
       },
       "UsersNsiPageResponseDto": {

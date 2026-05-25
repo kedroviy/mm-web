@@ -3,6 +3,14 @@
     <p class="muted">Загрузка…</p>
   } @else {
     <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+      <p class="last-login">
+        <span class="label">Последний вход:</span>
+        @if (lastLoginAt()) {
+          {{ lastLoginAt() | date: 'dd.MM.yyyy HH:mm' }}
+        } @else {
+          —
+        }
+      </p>
       <mat-form-field appearance="outline">
         <mat-label>Имя пользователя</mat-label>
         <input matInput formControlName="username" autocomplete="off" />

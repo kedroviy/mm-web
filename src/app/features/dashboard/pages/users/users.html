@@ -2,6 +2,7 @@
   [dataSource]="store.users()"
   [columns]="columns"
   [loading]="store.loading()"
+  [cellTemplates]="{ lastLoginAt: lastLoginTpl }"
   [showViewAction]="true"
   [totalItems]="store.totalItems()"
   [page]="store.page()"
@@ -9,3 +10,13 @@
   (pageChange)="onPageChange($event)"
   baseRoute="."
 />
+
+<ng-template #lastLoginTpl let-element>
+  <span>
+    @if (element.lastLoginAt) {
+      {{ element.lastLoginAt | date: 'dd.MM.yyyy HH:mm' }}
+    } @else {
+      —
+    }
+  </span>
+</ng-template>

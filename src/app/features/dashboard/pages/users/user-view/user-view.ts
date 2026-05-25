@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,6 +22,7 @@ import { catchError, finalize, of } from 'rxjs';
     MatSelectModule,
     MatButtonModule,
     RouterLink,
+    DatePipe,
   ],
   templateUrl: './user-view.html',
   styleUrl: './user-view.css',
@@ -37,6 +39,7 @@ export class UserView implements OnInit {
 
   readonly loading = signal(false);
   readonly saving = signal(false);
+  readonly lastLoginAt = signal<string | null>(null);
   readonly clientTypes = [UserNsiResponseDtoClient.NONE, UserNsiResponseDtoClient.GOOGLE] as const;
 
   readonly form = this.fb.group({
@@ -138,7 +141,8 @@ export class UserView implements OnInit {
       });
   }
 
-  private patchForm(user: Pick<UserNsiResponseDto, 'username' | 'email' | 'client'>): void {
+  private patchForm(user: Pick<UserNsiResponseDto, 'username' | 'email' | 'client' | 'lastLoginAt'>): void {
+    this.lastLoginAt.set(user.lastLoginAt);
     this.form.patchValue({
       username: user.username,
       email: user.email,

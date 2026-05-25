@@ -12,4 +12,6 @@ export interface UserNsiResponseDto {
   username: string;
   email: string;
   client: UserNsiResponseDtoClient;
+  /** Last successful sign-in (password or Google) */
+  lastLoginAt: string | null;
 }
