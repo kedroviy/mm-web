@@ -4,14 +4,14 @@ import { NsiUsersService } from '@core/api/generated/nsi-users/nsi-users.service
 import type { UserNsiResponseDto } from '@core/api/model';
 import { catchError, of } from 'rxjs';
 
-type UsersState = {
+interface UsersState {
   readonly users: UserNsiResponseDto[];
   readonly loading: boolean;
   readonly loaded: boolean;
   readonly page: number;
   readonly limit: number;
   readonly totalItems: number;
-};
+}
 
 const initialState: UsersState = {
   users: [],

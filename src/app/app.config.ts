@@ -13,6 +13,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { initializeAuth } from '@core/utils/fabrics/initialize-auth';
 import { AuthService as CustomAuthService } from '@core/services/auth/auth.service';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,5 +42,6 @@ export const appConfig: ApplicationConfig = {
       deps: [CustomAuthService],
       multi: true,
     },
+    provideCharts(withDefaultRegisterables()),
   ],
 };

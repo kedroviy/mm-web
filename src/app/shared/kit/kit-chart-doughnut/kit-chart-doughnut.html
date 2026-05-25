@@ -1,0 +1,5 @@
+<div class="chart-host">
+  @if (hasData()) {
+    <canvas baseChart type="doughnut" [data]="chartData()" [options]="chartOptions()"></canvas>
+  }
+</div>

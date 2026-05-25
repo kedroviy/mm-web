@@ -1,0 +1,85 @@
+<section class="filter-usage-page">
+  <section class="genre-section" aria-labelledby="genre-analytics-title">
+    <header class="section-header">
+      <h2 id="genre-analytics-title" class="section-title">Аналитика по жанрам</h2>
+      @if (store.hasGenreChartData()) {
+        <p class="section-meta">Всего выборов: {{ store.genreSelectionsTotal() }}</p>
+      }
+    </header>
+
+    @if (store.genreLoading() && !store.hasGenreChartData()) {
+      <p class="muted">Загрузка…</p>
+    } @else if (store.hasGenreChartData()) {
+      <app-kit-chart-doughnut
+        [slices]="store.genreSlices()"
+        chartTitle="Распределение жанров"
+      />
+      <app-kit-table
+        class="genre-table"
+        [dataSource]="store.genreSlices()"
+        [columns]="genreColumns"
+        [loading]="store.genreLoading()"
+        [showViewAction]="false"
+        [totalItems]="store.genreSlices().length"
+        [page]="1"
+        [limit]="store.genreSlices().length"
+        [cellTemplates]="{ percent: percentTpl }"
+        baseRoute="."
+      />
+    } @else {
+      <p class="muted empty">Нет данных по жанрам. Выберите жанры при создании или настройке комнаты.</p>
+    }
+  </section>
+
+  <section class="filters-section" aria-labelledby="filters-analytics-title">
+    <header class="section-header toolbar">
+      <h2 id="filters-analytics-title" class="section-title">Все фильтры</h2>
+      <mat-form-field appearance="outline" class="type-field">
+        <mat-label>Тип фильтра</mat-label>
+        <mat-select [value]="store.filterType()" (selectionChange)="onFilterTypeChange($event)">
+          @for (option of filterTypeOptions; track option.label) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </header>
+
+    @if (store.loading() && !store.hasChartData()) {
+      <p class="muted">Загрузка…</p>
+    } @else if (store.hasChartData()) {
+      <app-kit-chart-bar
+        [labels]="store.chartLabels()"
+        [values]="store.chartValues()"
+        chartTitle="Топ популярных фильтров"
+      />
+    } @else {
+      <p class="muted empty">Пока нет данных. Статистика появится после выбора фильтров в комнатах.</p>
+    }
+
+    <app-kit-table
+      class="table-block"
+      [dataSource]="store.items()"
+      [columns]="columns"
+      [loading]="store.loading()"
+      [cellTemplates]="{ filterType: typeTpl, updatedAt: dateTpl }"
+      [showViewAction]="false"
+      [totalItems]="store.totalItems()"
+      [page]="store.page()"
+      [limit]="store.limit()"
+      (pageChange)="onPageChange($event)"
+      baseRoute="."
+    />
+  </section>
+</section>
+
+<ng-template #percentTpl let-element>
+  <span>{{ element.percent }}%</span>
+</ng-template>
+
+<ng-template #typeTpl let-element>
+  <span>{{ resolveFilterTypeLabel(element.filterType) }}</span>
+</ng-template>
+
+<ng-template #dateTpl let-element>
+  <span>{{ element.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+</ng-template>

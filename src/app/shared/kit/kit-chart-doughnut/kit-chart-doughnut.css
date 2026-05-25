@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.chart-host {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  height: clamp(320px, 45vh, 520px);
+}
+
+.chart-host canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

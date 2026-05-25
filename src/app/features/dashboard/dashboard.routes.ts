@@ -43,6 +43,12 @@ export const DASHBOARD_ROUTES: Routes = [
     ],
   },
   {
+    path: PAGES.ANALYTICS_FILTER_USAGE.path,
+    loadComponent: () =>
+      import('./pages/analytics/filter-usage/filter-usage').then((m) => m.FilterUsageAnalytics),
+    data: PAGES.ANALYTICS_FILTER_USAGE.data,
+  },
+  {
     path: PAGES.NSI.path,
     data: PAGES.NSI.data,
     children: [

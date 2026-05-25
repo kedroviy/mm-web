@@ -4942,6 +4942,76 @@
           }
         ]
       }
+    },
+    "/analytics/filter-usage": {
+      "get": {
+        "operationId": "FilterUsageAnalyticsController_getFilterUsage",
+        "summary": "Popular room filters (public)",
+        "description": "Aggregated counts of filter picks when users create or update room filters. Available to all clients.",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "filterType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "genre",
+                "exclude_genre",
+                "country",
+                "year",
+                "rating"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "example": "selectionCount:desc",
+            "description": "selectionCount:asc or selectionCount:desc",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterUsagePageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
     }
   },
   "info": {
@@ -6041,8 +6111,8 @@
             ]
           },
           "lastLoginAt": {
-            "type": "string",
             "format": "date-time",
+            "type": "string",
             "nullable": true,
             "description": "Last successful sign-in (password or Google)"
           }
@@ -6954,6 +7024,68 @@
             }
           }
         }
+      },
+      "FilterUsageItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable filter id within its type (genre id, year, etc.)"
+          },
+          "name": {
+            "type": "string"
+          },
+          "filterType": {
+            "type": "string",
+            "enum": [
+              "genre",
+              "exclude_genre",
+              "country",
+              "year",
+              "rating"
+            ]
+          },
+          "selectionCount": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "filterType",
+          "selectionCount",
+          "updatedAt"
+        ]
+      },
+      "FilterUsagePageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterUsageItemResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "items"
+        ]
       }
     }
   }

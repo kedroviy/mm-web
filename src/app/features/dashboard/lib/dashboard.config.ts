@@ -32,6 +32,10 @@ export const DASHBOARD_CONFIG = {
     data: { title: 'Обращения пользователей', canGoBack: true },
     CHILDREN: VIEW_ONLY_CHILDREN,
   },
+  ANALYTICS_FILTER_USAGE: {
+    path: 'analytics/filter-usage',
+    data: { title: 'Популярные фильтры', canGoBack: true },
+  },
   NSI: {
     path: 'nsi-list',
     data: { title: 'Справочники', canGoBack: true },

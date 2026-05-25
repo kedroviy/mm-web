@@ -7,5 +7,9 @@ export const MODULES = [
 
 export const LOGS_MODULES = [
   { title: 'Сессии', description: 'Аналитика сессий', link: '/db-admin' },
-  { title: 'Фильмы', description: 'Аналитика подборов фильмов', link: '/db-admin' },
+  {
+    title: 'Популярные фильтры',
+    description: 'Какие фильтры чаще выбирают при подборе фильмов',
+    link: '/dashboard/analytics/filter-usage',
+  },
 ];

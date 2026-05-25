@@ -4,14 +4,14 @@ import { FeedbackService } from '@core/api/generated/feedback/feedback.service';
 import type { FeedbackMessageResponse } from '@core/api/model';
 import { catchError, of } from 'rxjs';
 
-type FeedbackState = {
+interface FeedbackState {
   readonly items: FeedbackMessageResponse[];
   readonly loading: boolean;
   readonly loaded: boolean;
   readonly page: number;
   readonly limit: number;
   readonly totalItems: number;
-};
+}
 
 const initialState: FeedbackState = {
   items: [],
