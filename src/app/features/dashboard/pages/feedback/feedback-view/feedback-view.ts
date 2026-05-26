@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,7 @@ import { catchError, finalize, of } from 'rxjs';
 @Component({
   selector: 'app-feedback-view',
   imports: [
-    DatePipe,
+    AppDatePipe,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

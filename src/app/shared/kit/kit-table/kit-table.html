@@ -78,6 +78,8 @@
               @if (column === 'name') {
                 <!-- Делаем основное поле жирным и выразительным -->
                 <span class="text-slate-900 tracking-tight">{{ element[column] }}</span>
+              } @else if (cellTemplateMap()[column]; as cellTpl) {
+                <ng-container *ngTemplateOutlet="cellTpl; context: { $implicit: element }" />
               } @else {
                 <span class="text-slate-500 font-medium">{{ element[column] }}</span>
               }

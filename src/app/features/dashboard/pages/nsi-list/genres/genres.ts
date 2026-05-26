@@ -4,11 +4,11 @@ import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { ActiveImportService } from '@core/services/import-progress/active-import.service';
 import { GenresStore } from './genres.store';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 
 @Component({
   selector: 'app-genres',
-  imports: [KitTable, DatePipe],
+  imports: [KitTable, AppDatePipe],
   templateUrl: './genres.html',
   styleUrl: './genres.css',
   standalone: true,

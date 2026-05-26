@@ -4,12 +4,12 @@ import { ActiveImportService } from '@core/services/import-progress/active-impor
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { AgeRatingStore } from '@features/dashboard/pages/nsi-list/age-ratings/age-rating.store';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 
 @Component({
   selector: 'app-age-ratings',
-  imports: [DatePipe,
+  imports: [AppDatePipe,
     KitTable],
   templateUrl: './age-ratings.html',
   styleUrl: './age-ratings.css',

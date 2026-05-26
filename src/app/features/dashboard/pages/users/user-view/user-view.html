@@ -6,7 +6,7 @@
       <p class="last-login">
         <span class="label">Последний вход:</span>
         @if (lastLoginAt()) {
-          {{ lastLoginAt() | date: 'dd.MM.yyyy HH:mm' }}
+          {{ lastLoginAt() | appDate }}
         } @else {
           —
         }

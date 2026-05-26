@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
@@ -14,7 +14,7 @@ import { FilterUsageStore } from './filter-usage.store';
 
 @Component({
   selector: 'app-filter-usage-analytics',
-  imports: [KitChartBar, KitChartDoughnut, KitTable, MatFormFieldModule, MatSelectModule, DatePipe],
+  imports: [KitChartBar, KitChartDoughnut, KitTable, MatFormFieldModule, MatSelectModule, AppDatePipe],
   templateUrl: './filter-usage.html',
   styleUrl: './filter-usage.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +24,7 @@ export class FilterUsageAnalytics implements OnInit {
   readonly store = inject(FilterUsageStore);
   readonly filterTypeOptions = FILTER_USAGE_TYPE_OPTIONS;
   readonly resolveFilterTypeLabel = resolveFilterUsageTypeLabel;
-  
+
   readonly columns: TableColumn[] = [
     { key: 'name', label: 'Фильтр' },
     { key: 'filterType', label: 'Тип' },

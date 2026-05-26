@@ -3,13 +3,12 @@ import { ActiveImportService } from '@core/services/import-progress/active-impor
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { AwardCategoryStore } from '@features/dashboard/pages/nsi-list/award-category/award-category.store';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 
 @Component({
   selector: 'app-award-category',
-  imports: [DatePipe,
-    KitTable],
+  imports: [AppDatePipe, KitTable],
   templateUrl: './award-category.html',
   styleUrl: './award-category.css',
   standalone: true,

@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
@@ -9,7 +9,7 @@ import { CountriesStore } from '@features/dashboard/pages/nsi-list/countries/cou
 @Component({
   selector: 'app-countries',
   imports: [
-    DatePipe,
+    AppDatePipe,
     KitTable,
   ],
   templateUrl: './countries.html',

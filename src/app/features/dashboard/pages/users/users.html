@@ -14,7 +14,7 @@
 <ng-template #lastLoginTpl let-element>
   <span>
     @if (element.lastLoginAt) {
-      {{ element.lastLoginAt | date: 'dd.MM.yyyy HH:mm' }}
+      {{ element.lastLoginAt | appDate }}
     } @else {
       —
     }

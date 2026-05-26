@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal, TemplateRef, ViewChild } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { catchError, of } from 'rxjs';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 import { ActiveImportService } from '@core/services/import-progress/active-import.service';
@@ -13,7 +13,7 @@ import type { AwardCategory } from '@features/dashboard/pages/nsi-list/award-cat
 @Component({
   selector: 'app-awards',
   imports: [
-    DatePipe,
+    AppDatePipe,
     KitTable,
   ],
   templateUrl: './awards.html',

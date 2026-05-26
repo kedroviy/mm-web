@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -22,7 +22,7 @@ import { catchError, finalize, of } from 'rxjs';
     MatSelectModule,
     MatButtonModule,
     RouterLink,
-    DatePipe,
+    AppDatePipe,
   ],
   templateUrl: './user-view.html',
   styleUrl: './user-view.css',

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
@@ -7,7 +7,7 @@ import { FeedbackAdminStore } from './feedback-admin.store';
 
 @Component({
   selector: 'app-feedback-admin-list',
-  imports: [KitTable, DatePipe],
+  imports: [KitTable, AppDatePipe],
   templateUrl: './feedback.html',
   styleUrl: './feedback.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

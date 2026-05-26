@@ -7,7 +7,7 @@
         <h2 class="title">Обращение #{{ m.id }}</h2>
         <p><span class="label">Email:</span> {{ m.email }}</p>
         <p><span class="label">Статус:</span> {{ m.status }}</p>
-        <p><span class="label">Создано:</span> {{ m.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+        <p><span class="label">Создано:</span> {{ m.createdAt | appDate }}</p>
         <div class="message-box">
           <span class="label">Текст</span>
           <p class="body-text">{{ m.text }}</p>
@@ -17,7 +17,7 @@
             <span class="label">Текущий ответ администратора</span>
             <p class="body-text">{{ m.adminReply }}</p>
             @if (m.adminRepliedAt) {
-              <p class="muted small">{{ m.adminRepliedAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+              <p class="muted small">{{ m.adminRepliedAt | appDate }}</p>
             }
           </div>
         }

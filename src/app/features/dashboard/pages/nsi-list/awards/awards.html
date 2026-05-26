@@ -17,7 +17,7 @@
 
 <ng-template #dateTpl let-element>
   <span>
-    {{ element.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+    {{ element.createdAt | appDate }}
   </span>
 </ng-template>
 
@@ -53,7 +53,7 @@
               <td class="awards-nested-table__name">{{ cat.name }}</td>
               <td class="awards-nested-table__muted">{{ cat.slug }}</td>
               <td class="awards-nested-table__muted">
-                {{ cat.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+                {{ cat.createdAt | appDate }}
               </td>
               <td class="awards-nested-table__desc awards-nested-table__col-desc" [title]="cat.description ?? ''">
                 {{ cat.description || '—' }}

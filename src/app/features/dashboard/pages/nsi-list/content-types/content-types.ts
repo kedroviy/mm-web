@@ -4,13 +4,13 @@ import { ActiveImportService } from '@core/services/import-progress/active-impor
 import { TableColumn } from '@shared/kit/kit-table/kit-table.types';
 import { PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
 import { ContentTypeStore } from '@features/dashboard/pages/nsi-list/content-types/content-type.store';
-import { DatePipe } from '@angular/common';
+import { AppDatePipe } from '@shared/date/app-date.pipe';
 import { KitTable } from '@shared/kit/kit-table/kit-table';
 
 @Component({
   selector: 'app-content-types',
   imports: [
-    DatePipe,
+    AppDatePipe,
     KitTable,
   ],
   templateUrl: './content-types.html',
