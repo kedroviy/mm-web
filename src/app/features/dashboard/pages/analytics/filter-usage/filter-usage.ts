@@ -24,7 +24,7 @@ export class FilterUsageAnalytics implements OnInit {
   readonly store = inject(FilterUsageStore);
   readonly filterTypeOptions = FILTER_USAGE_TYPE_OPTIONS;
   readonly resolveFilterTypeLabel = resolveFilterUsageTypeLabel;
-
+  
   readonly columns: TableColumn[] = [
     { key: 'name', label: 'Фильтр' },
     { key: 'filterType', label: 'Тип' },
