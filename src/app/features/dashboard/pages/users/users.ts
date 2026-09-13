@@ -21,6 +21,7 @@ export class Users implements OnInit {
     { key: 'username', label: 'Имя пользователя' },
     { key: 'email', label: 'Email' },
     { key: 'client', label: 'Клиент' },
+    { key: 'platform', label: 'Платформа' },
     { key: 'lastLoginAt', label: 'Последний вход' },
   ];
 

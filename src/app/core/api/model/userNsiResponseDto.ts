@@ -17,4 +17,9 @@ export interface UserNsiResponseDto {
    * @nullable
    */
   lastLoginAt: string | null;
+  /**
+   * Client platform from last login (e.g. web)
+   * @nullable
+   */
+  platform: string | null;
 }

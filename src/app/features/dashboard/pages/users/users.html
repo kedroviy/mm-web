@@ -2,7 +2,7 @@
   [dataSource]="store.users()"
   [columns]="columns"
   [loading]="store.loading()"
-  [cellTemplates]="{ lastLoginAt: lastLoginTpl }"
+  [cellTemplates]="{ lastLoginAt: lastLoginTpl, platform: platformTpl }"
   [showViewAction]="true"
   [totalItems]="store.totalItems()"
   [page]="store.page()"
@@ -19,4 +19,8 @@
       —
     }
   </span>
+</ng-template>
+
+<ng-template #platformTpl let-element>
+  <span>{{ element.platform || '—' }}</span>
 </ng-template>
