@@ -12,4 +12,9 @@ export const LOGS_MODULES = [
     description: 'Какие фильтры чаще выбирают при подборе фильмов',
     link: '/dashboard/analytics/filter-usage',
   },
+  {
+    title: 'Match funnel',
+    description: 'create → join≥2 → start → shortlist → result (web / mobile)',
+    link: '/dashboard/analytics/match-funnel',
+  },
 ];

@@ -49,6 +49,12 @@ export const DASHBOARD_ROUTES: Routes = [
     data: PAGES.ANALYTICS_FILTER_USAGE.data,
   },
   {
+    path: PAGES.ANALYTICS_MATCH_FUNNEL.path,
+    loadComponent: () =>
+      import('./pages/analytics/match-funnel/match-funnel').then((m) => m.MatchFunnelAnalytics),
+    data: PAGES.ANALYTICS_MATCH_FUNNEL.data,
+  },
+  {
     path: PAGES.NSI.path,
     data: PAGES.NSI.data,
     children: [

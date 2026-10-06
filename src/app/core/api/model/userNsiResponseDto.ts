@@ -13,6 +13,11 @@ export interface UserNsiResponseDto {
   email: string;
   client: UserNsiResponseDtoClient;
   /**
+   * Registration timestamp
+   * @nullable
+   */
+  createdAt?: string | null;
+  /**
    * Last successful sign-in (password or Google)
    * @nullable
    */

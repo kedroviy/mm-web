@@ -1,20 +1,113 @@
-<app-kit-table
-  [dataSource]="store.users()"
-  [columns]="columns"
-  [loading]="store.loading()"
-  [cellTemplates]="{ lastLoginAt: lastLoginTpl, platform: platformTpl }"
-  [showViewAction]="true"
-  [totalItems]="store.totalItems()"
-  [page]="store.page()"
-  [limit]="store.limit()"
-  (pageChange)="onPageChange($event)"
-  baseRoute="."
-/>
+<section class="users-page">
+  <section class="users-overview" aria-label="Сводка по пользователям">
+    @if (store.overviewLoading() && !store.overview()) {
+      <p class="muted">Загрузка сводки…</p>
+    } @else if (store.overview(); as overview) {
+      <div class="users-overview__grid">
+        <article class="users-stat">
+          <p class="users-stat__label">Всего</p>
+          <p class="users-stat__value">{{ overview.totalUsers }}</p>
+        </article>
+        <article class="users-stat">
+          <p class="users-stat__label">Новые (период)</p>
+          <p class="users-stat__value">{{ overview.newUsers }}</p>
+        </article>
+        <article class="users-stat">
+          <p class="users-stat__label">Returning (период)</p>
+          <p class="users-stat__value">{{ overview.returningUsers }}</p>
+        </article>
+        <article class="users-stat">
+          <p class="users-stat__label">DAU avg</p>
+          <p class="users-stat__value">{{ overview.dauAverage }}</p>
+        </article>
+        <article class="users-stat">
+          <p class="users-stat__label">WAU</p>
+          <p class="users-stat__value">{{ overview.wau }}</p>
+        </article>
+      </div>
+      <p class="muted users-overview__period">
+        Период: {{ overview.period.from | appDate }} — {{ overview.period.to | appDate }}
+      </p>
+    }
+  </section>
+
+  <section class="users-filters" aria-label="Фильтры пользователей">
+    <mat-form-field appearance="outline">
+      <mat-label>Тип</mat-label>
+      <mat-select [value]="store.lifecycle()" (selectionChange)="onLifecycleChange($event.value)">
+        @for (option of lifecycleOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Последний вход с</mat-label>
+      <input
+        matInput
+        type="date"
+        [ngModel]="store.lastLoginFrom()"
+        (ngModelChange)="store.setLastLoginFrom($event)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Последний вход по</mat-label>
+      <input
+        matInput
+        type="date"
+        [ngModel]="store.lastLoginTo()"
+        (ngModelChange)="store.setLastLoginTo($event)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input
+        matInput
+        [ngModel]="store.usernameQuery()"
+        (ngModelChange)="store.setUsernameQuery($event)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        [ngModel]="store.emailQuery()"
+        (ngModelChange)="store.setEmailQuery($event)"
+      />
+    </mat-form-field>
+  </section>
+
+  <app-kit-table
+    [dataSource]="store.users()"
+    [columns]="columns"
+    [loading]="store.loading()"
+    [cellTemplates]="{ lastLoginAt: lastLoginTpl, createdAt: createdAtTpl, platform: platformTpl }"
+    [showViewAction]="true"
+    [totalItems]="store.totalItems()"
+    [page]="store.page()"
+    [limit]="store.limit()"
+    (pageChange)="onPageChange($event)"
+    baseRoute="."
+  />
+</section>
 
 <ng-template #lastLoginTpl let-element>
   <span>
     @if (element.lastLoginAt) {
       {{ element.lastLoginAt | appDate }}
+    } @else {
+      —
+    }
+  </span>
+</ng-template>
+
+<ng-template #createdAtTpl let-element>
+  <span>
+    @if (element.createdAt) {
+      {{ element.createdAt | appDate }}
     } @else {
       —
     }

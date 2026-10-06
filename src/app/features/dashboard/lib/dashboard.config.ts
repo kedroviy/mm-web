@@ -36,6 +36,10 @@ export const DASHBOARD_CONFIG = {
     path: 'analytics/filter-usage',
     data: { title: 'Популярные фильтры', canGoBack: true },
   },
+  ANALYTICS_MATCH_FUNNEL: {
+    path: 'analytics/match-funnel',
+    data: { title: 'Match funnel', canGoBack: true },
+  },
   NSI: {
     path: 'nsi-list',
     data: { title: 'Справочники', canGoBack: true },

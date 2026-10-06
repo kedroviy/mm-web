@@ -1,3 +1,53 @@
 :host {
   display: block;
 }
+
+.users-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.users-overview__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.users-stat {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--mat-sys-surface-container-low, #f5f5f5);
+}
+
+.users-stat__label {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant, #666);
+}
+
+.users-stat__value {
+  margin: 0.25rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.users-overview__period,
+.muted {
+  margin: 0.5rem 0 0;
+  color: var(--mat-sys-on-surface-variant, #666);
+  font-size: 0.85rem;
+}
+
+.users-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.users-filters mat-form-field {
+  min-width: 10rem;
+  flex: 1 1 10rem;
+}

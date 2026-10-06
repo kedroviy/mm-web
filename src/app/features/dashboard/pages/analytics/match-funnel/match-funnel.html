@@ -1,0 +1,57 @@
+<section class="match-funnel-page">
+  <header class="section-header toolbar">
+    <h2 class="section-title">Match funnel</h2>
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>С</mat-label>
+        <input matInput type="date" [ngModel]="store.from()" (ngModelChange)="store.setFrom($event)" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>По</mat-label>
+        <input matInput type="date" [ngModel]="store.to()" (ngModelChange)="store.setTo($event)" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Канал</mat-label>
+        <mat-select
+          [value]="store.platformChannel()"
+          (selectionChange)="store.setPlatformChannel($event.value)"
+        >
+          @for (option of channelOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </header>
+
+  @if (store.data()?.period; as period) {
+    <p class="muted">
+      Период: {{ period.from | appDate }} — {{ period.to | appDate }}
+    </p>
+  }
+
+  @if (store.loading() && !store.hasChartData()) {
+    <p class="muted">Загрузка…</p>
+  } @else if (store.hasChartData()) {
+    <app-kit-chart-bar
+      [labels]="store.chartLabels()"
+      [values]="store.chartValues()"
+      chartTitle="Воронка комнат"
+    />
+  } @else {
+    <p class="muted empty">
+      Пока нет данных воронки. Статистика появится после создания комнат (снимок пишется при create/join/start/shortlist/result).
+    </p>
+  }
+
+  <app-kit-table
+    [dataSource]="channelRows()"
+    [columns]="channelColumns"
+    [loading]="store.loading()"
+    [showViewAction]="false"
+    [totalItems]="channelRows().length"
+    [page]="1"
+    [limit]="channelRows().length || 1"
+    baseRoute="."
+  />
+</section>
