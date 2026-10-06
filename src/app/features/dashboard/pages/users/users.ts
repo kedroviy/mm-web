@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +22,7 @@ export class Users implements OnInit {
   readonly store = inject(UsersStore);
 
   readonly columns: TableColumn[] = [
-    { key: 'id', label: '#' },
+    { key: 'rowNumber', label: '#' },
     { key: 'username', label: 'Имя пользователя' },
     { key: 'email', label: 'Email' },
     { key: 'client', label: 'Клиент' },
@@ -30,6 +30,15 @@ export class Users implements OnInit {
     { key: 'createdAt', label: 'Регистрация' },
     { key: 'lastLoginAt', label: 'Последний вход' },
   ];
+
+  /** Порядковый номер в выдаче (с учётом страницы), не DB id. */
+  readonly rows = computed(() => {
+    const offset = (this.store.page() - 1) * this.store.limit();
+    return this.store.users().map((user, index) => ({
+      ...user,
+      rowNumber: offset + index + 1,
+    }));
+  });
 
   readonly lifecycleOptions: Array<{ value: UsersLifecycleFilter; label: string }> = [
     { value: 'all', label: 'Все' },
