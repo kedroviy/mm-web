@@ -6,6 +6,9 @@ import type { UserNsiResponseDto } from '@core/api/model';
 import type { UsersLifecycleFilter, UsersOverviewResponse } from '@core/api/model/admin-analytics.types';
 import { catchError, of } from 'rxjs';
 
+export type UsersSortField = 'id' | 'createdAt' | 'lastLoginAt';
+export type UsersSortDirection = 'asc' | 'desc';
+
 interface UsersState {
   readonly users: UserNsiResponseDto[];
   readonly loading: boolean;
@@ -18,6 +21,8 @@ interface UsersState {
   readonly lastLoginTo: string;
   readonly usernameQuery: string;
   readonly emailQuery: string;
+  readonly sortField: UsersSortField;
+  readonly sortDirection: UsersSortDirection;
   readonly overview: UsersOverviewResponse | null;
   readonly overviewLoading: boolean;
 }
@@ -34,6 +39,8 @@ const initialState: UsersState = {
   lastLoginTo: '',
   usernameQuery: '',
   emailQuery: '',
+  sortField: 'createdAt',
+  sortDirection: 'desc',
   overview: null,
   overviewLoading: false,
 };
@@ -72,7 +79,7 @@ export const UsersStore = signalStore(
           lastLoginTo: toIsoDateEnd(store.lastLoginTo()),
           usernameQuery: store.usernameQuery().trim() || undefined,
           emailQuery: store.emailQuery().trim() || undefined,
-          sort: 'lastLoginAt:desc',
+          sort: `${store.sortField()}:${store.sortDirection()}`,
         })
         .pipe(catchError(() => of({ items: [], total: 0, page: store.page(), limit: store.limit() })))
         .subscribe((res) => {
@@ -115,6 +122,10 @@ export const UsersStore = signalStore(
     },
     setEmailQuery(emailQuery: string): void {
       patchState(store, { emailQuery, page: 1, loaded: false });
+      this.load(true);
+    },
+    setSort(sortField: UsersSortField, sortDirection: UsersSortDirection): void {
+      patchState(store, { sortField, sortDirection, page: 1, loaded: false });
       this.load(true);
     },
     invalidate(): void {

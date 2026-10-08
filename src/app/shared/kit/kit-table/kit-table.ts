@@ -27,7 +27,7 @@ import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { COMMON_CONSTANTS } from '@core/constants';
 import { KitPaginator, PaginationState } from '@shared/kit/kit-paginator/kit-paginator';
-import { TableColumn } from './kit-table.types';
+import { TableColumn, TableSortChange, TableSortDirection } from './kit-table.types';
 import { KitCellDef } from './kit-cell-def.directive';
 
 const ACTIONS_KEY = 'actions';
@@ -82,9 +82,13 @@ export class KitTable<T extends object> {
   limit = input(10);
   pageSizeOptions = input<number[]>([5, 10, 25, 50]);
 
+  sortKey = input<string | null>(null);
+  sortDirection = input<TableSortDirection>('desc');
+
   delete = output<T>();
   view = output<T>();
   pageChange = output<PaginationState>();
+  sortChange = output<TableSortChange>();
 
   private cellDefs = contentChildren(KitCellDef);
 
@@ -106,6 +110,14 @@ export class KitTable<T extends object> {
     const map: Record<string, string> = {};
     for (const col of this.columns()) {
       map[col.key] = col.label;
+    }
+    return map;
+  });
+
+  readonly columnByKey = computed(() => {
+    const map = new Map<string, TableColumn>();
+    for (const column of this.columns()) {
+      map.set(column.key, column);
     }
     return map;
   });
@@ -148,5 +160,44 @@ export class KitTable<T extends object> {
 
   onRowClick(row: T): void {
     this.tableService.selectItem(row);
+  }
+
+  isColumnSortable(column: string): boolean {
+    return this.columnByKey().get(column)?.sortable === true;
+  }
+
+  isSortActive(column: string): boolean {
+    return this.sortKey() === this.sortFieldFor(column);
+  }
+
+  ariaSort(column: string): 'ascending' | 'descending' | 'none' | null {
+    if (!this.isColumnSortable(column)) {
+      return null;
+    }
+    if (!this.isSortActive(column)) {
+      return 'none';
+    }
+    return this.sortDirection() === 'asc' ? 'ascending' : 'descending';
+  }
+
+  sortIcon(column: string): string {
+    if (!this.isSortActive(column)) {
+      return 'unfold_more';
+    }
+    return this.sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward';
+  }
+
+  onSortClick(column: string): void {
+    if (!this.isColumnSortable(column)) {
+      return;
+    }
+    const key = this.sortFieldFor(column);
+    const direction: TableSortDirection =
+      this.sortKey() === key && this.sortDirection() === 'desc' ? 'asc' : 'desc';
+    this.sortChange.emit({ key, direction });
+  }
+
+  private sortFieldFor(column: string): string {
+    return this.columnByKey().get(column)?.sortKey ?? column;
   }
 }

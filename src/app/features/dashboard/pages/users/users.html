@@ -81,7 +81,7 @@
   </section>
 
   <p class="users-list-meta muted" aria-live="polite">
-    Показано {{ rows().length }} из {{ store.totalItems() }}
+    Показано {{ rows().length }} из {{ store.totalItems() }}. {{ sortCaption() }}
   </p>
 
   <app-kit-table
@@ -93,7 +93,10 @@
     [totalItems]="store.totalItems()"
     [page]="store.page()"
     [limit]="store.limit()"
+    [sortKey]="store.sortField()"
+    [sortDirection]="store.sortDirection()"
     (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
     baseRoute="."
   />
 </section>
